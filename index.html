@@ -3,1119 +3,1668 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>派币 - Pi Coin</title>
+    <title>Pi Network</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-
-        body {
+        :root {
+            --bg-dark-1: #0b1220;
+            --bg-dark-2: #0f172a;
+            --bg-dark-3: #121a2e;
+            --bg-card: rgba(255,255,255,0.04);
+            --bg-elevated: rgba(255,255,255,0.07);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --text-quaternary: #64748b;
+            --glass-border: rgba(255,255,255,0.07);
+            --glass-border-strong: rgba(255,255,255,0.12);
+            --accent-gold: #d4af37;
+            --accent-gold-2: #fde68a;
+            --accent-gold-gradient: linear-gradient(135deg, #fde68a 0%, #d4af37 60%, #a77e1f 100%);
+            --accent-purple: #8b5cf6;
+            --accent-purple-2: #c4b5fd;
+            --accent-purple-gradient: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 60%, #5b21b6 100%);
+            --success: #10b981;
+            --fs-10: 10px; --fs-11: 11px; --fs-12: 12px;
+            --fs-13: 13px; --fs-14: 14px; --fs-15: 15px;
+            --fs-16: 16px; --fs-18: 18px; --fs-20: 20px;
+            --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+            --space-xs: 6px; --space-sm: 10px; --space-md: 16px;
+            --space-lg: 20px; --space-xl: 28px;
+        }
+        html, body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(1200px 800px at 20% 0%, #1e293b 0%, #0b1220 45%, #080c18 100%);
             min-height: 100vh;
-            color: #333;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
-
         .app-container {
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #f5f6fa;
+            background:
+                radial-gradient(700px 420px at 80% -10%, rgba(139,92,246,0.14) 0%, transparent 60%),
+                radial-gradient(600px 480px at -10% 100%, rgba(212,175,55,0.12) 0%, transparent 60%),
+                linear-gradient(180deg, #0d1424 0%, #0a0f1e 60%, #080c18 100%);
             position: relative;
             display: flex;
             flex-direction: column;
-            padding-bottom: 70px;
+            padding-bottom: 86px;
         }
-
         /* ========== 页面切换 ========== */
-        .page {
-            display: none;
-            flex: 1;
-            animation: fadeIn 0.3s ease;
-        }
+        .page { display: none; flex: 1; animation: fadeIn 0.25s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
 
-        .page.active {
-            display: block;
+        /* ========== 通用顶栏 ========== */
+        .top-bar {
+            padding: 42px var(--space-md) 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; z-index: 5;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .greeting {
+            display: flex; flex-direction: column; gap: 2px;
         }
+        .greeting .hi { font-size: 13px; color: var(--text-tertiary); }
+        .greeting .name { font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.01em; }
+        .top-right-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-pill {
+            height: 34px; padding: 0 14px; border-radius: 999px;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 12.5px; font-weight: 600;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-pill:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--glass-border-strong); }
 
-        /* ========== 首页样式 ========== */
-        .home-page .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 50px 20px 40px;
-            color: white;
+        /* ========== 首页：AI股东卡（上下漂浮） ========== */
+        .home-section-ai {
+            padding: 6px var(--space-md) 0;
+            display: flex; justify-content: center;
+            position: relative; z-index: 2;
+        }
+        .ai-card-wrapper {
+            width: 292px;
+            height: 183px;
             position: relative;
+            display: flex; justify-content: center; align-items: center;
+            animation: cardFloat 5.2s ease-in-out infinite;
+        }
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-10px); }
+        }
+        .ai-card-wrapper::before {
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 330px; height: 240px;
+            background: radial-gradient(ellipse at 50% 45%, rgba(212,175,55,0.28) 0%, rgba(212,175,55,0.08) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .ai-bank-card {
+            position: relative; z-index: 1;
+            width: 100%; height: 100%;
+            border-radius: 20px;
+            padding: 16px 18px 14px;
+            background:
+                linear-gradient(140deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 45%, rgba(24,20,8,0.96) 100%);
+            box-shadow:
+                0 16px 34px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(212,175,55,0.2),
+                0 0 40px rgba(212,175,55,0.18);
             overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        /* 扫光 */
+        .ai-bank-card::before {
+            content: ''; position: absolute; top: -50%; left: -40%; width: 60%; height: 220%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+            transform: rotate(18deg);
+            animation: cardShine 5.2s ease-in-out infinite;
+        }
+        @keyframes cardShine {
+            0%, 40%, 100% { transform: translateX(0) rotate(18deg); opacity: 0; }
+            55%          { transform: translateX(320px) rotate(18deg); opacity: 1; }
+            70%          { transform: translateX(640px) rotate(18deg); opacity: 0; }
+        }
+        /* 金边 */
+        .ai-bank-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 20px; padding: 1.2px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(212,175,55,0.3) 30%, rgba(212,175,55,0.9) 60%, rgba(253,230,138,0.3) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 6px rgba(253,230,138,0.3));
+        }
+        .ai-card-top { display: flex; justify-content: space-between; align-items: center; }
+        .ai-chip-number-row { display: flex; align-items: center; gap: 10px; }
+        .ai-card-chip {
+            width: 38px; height: 30px; border-radius: 7px; position: relative; overflow: hidden;
+            background:
+                linear-gradient(135deg, #d4af37 0%, #fde68a 50%, #d4af37 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .ai-card-chip::before, .ai-card-chip::after {
+            content: ''; position: absolute; left: 18%; right: 18%; height: 1px;
+            background: rgba(120,80,10,0.6);
+        }
+        .ai-card-chip::before { top: 30%; }
+        .ai-card-chip::after  { top: 62%; }
+        .ai-card-number.chip-adjacent {
+            font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+            font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.78);
+        }
+        .ai-card-brand { display: flex; align-items: center; gap: 8px; }
+        .ai-card-brand .pi-mark {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 900;
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.5), 0 0 10px rgba(212,175,55,0.4);
+        }
+        .ai-card-brand .ai-pill {
+            padding: 4px 9px; border-radius: 999px;
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(253,230,138,0.3);
+            color: var(--accent-gold-2);
+            font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+        }
+        .ai-card-title-row { display: flex; flex-direction: column; gap: 3px; }
+        .ai-card-title {
+            font-size: 16px; font-weight: 800;
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(253,230,138,0.35));
+            letter-spacing: 0.02em;
+        }
+        .ai-card-subtitle { font-size: 10px; color: rgba(253,230,138,0.75); letter-spacing: 0.08em; font-weight: 600; }
+
+        /* 卡片底部 */
+        .ai-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+        .ai-growth-block { display: flex; flex-direction: column; gap: 7px; }
+        .ai-growth-label {
+            font-size: 11.5px; color: rgba(255,255,255,0.78); font-weight: 700;
+            letter-spacing: 0.03em; display: flex; align-items: center; gap: 7px; line-height: 1.25;
+        }
+        .ai-growth-label--sub { font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; color: rgba(255,255,255,0.74); }
+        .ai-growth-label .dot-green {
+            width: 6.5px; height: 6.5px; border-radius: 50%; flex-shrink: 0;
+            background: var(--success);
+            box-shadow: 0 0 9px var(--success), 0 0 18px rgba(16,185,129,0.35);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 0.6; transform: scale(1); box-shadow: 0 0 5px var(--success); }
+            50%      { opacity: 1;   transform: scale(1.15); box-shadow: 0 0 14px var(--success); }
+        }
+        .ai-card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .ai-card-holder { font-size: 9.5px; color: rgba(255,255,255,0.45); letter-spacing: 0.2em; text-transform: uppercase; }
+        .ai-card-holder-name { font-size: 11px; color: rgba(253,230,138,0.85); font-weight: 700; letter-spacing: 0.06em; }
+
+        /* ========== 生态分红池标题行 ========== */
+        .eco-title-row {
+            margin: 6px var(--space-md) 2px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .eco-title-row h3 {
+            font-size: 14px; font-weight: 700; color: var(--text-primary);
+            letter-spacing: 0.12em;
         }
 
-        .home-page .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .home-page .header::after {
-            content: '';
-            position: absolute;
-            bottom: -40%;
-            left: -20%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-        }
-
-        .home-page .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
+        /* ========== 生态分红池：大圆圈 + 两个金黄按钮 ========== */
+        .eco-card-wrapper { margin: 2px var(--space-md) 0; }
+        .eco-pool-card {
             position: relative;
-            z-index: 1;
+            background: linear-gradient(145deg, rgba(26,34,54,0.92) 0%, rgba(17,24,39,0.96) 100%);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border-strong);
+            border-radius: 18px;
+            padding: 14px 15px 14px;
+            overflow: hidden;
+            box-shadow: 0 9px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(212,175,55,0.05);
         }
-
-        .home-page .greeting {
-            font-size: 16px;
-            opacity: 0.9;
+        .eco-pool-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
+            opacity: 0.35;
         }
-
-        .home-page .greeting strong {
-            display: block;
-            font-size: 22px;
-            margin-top: 4px;
-            font-weight: 600;
+        .eco-pool-card::after {
+            content: ''; position: absolute; top: -40%; right: -10%;
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(212,175,55,0.11) 0%, transparent 70%);
+            pointer-events: none;
         }
-
-        .home-page .header-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+        .eco-circle-wrap {
+            position: relative; z-index: 1;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0px 0 12px;
         }
-
-        /* 3D 地球样式 */
-        .earth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px 0 30px;
+        .eco-circle {
             position: relative;
-            z-index: 1;
-            perspective: 1000px;
-        }
-
-        .earth {
-            width: 180px;
-            height: 180px;
+            width: 158px; height: 158px;
             border-radius: 50%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateEarth 20s linear infinite;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #43e97b 100%);
-            box-shadow: 
-                0 0 60px rgba(79, 172, 254, 0.5),
-                inset -30px -30px 80px rgba(0, 0, 0, 0.2),
-                inset 10px 10px 60px rgba(255, 255, 255, 0.3);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 35%, rgba(255,235,160,0.18) 0%, rgba(212,175,55,0.06) 55%, rgba(17,24,39,0.9) 100%);
         }
-
-        .earth::before {
+        /* 外层金边（conic 旋转） */
+        .eco-circle::before {
             content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 35%;
-            height: 25%;
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            border-radius: 50% 40% 60% 30%;
+            position: absolute; inset: -1.5px;
+            border-radius: 50%; padding: 1.25px;
+            background: conic-gradient(from 0deg, #d4af37 0%, #fde68a 18%, #d4af37 40%, rgba(212,175,55,0.25) 58%, #d4af37 76%, #fde68a 90%, #d4af37 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            animation: ecoRingSpin 9s linear infinite;
+            filter: drop-shadow(0 0 9px rgba(212,175,55,0.42));
+        }
+        /* 内层细金边 */
+        .eco-circle::after {
+            content: '';
+            position: absolute; inset: 7px;
+            border-radius: 50%; padding: 1px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.85), rgba(212,175,55,0.25), rgba(253,230,138,0.85));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
             opacity: 0.8;
-            transform: rotate(-15deg);
+            animation: ecoPulse 3.6s ease-in-out infinite;
         }
-
-        .earth::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 45%;
-            width: 40%;
-            height: 30%;
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            border-radius: 40% 50% 40% 60%;
-            opacity: 0.8;
-            transform: rotate(10deg);
+        @keyframes ecoRingSpin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+        @keyframes ecoPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); filter: drop-shadow(0 0 5px rgba(253,230,138,0.3)); }
+            50%      { opacity: 1;   transform: scale(1.015); filter: drop-shadow(0 0 14px rgba(253,230,138,0.65)); }
         }
-
-        .earth-continent {
-            position: absolute;
-            background: linear-gradient(135deg, #56ab2f, #a8e063);
+        .eco-circle-glow {
+            position: absolute; inset: -16px;
             border-radius: 50%;
-            opacity: 0.75;
+            background: radial-gradient(circle, rgba(253,230,138,0.30) 0%, rgba(212,175,55,0.13) 38%, transparent 72%);
+            filter: blur(0.5px);
+            animation: ecoGlowPulse 3.6s ease-in-out infinite;
+            pointer-events: none;
         }
-
-        .earth-continent.c1 {
-            top: 25%;
-            left: 10%;
-            width: 20%;
-            height: 18%;
+        @keyframes ecoGlowPulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); }
+            50%      { opacity: 1;    transform: scale(1.05); }
         }
-
-        .earth-continent.c2 {
-            top: 60%;
-            left: 15%;
-            width: 15%;
-            height: 22%;
-        }
-
-        .earth-continent.c3 {
-            top: 35%;
-            right: 15%;
-            width: 25%;
-            height: 20%;
-        }
-
-        .earth-atmosphere {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        .earth-ring {
-            position: absolute;
-            width: 240px;
-            height: 240px;
-            border-radius: 50%;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
-            animation: rotateRing 30s linear infinite;
-        }
-
-        .earth-ring.r2 {
-            width: 270px;
-            height: 270px;
-            border-style: dotted;
-            animation-duration: 45s;
-            animation-direction: reverse;
-            opacity: 0.6;
-        }
-
-        .pi-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-            font-style: italic;
-        }
-
-        @keyframes rotateEarth {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-
-        @keyframes rotateRing {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-
-        /* 今日数据区域 */
-        .today-data {
-            margin: -20px 15px 15px;
-            background: white;
-            border-radius: 20px;
-            padding: 25px 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            position: relative;
-            z-index: 2;
-        }
-
-        .today-data .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .today-data .section-title h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        .today-data .date {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 20px;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .balance-card .label {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .balance-card .balance {
-            font-size: 32px;
-            font-weight: 700;
+        .eco-circle-label {
+            font-size: 11px; color: #efd68a; font-weight: 600; letter-spacing: 0.08em;
             margin-bottom: 5px;
+            position: relative; z-index: 2;
+            transform: translateY(-4px);
         }
-
-        .balance-card .balance small {
-            font-size: 16px;
-            font-weight: 400;
-            opacity: 0.8;
+        .eco-circle-amount {
+            font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 5px rgba(212,175,55,0.32));
+            position: relative; z-index: 2;
+            transform: translateY(-3px);
+            display: inline-flex; align-items: baseline;
         }
+        .eco-circle-amount .unit { font-size: 16px; margin-left: 3px; }
 
-        .balance-card .value-change {
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        /* 两个金黄按钮 */
+        .eco-btns {
+            position: relative; z-index: 1;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
-
-        .balance-card .value-change.up {
-            color: #69db7c;
-        }
-
-        .balance-card .value-change.down {
-            color: #ff8787;
-        }
-
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-
-        .data-item {
-            text-align: center;
-            padding: 15px 10px;
-            background: #f8f9ff;
+        .eco-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 11px;
             border-radius: 12px;
-            transition: transform 0.2s;
-        }
-
-        .data-item:active {
-            transform: scale(0.95);
-        }
-
-        .data-item .icon {
-            width: 44px;
-            height: 44px;
-            margin: 0 auto 10px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .data-item .icon.mining {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .data-item .icon.team {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .data-item .icon.reward {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-        }
-
-        .data-item .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 3px;
-        }
-
-        .data-item .label {
-            font-size: 12px;
-            color: #888;
-        }
-
-        /* 快捷操作区 */
-        .quick-actions {
-            margin: 0 15px 20px;
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .quick-actions h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #1a1a2e;
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px 5px;
-            border-radius: 12px;
-            transition: background 0.2s;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%),
+                rgba(255,255,255,0.015);
+            border: 1px solid rgba(212,175,55,0.32);
+            box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
+            position: relative; overflow: hidden;
         }
-
-        .action-item:active {
-            background: #f5f6fa;
+        .eco-btn:hover, .eco-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(0,0,0,0.28), 0 0 20px rgba(212,175,55,0.2);
+            border-color: rgba(253,230,138,0.6);
         }
-
-        .action-item .icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: #f0f3ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .action-item .icon.send { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .action-item .icon.receive { background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; }
-        .action-item .icon.exchange { background: linear-gradient(135deg, #fa709a, #fee140); color: white; }
-        .action-item .icon.more { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-
-        .action-item span {
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* ========== 市场页面 ========== */
-        .market-page .market-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 50px 20px 30px;
-            color: white;
-        }
-
-        .market-page .market-header h2 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .market-page .market-header p {
-            opacity: 0.85;
+        .eco-btn-icon {
+            width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
             font-size: 14px;
         }
+        .eco-btn-icon.team, .eco-btn-icon.reward {
+            background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(212,175,55,0.08));
+            border: 1px solid rgba(212,175,55,0.28);
+        }
+        .eco-btn-body { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+        .eco-btn-val { font-size: 13.5px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; line-height: 1.15; }
+        .eco-btn-lbl { font-size: 10px; color: var(--text-tertiary); font-weight: 500; margin-top: 1px; }
+        .eco-btn.receive-flash { animation: ecoBtnFlash 0.55s ease-out; }
+        @keyframes ecoBtnFlash {
+            0%   { box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085); border-color: rgba(253,230,138,0.82); }
+            30%  { box-shadow: 0 0 24px rgba(253,230,138,0.65), 0 0 50px rgba(212,175,55,0.32); border-color: #fff4c8; }
+            100% { box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085); border-color: rgba(212,175,55,0.32); }
+        }
+        /* 粒子覆盖层 */
+        .eco-pool-card { position: relative; }
+        .eco-particles {
+            position: absolute; inset: 0;
+            pointer-events: none; overflow: visible;
+            z-index: 10;
+        }
+        .eco-particle {
+            position: absolute; left: 0; top: 0;
+            will-change: transform, opacity;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .eco-particle.bolt {
+            width: 20px; height: 20px;
+            filter:
+                drop-shadow(0 0 4px rgba(253,230,138,0.9))
+                drop-shadow(0 0 8px rgba(212,175,55,0.7))
+                drop-shadow(0 0 14px rgba(212,175,55,0.35));
+        }
+        .eco-particle.line {
+            width: 36px; height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, rgba(212,175,55,0) 0%, rgba(255,244,200,0.98) 25%, rgba(253,230,138,0.95) 55%, rgba(212,175,55,0) 100%);
+            box-shadow:
+                0 0 6px rgba(253,230,138,0.85),
+                0 0 14px rgba(212,175,55,0.55),
+                0 0 24px rgba(212,175,55,0.25);
+        }
+        @keyframes ecoPartIn  { from { opacity: 0; transform: scale(0.6);} to { opacity: 1; transform: scale(1);} }
+        @keyframes ecoPartOut { from { opacity: 1; } to { opacity: 0; } }
 
-        .market-stats {
+        /* ========== 通用 Section 标题 ========== */
+        .section-title {
+            margin: 22px var(--space-md) 10px;
+            display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+        }
+        .section-title h3 { font-size: 15px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-primary); }
+        .section-title .sub { font-size: 11px; color: var(--text-tertiary); }
+
+        /* ========== 市场页：顶部介绍卡片 + 10张卡片(左5金右5紫) ========== */
+        .mk-intro-card {
+            position: relative;
+            margin: 0 var(--space-md) 12px;
+            border-radius: 16px;
+            padding: 14px 16px;
+            background:
+                linear-gradient(145deg, rgba(26,34,54,0.88) 0%, rgba(17,24,39,0.94) 100%);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+        }
+        .mk-intro-card:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
+        .mk-intro-card::before {
+            content: ''; position: absolute; inset: 0; padding: 1.2px; border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, rgba(139,92,246,0.6) 45%, var(--accent-gold) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .mk-intro-card::after {
+            content: ''; position: absolute; top: -60%; left: -20%; width: 40%; height: 260%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+            transform: rotate(20deg);
+            animation: cardShine 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .mk-intro-title {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 14px; font-weight: 800;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #e9d5ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .mk-intro-desc { position: relative; z-index: 1; margin-top: 4px; font-size: 11.5px; color: var(--text-tertiary); }
+
+        .ai-cards-grid {
+            margin: 0 var(--space-md) 0;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: -20px 15px 20px;
+            gap: 10px;
+        }
+        .ai-level-card {
             position: relative;
-            z-index: 2;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-card .label {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 6px;
-        }
-
-        .stat-card .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-
-        .stat-card .change {
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .stat-card .change.up { color: #20c997; }
-        .stat-card .change.down { color: #fa5252; }
-
-        .coin-list {
-            margin: 0 15px;
-        }
-
-        .coin-list .list-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            padding: 0 5px;
-            color: #1a1a2e;
-        }
-
-        .coin-item {
-            display: flex;
-            align-items: center;
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s;
-        }
-
-        .coin-item:active {
-            transform: scale(0.98);
-        }
-
-        .coin-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            margin-right: 14px;
-            flex-shrink: 0;
-        }
-
-        .coin-icon.pi { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .coin-icon.btc { background: linear-gradient(135deg, #f7931a, #ffb347); }
-        .coin-icon.eth { background: linear-gradient(135deg, #627eea, #8a92b2); }
-        .coin-icon.usdt { background: linear-gradient(135deg, #26a17b, #2ed573); }
-
-        .coin-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .coin-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 3px;
-        }
-
-        .coin-symbol {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .coin-price {
-            text-align: right;
-        }
-
-        .price {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 3px;
-        }
-
-        .price-change {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        .price-change.up {
-            color: #20c997;
-            background: rgba(32, 201, 151, 0.1);
-        }
-
-        .price-change.down {
-            color: #fa5252;
-            background: rgba(250, 82, 82, 0.1);
-        }
-
-        /* ========== 我的页面 ========== */
-        .profile-page .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 60px 20px 80px;
-            color: white;
-            position: relative;
-        }
-
-        .profile-header .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .profile-header .top-bar h2 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .profile-header .setting-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: white;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            margin-right: 16px;
-        }
-
-        .user-details .name {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .user-details .id {
-            font-size: 13px;
-            opacity: 0.85;
-        }
-
-        .profile-card {
-            margin: -50px 15px 20px;
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 2;
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            text-align: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .profile-stat .num {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin-bottom: 4px;
-        }
-
-        .profile-stat .label {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .vip-banner {
-            margin-top: 15px;
-            padding: 15px;
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .vip-info .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 3px;
-        }
-
-        .vip-info .desc {
-            font-size: 12px;
-            color: #b45309;
-        }
-
-        .vip-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .menu-section {
-            margin: 0 15px 15px;
-            background: white;
-            border-radius: 15px;
+            border-radius: 14px;
+            padding: 14px 12px 12px;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 100%);
             overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            cursor: pointer;
+        }
+        .ai-level-card:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0,0,0,0.4); }
+        .ai-level-card::after {
+            content: ''; position: absolute; top: -40%; left: -30%; width: 40%; height: 220%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+            transform: rotate(18deg);
+            animation: cardShine 5.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        /* 金色（AI卡） */
+        .ai-level-card.ai-gold::before {
+            content: ''; position: absolute; inset: 0; border-radius: 14px; padding: 1.2px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.95) 0%, rgba(212,175,55,0.35) 35%, rgba(212,175,55,0.9) 65%, rgba(253,230,138,0.35) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 7px rgba(212,175,55,0.4));
+        }
+        /* 紫色（股东卡） */
+        .ai-level-card.sh-purple::before {
+            content: ''; position: absolute; inset: 0; border-radius: 14px; padding: 1.2px;
+            background: linear-gradient(135deg, rgba(233,213,255,0.95) 0%, rgba(139,92,246,0.35) 35%, rgba(139,92,246,0.9) 65%, rgba(233,213,255,0.35) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 8px rgba(139,92,246,0.45));
+        }
+        .ai-level-badge {
+            position: relative; z-index: 1;
+            display: inline-flex; align-items: center; gap: 5px;
+            height: 20px; padding: 0 8px; border-radius: 999px;
+            font-size: 10px; font-weight: 800; letter-spacing: 0.06em;
+        }
+        .ai-gold .ai-level-badge {
+            color: #efd68a;
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(253,230,138,0.28);
+        }
+        .sh-purple .ai-level-badge {
+            color: #e9d5ff;
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(233,213,255,0.28);
+        }
+        .ai-level-name {
+            position: relative; z-index: 1;
+            margin-top: 10px;
+            font-size: 13px; font-weight: 800; letter-spacing: 0.02em;
+            min-height: 36px; line-height: 1.35;
+        }
+        .ai-gold .ai-level-name { color: var(--text-primary); }
+        .sh-purple .ai-level-name { color: var(--text-primary); }
+        .ai-level-desc {
+            position: relative; z-index: 1;
+            margin-top: 6px;
+            font-size: 10.5px; color: var(--text-tertiary);
+            min-height: 28px; line-height: 1.4;
+        }
+        .ai-level-price-row {
+            position: relative; z-index: 1;
+            margin-top: 10px;
+            display: flex; align-items: baseline; justify-content: space-between;
+        }
+        .ai-level-price {
+            display: inline-flex; align-items: baseline;
+            font-weight: 900; letter-spacing: -0.01em;
+        }
+        .ai-level-price .num { font-size: 20px; line-height: 1; }
+        .ai-level-price .unit { font-size: 13px; margin-left: 2px; }
+        .ai-gold .ai-level-price {
+            background: var(--accent-gold-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .sh-purple .ai-level-price {
+            background: var(--accent-purple-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .ai-level-buy {
+            position: relative; z-index: 1;
+            height: 28px; padding: 0 11px;
+            border-radius: 999px;
+            font-size: 11.5px; font-weight: 800;
+            display: inline-flex; align-items: center; gap: 4px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        .ai-level-buy:active { transform: translateY(1px) scale(0.98); }
+        .ai-gold .ai-level-buy {
+            color: #3b2c06;
+            background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
+            box-shadow: 0 4px 10px rgba(212,175,55,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+        .sh-purple .ai-level-buy {
+            color: #2e1065;
+            background: linear-gradient(135deg, #ede9fe 0%, var(--accent-purple) 60%, #4c1d95 100%);
+            box-shadow: 0 4px 10px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
         }
 
+        /* ========== 我的页 ========== */
+        .my-header {
+            margin: 10px var(--space-md) 14px;
+            padding: 16px;
+            border-radius: 18px;
+            position: relative; overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.92) 0%, rgba(14,20,36,0.96) 100%);
+            border: 1px solid var(--glass-border-strong);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+        }
+        .my-header::before {
+            content: ''; position: absolute; inset: 0; padding: 1.2px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-gold-2) 0%, rgba(212,175,55,0.3) 35%, rgba(139,92,246,0.4) 70%, var(--accent-gold-2) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .my-user-row {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .my-avatar {
+            width: 54px; height: 54px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            border: 2px solid rgba(253,230,138,0.6);
+            box-shadow: 0 0 18px rgba(212,175,55,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 900; color: #3b2c06;
+        }
+        .my-user-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+        .my-name { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+        .my-sub  { font-size: 11.5px; color: var(--text-tertiary); }
+
+        /* 我的页 统计四格 */
+        .my-stats-grid {
+            margin: 14px var(--space-md) 0;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .my-stat {
+            padding: 12px 10px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .my-stat .v { font-size: 17px; font-weight: 800; color: var(--accent-gold-2); letter-spacing: -0.01em; }
+        .my-stat .v.pi { background: var(--accent-gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .my-stat .l { margin-top: 4px; font-size: 10.5px; color: var(--text-tertiary); }
+
+        /* 菜单组 */
+        .menu-group {
+            margin: 18px var(--space-md) 0;
+            padding: 6px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
         .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #f8f8f8;
-            transition: background 0.2s;
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 10px;
+            border-radius: 12px;
             cursor: pointer;
-        }
-
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-
-        .menu-item:active {
-            background: #f9f9f9;
-        }
-
-        .menu-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .menu-icon.wallet { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .menu-icon.security { background: linear-gradient(135deg, #20c997, #0ca678); color: white; }
-        .menu-icon.invite { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .menu-icon.help { background: linear-gradient(135deg, #4dabf7, #339af0); color: white; }
-        .menu-icon.about { background: linear-gradient(135deg, #ffa94d, #fd7e14); }
-        .menu-icon.logout { background: linear-gradient(135deg, #ff8787, #fa5252); color: white; }
-
-        .menu-text {
-            flex: 1;
-            font-size: 15px;
-            color: #333;
-        }
-
-        .menu-arrow {
-            color: #ccc;
-            font-size: 18px;
-        }
-
-        /* ========== 底部导航栏 ========== */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0 12px;
-            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
-            z-index: 100;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 6px 20px;
-            cursor: pointer;
-            transition: all 0.3s;
+            transition: background 0.18s ease;
             position: relative;
         }
-
-        .nav-item .nav-icon {
-            font-size: 24px;
-            margin-bottom: 3px;
-            transition: all 0.3s;
-            filter: grayscale(100%);
-            opacity: 0.5;
+        .menu-item + .menu-item { margin-top: 2px; }
+        .menu-item:hover, .menu-item:active { background: var(--bg-elevated); }
+        .menu-icon {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+        .menu-icon.wallet { background: linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.06)); border: 1px solid rgba(212,175,55,0.3); color: var(--accent-gold-2); }
+        .menu-icon.aicard { background: linear-gradient(135deg, rgba(212,175,55,0.32), rgba(139,92,246,0.1)); border: 1px solid rgba(212,175,55,0.34); color: var(--accent-gold-2); }
+        .menu-icon.shcard { background: linear-gradient(135deg, rgba(139,92,246,0.32), rgba(212,175,55,0.1)); border: 1px solid rgba(139,92,246,0.34); color: #e9d5ff; }
+        .menu-text {
+            flex: 1; min-width: 0;
+            font-size: 14px; font-weight: 600; color: var(--text-primary);
+        }
+        .menu-right {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12px;
+            color: var(--text-quaternary);
+        }
+        .menu-hint {
+            padding: 3px 8px; border-radius: 999px;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.22);
+            color: var(--accent-gold-2);
+            font-weight: 700; font-size: 11px;
+        }
+        .menu-hint.purple {
+            background: rgba(139,92,246,0.12);
+            border-color: rgba(233,213,255,0.22);
+            color: #e9d5ff;
+        }
+        .menu-hint.gray {
+            background: rgba(148,163,184,0.08);
+            border-color: rgba(148,163,184,0.18);
+            color: var(--text-tertiary);
         }
 
-        .nav-item .nav-label {
-            font-size: 11px;
-            color: #999;
-            transition: all 0.3s;
+        /* ========== 底部 Tab 高级线条图标 ========== */
+        .app-footer {
+            position: fixed; left: 50%; transform: translateX(-50%);
+            bottom: 0; width: 100%; max-width: 480px;
+            padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+            background: linear-gradient(180deg, rgba(10,15,30,0) 0%, rgba(8,12,24,0.72) 20%, rgba(8,12,24,0.92) 60%, rgba(8,12,24,0.98) 100%);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--glass-border);
+            z-index: 50;
+        }
+        .tab-bar {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            background: rgba(255,255,255,0.035);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 8px 6px;
+            position: relative;
+        }
+        .tab-item {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px;
+            padding: 6px 6px;
+            border-radius: 14px;
+            cursor: pointer;
+            color: var(--text-quaternary);
+            transition: color 0.22s ease, transform 0.22s ease, filter 0.22s ease;
+        }
+        .tab-item svg {
+            width: 24px; height: 24px;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.22s ease;
+        }
+        .tab-item span { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+        .tab-item.active {
+            color: var(--accent-gold-2);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(253,230,138,0.55));
+        }
+        .tab-item.active svg { stroke: var(--accent-gold-2); }
+        .tab-item:not(.active) { filter: grayscale(0.3); }
+
+        /* ========== 卡片介绍 悬浮窗 Modal ========== */
+        .modal-mask {
+            position: fixed; inset: 0;
+            background: rgba(4, 8, 16, 0.65);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: none; align-items: flex-end; justify-content: center;
+            z-index: 100;
+            padding: 0 0 calc(env(safe-area-inset-bottom));
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-mask.active { display: flex; }
+        .modal-sheet {
+            width: 100%; max-width: 480px;
+            border-radius: 22px 22px 0 0;
+            background:
+                radial-gradient(500px 260px at 10% 0%, rgba(212,175,55,0.12) 0%, transparent 60%),
+                radial-gradient(500px 260px at 100% 0%, rgba(139,92,246,0.14) 0%, transparent 60%),
+                linear-gradient(180deg, #131a2e 0%, #0c1223 100%);
+            border-top: 1px solid var(--glass-border-strong);
+            padding: 10px 18px 26px;
+            position: relative;
+            animation: sheetUp 0.26s cubic-bezier(.2,.8,.2,1);
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.55);
+        }
+        @keyframes sheetUp { from { transform: translateY(30px); opacity: 0.6;} to {transform:none; opacity:1;} }
+        .modal-grip {
+            width: 42px; height: 4px; border-radius: 999px;
+            background: rgba(148,163,184,0.35);
+            margin: 6px auto 14px;
+        }
+        .modal-x {
+            position: absolute; top: 14px; right: 16px;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .modal-title {
+            font-size: 18px; font-weight: 800; letter-spacing: 0.05em;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #e9d5ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 4px;
+        }
+        .modal-sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 14px; }
+        .modal-block { margin-top: 12px; }
+        .modal-block h4 {
+            font-size: 13.5px; font-weight: 800; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .modal-block h4.gold   { color: var(--accent-gold-2); }
+        .modal-block h4.purple { color: #e9d5ff; }
+        .modal-block ul {
+            list-style: none;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 4px 10px;
+        }
+        .modal-block li {
+            padding: 10px 4px;
+            font-size: 12.5px; color: var(--text-secondary);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.55;
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .modal-block li:first-child { border-top: none; }
+        .modal-block li::before { content: '·'; color: var(--accent-gold); font-weight: 900; font-size: 16px; line-height: 1; margin-top: 2px; }
+        .modal-block.purple li::before { color: var(--accent-purple-2); }
+        .modal-note {
+            margin-top: 16px; padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(253,230,138,0.06);
+            border: 1px dashed rgba(253,230,138,0.25);
+            font-size: 12px; color: var(--text-tertiary); line-height: 1.6;
         }
 
-        .nav-item.active .nav-icon {
-            filter: grayscale(0%);
-            opacity: 1;
-            transform: translateY(-3px);
-        }
-
-        .nav-item.active .nav-label {
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            top: -4px;
-            width: 30px;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        /* 响应式调整 */
+        /* 响应式（更窄屏） */
         @media (max-width: 360px) {
-            .earth { width: 150px; height: 150px; }
-            .earth-atmosphere { width: 170px; height: 170px; }
-            .earth-ring { width: 200px; height: 200px; }
-            .earth-ring.r2 { width: 230px; height: 230px; }
-            .pi-logo { font-size: 40px; }
-            .balance-card .balance { font-size: 28px; }
-            .action-item .icon { width: 42px; height: 42px; font-size: 20px; }
+            .ai-card-wrapper { width: 270px; height: 170px; }
+            .eco-circle { width: 148px; height: 148px; }
+            .eco-circle-amount { font-size: 26px; }
+            .ai-level-price .num { font-size: 18px; }
+        }
+        @media (max-width: 330px) {
+            .ai-card-wrapper { width: 252px; height: 158px; }
+            .eco-circle { width: 140px; height: 140px; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- ========== 首页 ========== -->
-        <div class="page home-page active" id="home-page">
-            <div class="header">
-                <div class="header-top">
-                    <div class="greeting">
-                        早上好
-                        <strong>派友 ☀️</strong>
-                    </div>
-                    <div class="header-icon">🔔</div>
-                </div>
-
-                <!-- 3D 地球 -->
-                <div class="earth-container">
-                    <div class="earth-ring r2"></div>
-                    <div class="earth-ring"></div>
-                    <div class="earth-atmosphere"></div>
-                    <div class="earth">
-                        <div class="earth-continent c1"></div>
-                        <div class="earth-continent c2"></div>
-                        <div class="earth-continent c3"></div>
-                    </div>
-                    <div class="pi-logo">π</div>
-                </div>
+<div class="app-container" id="app">
+    <!-- ================= 首页 ================= -->
+    <section class="page home-page active" data-page="home">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
             </div>
-
-            <!-- 今日数据 -->
-            <div class="today-data">
-                <div class="section-title">
-                    <h3>📊 今日数据</h3>
-                    <span class="date" id="today-date"></span>
-                </div>
-
-                <div class="balance-card">
-                    <div class="label">我的派币余额</div>
-                    <div class="balance">1,286.52 <small>π</small></div>
-                    <div class="value-change up">
-                        <span>↑ 2.35%</span>
-                        <span>今日 +28.6 π</span>
-                    </div>
-                </div>
-
-                <div class="data-grid">
-                    <div class="data-item">
-                        <div class="icon mining">⛏️</div>
-                        <div class="value">12.5</div>
-                        <div class="label">今日挖矿</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="icon team">👥</div>
-                        <div class="value">58</div>
-                        <div class="label">团队人数</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="icon reward">🎁</div>
-                        <div class="value">3.2</div>
-                        <div class="label">奖励 π</div>
-                    </div>
-                </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" data-i18n="btn_login">🔐 Pi账号登录</button>
+                <button class="btn-pill" id="btnToggleLang">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
             </div>
+        </div>
 
-            <!-- 快捷操作 -->
-            <div class="quick-actions">
-                <h4>快捷功能</h4>
-                <div class="action-grid">
-                    <div class="action-item">
-                        <div class="icon send">📤</div>
-                        <span>转账</span>
+        <!-- 漂浮派友AI股东卡 -->
+        <div class="home-section-ai">
+            <div class="ai-card-wrapper">
+                <div class="ai-bank-card">
+                    <!-- 卡片顶部 -->
+                    <div>
+                        <div class="ai-card-top">
+                            <div class="ai-chip-number-row">
+                                <div class="ai-card-chip"></div>
+                                <div class="ai-card-number chip-adjacent" id="chipCardNumber">3141592653</div>
+                            </div>
+                            <div class="ai-card-brand">
+                                <span class="pi-mark">π</span>
+                                <span class="ai-pill">AI BANK</span>
+                            </div>
+                        </div>
+                        <div class="ai-card-title-row">
+                            <div class="ai-card-title">
+                                <span data-i18n="ai_card_title">派友AI股东卡</span>
+                            </div>
+                            <div class="ai-card-subtitle" data-i18n="ai_card_subtitle">AI 智能股东卡 · 派友专属</div>
+                        </div>
                     </div>
-                    <div class="action-item">
-                        <div class="icon receive">📥</div>
-                        <span>收款</span>
-                    </div>
-                    <div class="action-item">
-                        <div class="icon exchange">💱</div>
-                        <span>兑换</span>
-                    </div>
-                    <div class="action-item">
-                        <div class="icon more">···</div>
-                        <span>更多</span>
+
+                    <!-- 卡片底部 -->
+                    <div class="ai-card-bottom">
+                        <div class="ai-growth-block">
+                            <div class="ai-growth-label">
+                                <span class="dot-green"></span>
+                                <span data-i18n="ai_auto_label_short">自动浏览生态算力奖励</span>
+                            </div>
+                            <div class="ai-growth-label ai-growth-label--sub">
+                                <span class="dot-green"></span>
+                                <span data-i18n="ai_divi_label_short">派生态股份分红</span>
+                            </div>
+                        </div>
+                        <div class="ai-card-meta">
+                            <div class="ai-card-holder" data-i18n="ai_card_holder_label">持有者</div>
+                            <div class="ai-card-holder-name" data-i18n="ai_card_holder_name">派友先锋者</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ========== 市场页面 ========== -->
-        <div class="page market-page" id="market-page">
-            <div class="market-header">
-                <h2>📈 行情市场</h2>
-                <p>实时掌握派币及主流币种行情</p>
-            </div>
+        <!-- 生态分红池标题 -->
+        <div class="eco-title-row">
+            <h3 data-i18n="eco_pool_title">生态分红池</h3>
+        </div>
 
-            <div class="market-stats">
-                <div class="stat-card">
-                    <div class="label">24H 成交额</div>
-                    <div class="value">¥2.85亿</div>
-                    <div class="change up">↑ 12.5%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">24H 涨幅榜</div>
-                    <div class="value">+18.3%</div>
-                    <div class="change up">领涨币种</div>
-                </div>
-            </div>
+        <!-- 生态分红池卡片 -->
+        <div class="eco-card-wrapper">
+            <div class="eco-pool-card" id="ecoPoolCard">
+                <div class="eco-particles" id="ecoParticles"></div>
 
-            <div class="coin-list">
-                <div class="list-title">🔥 热门币种</div>
-                
-                <div class="coin-item">
-                    <div class="coin-icon pi">π</div>
-                    <div class="coin-info">
-                        <div class="coin-name">派币</div>
-                        <div class="coin-symbol">Pi Coin / π</div>
-                    </div>
-                    <div class="coin-price">
-                        <div class="price">¥32.68</div>
-                        <div class="price-change up">+5.23%</div>
+                <!-- 大圆圈 -->
+                <div class="eco-circle-wrap">
+                    <div class="eco-circle" id="ecoCircle">
+                        <div class="eco-circle-glow"></div>
+                        <div class="eco-circle-label" data-i18n="eco_pool_label">派币分红总值</div>
+                        <div class="eco-circle-amount">
+                            <strong data-i18n="eco_total_v">1,200</strong><span class="unit">π</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="coin-item">
-                    <div class="coin-icon btc">₿</div>
-                    <div class="coin-info">
-                        <div class="coin-name">比特币</div>
-                        <div class="coin-symbol">Bitcoin / BTC</div>
+                <!-- 两个金黄按钮 -->
+                <div class="eco-btns">
+                    <div class="eco-btn" id="btnEcoPeople">
+                        <div class="eco-btn-icon team">👥</div>
+                        <div class="eco-btn-body">
+                            <div class="eco-btn-val" data-i18n="eco_people_v">58</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
+                        </div>
                     </div>
-                    <div class="coin-price">
-                        <div class="price">¥458,620</div>
-                        <div class="price-change up">+2.15%</div>
-                    </div>
-                </div>
-
-                <div class="coin-item">
-                    <div class="coin-icon eth">Ξ</div>
-                    <div class="coin-info">
-                        <div class="coin-name">以太坊</div>
-                        <div class="coin-symbol">Ethereum / ETH</div>
-                    </div>
-                    <div class="coin-price">
-                        <div class="price">¥25,840</div>
-                        <div class="price-change down">-1.35%</div>
-                    </div>
-                </div>
-
-                <div class="coin-item">
-                    <div class="coin-icon usdt">$</div>
-                    <div class="coin-info">
-                        <div class="coin-name">泰达币</div>
-                        <div class="coin-symbol">Tether / USDT</div>
-                    </div>
-                    <div class="coin-price">
-                        <div class="price">¥7.25</div>
-                        <div class="price-change up">+0.02%</div>
+                    <div class="eco-btn" id="btnEcoDividend">
+                        <div class="eco-btn-icon reward">🎁</div>
+                        <div class="eco-btn-body">
+                            <div class="eco-btn-val" data-i18n="eco_divi_v">286.52</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- ========== 我的页面 ========== -->
-        <div class="page profile-page" id="profile-page">
-            <div class="profile-header">
-                <div class="top-bar">
-                    <h2>个人中心</h2>
-                    <div class="setting-icon">⚙️</div>
+    <!-- ================= 市场页 ================= -->
+    <section class="page market-page" data-page="market">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi" data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang2">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h3 data-i18n="mk_title_full">派友 AI 卡 · 派友股东卡</h3>
+            <span class="sub" data-i18n="mk_title_sub">左金 · 右紫 · 共10级</span>
+        </div>
+
+        <!-- 顶部介绍卡片 -->
+        <div class="mk-intro-card" id="btnMkIntro">
+            <div class="mk-intro-title">
+                📖 <span data-i18n="intro_title">派友AI卡 &amp; 股东卡说明</span>
+            </div>
+            <div class="mk-intro-desc" data-i18n="intro_desc">
+                点击查看两种卡的权益、分红与算力规则
+            </div>
+        </div>
+
+        <!-- 10张卡片：左5金色AI卡 + 右5紫色股东卡 -->
+        <div class="ai-cards-grid">
+            <!-- AI卡 · 金色 5级 -->
+            <div class="ai-level-card ai-gold">
+                <span class="ai-level-badge" data-i18n="mk_ai_badge">AI · LV.1</span>
+                <div class="ai-level-name" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
+                <div class="ai-level-desc" data-i18n="mk_ai_desc_1">基础AI算力权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
-                <div class="user-info">
-                    <div class="avatar">👤</div>
-                    <div class="user-details">
-                        <div class="name">派币先锋者</div>
-                        <div class="id">ID: Pi_20240812_8856</div>
-                    </div>
+            </div>
+            <!-- 股东卡 · 紫色 5级 -->
+            <div class="ai-level-card sh-purple">
+                <span class="ai-level-badge" data-i18n="mk_sh_badge">股东 · LV.1</span>
+                <div class="ai-level-name" data-i18n="mk_sh_card_1">派友股东卡 · 青铜</div>
+                <div class="ai-level-desc" data-i18n="mk_sh_desc_1">基础股东分红权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
             </div>
 
-            <div class="profile-card">
-                <div class="profile-stats">
-                    <div class="profile-stat">
-                        <div class="num">1,286</div>
-                        <div class="label">持币 π</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="num">58</div>
-                        <div class="label">邀请好友</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="num">120</div>
-                        <div class="label">挖矿天数</div>
-                    </div>
+            <div class="ai-level-card ai-gold">
+                <span class="ai-level-badge">AI · LV.2</span>
+                <div class="ai-level-name" data-i18n="mk_ai_card_2">派友AI卡 · 白银</div>
+                <div class="ai-level-desc" data-i18n="mk_ai_desc_2">2倍AI算力权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
-                <div class="vip-banner">
-                    <div class="vip-info">
-                        <div class="title">👑 升级 VIP 会员</div>
-                        <div class="desc">享专属特权，挖矿加速2倍</div>
-                    </div>
-                    <button class="vip-btn">立即开通</button>
+            </div>
+            <div class="ai-level-card sh-purple">
+                <span class="ai-level-badge">股东 · LV.2</span>
+                <div class="ai-level-name" data-i18n="mk_sh_card_2">派友股东卡 · 白银</div>
+                <div class="ai-level-desc" data-i18n="mk_sh_desc_2">2倍股东分红权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
             </div>
 
-            <div class="menu-section">
-                <div class="menu-item">
-                    <div class="menu-icon wallet">💰</div>
-                    <div class="menu-text">我的钱包</div>
-                    <div class="menu-arrow">›</div>
+            <div class="ai-level-card ai-gold">
+                <span class="ai-level-badge">AI · LV.3</span>
+                <div class="ai-level-name" data-i18n="mk_ai_card_3">派友AI卡 · 黄金</div>
+                <div class="ai-level-desc" data-i18n="mk_ai_desc_3">3倍AI算力权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
-                <div class="menu-item">
-                    <div class="menu-icon security">🔒</div>
-                    <div class="menu-text">账户安全</div>
-                    <div class="menu-arrow">›</div>
-                </div>
-                <div class="menu-item">
-                    <div class="menu-icon invite">🎯</div>
-                    <div class="menu-text">邀请好友</div>
-                    <div class="menu-arrow">›</div>
+            </div>
+            <div class="ai-level-card sh-purple">
+                <span class="ai-level-badge">股东 · LV.3</span>
+                <div class="ai-level-name" data-i18n="mk_sh_card_3">派友股东卡 · 黄金</div>
+                <div class="ai-level-desc" data-i18n="mk_sh_desc_3">3倍股东分红权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
             </div>
 
-            <div class="menu-section">
-                <div class="menu-item">
-                    <div class="menu-icon help">❓</div>
-                    <div class="menu-text">帮助中心</div>
-                    <div class="menu-arrow">›</div>
+            <div class="ai-level-card ai-gold">
+                <span class="ai-level-badge">AI · LV.4</span>
+                <div class="ai-level-name" data-i18n="mk_ai_card_4">派友AI卡 · 铂金</div>
+                <div class="ai-level-desc" data-i18n="mk_ai_desc_4">4倍AI算力权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
-                <div class="menu-item">
-                    <div class="menu-icon about">ℹ️</div>
-                    <div class="menu-text">关于派币</div>
-                    <div class="menu-arrow">›</div>
+            </div>
+            <div class="ai-level-card sh-purple">
+                <span class="ai-level-badge">股东 · LV.4</span>
+                <div class="ai-level-name" data-i18n="mk_sh_card_4">派友股东卡 · 钻石</div>
+                <div class="ai-level-desc" data-i18n="mk_sh_desc_4">4倍股东分红权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
                 </div>
             </div>
 
-            <div class="menu-section">
-                <div class="menu-item">
-                    <div class="menu-icon logout">🚪</div>
-                    <div class="menu-text">退出登录</div>
-                    <div class="menu-arrow">›</div>
+            <div class="ai-level-card ai-gold">
+                <span class="ai-level-badge">AI · LV.5</span>
+                <div class="ai-level-name" data-i18n="mk_ai_card_5">派友AI卡 · 至尊</div>
+                <div class="ai-level-desc" data-i18n="mk_ai_desc_5">5倍顶级AI算力权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                </div>
+            </div>
+            <div class="ai-level-card sh-purple">
+                <span class="ai-level-badge">股东 · LV.5</span>
+                <div class="ai-level-name" data-i18n="mk_sh_card_5">派友股东卡 · 至尊</div>
+                <div class="ai-level-desc" data-i18n="mk_sh_desc_5">5倍顶级股东分红权益</div>
+                <div class="ai-level-price-row">
+                    <div class="ai-level-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
+                    <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 我的页 ================= -->
+    <section class="page my-page" data-page="my">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang3">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <!-- 用户卡头 -->
+        <div class="my-header">
+            <div class="my-user-row">
+                <div class="my-avatar">派</div>
+                <div class="my-user-info">
+                    <div class="my-name" data-i18n="my_name">派友先锋者</div>
+                    <div class="my-sub" data-i18n="my_sub">ID: 3141-5926 · 认证先锋</div>
                 </div>
             </div>
         </div>
 
-        <!-- ========== 底部导航 ========== -->
-        <nav class="bottom-nav">
-            <div class="nav-item active" data-page="home-page">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">首页</div>
+        <!-- 三格统计（持有派币 / AI卡X张 / 股东卡X张） -->
+        <div class="my-stats-grid">
+            <div class="my-stat">
+                <div class="v pi" data-i18n="my_stat_pi_v">1,286.52</div>
+                <div class="l" data-i18n="my_stat_pi_l">持有派币</div>
             </div>
-            <div class="nav-item" data-page="market-page">
-                <div class="nav-icon">📊</div>
-                <div class="nav-label">市场</div>
+            <div class="my-stat">
+                <div class="v" data-i18n="my_stat_aicard_v">3</div>
+                <div class="l" data-i18n="my_stat_aicard_l">AI卡 张数</div>
             </div>
-            <div class="nav-item" data-page="profile-page">
-                <div class="nav-icon">👤</div>
-                <div class="nav-label">我的</div>
+            <div class="my-stat">
+                <div class="v" data-i18n="my_stat_shcard_v">2</div>
+                <div class="l" data-i18n="my_stat_shcard_l">股东卡 张数</div>
             </div>
-        </nav>
+        </div>
+
+        <!-- 主菜单组 -->
+        <div class="menu-group">
+            <div class="menu-item">
+                <div class="menu-icon wallet">💰</div>
+                <div class="menu-text" data-i18n="menu_wallet">我的钱包</div>
+                <div class="menu-right"><span class="menu-hint gray" data-i18n="menu_wallet_v">1,286.52 π</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon aicard">💳</div>
+                <div class="menu-text" data-i18n="menu_my_ai_card">我的 AI 卡</div>
+                <div class="menu-right"><span class="menu-hint" data-i18n="menu_my_ai_card_v">3 张</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon shcard">📜</div>
+                <div class="menu-text" data-i18n="menu_my_sh_card">我的股东卡</div>
+                <div class="menu-right"><span class="menu-hint purple" data-i18n="menu_my_sh_card_v">2 张</span></div>
+            </div>
+        </div>
+
+        <div class="menu-group">
+            <div class="menu-item">
+                <div class="menu-icon">🔒</div>
+                <div class="menu-text" data-i18n="menu_security">账户安全</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">🎯</div>
+                <div class="menu-text" data-i18n="menu_invite">邀请好友</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">❓</div>
+                <div class="menu-text" data-i18n="menu_help">帮助中心</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">ℹ️</div>
+                <div class="menu-text" data-i18n="menu_about">关于派币</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 底部Tab ================= -->
+    <footer class="app-footer">
+        <div class="tab-bar">
+            <div class="tab-item active" data-tab="home">
+                <!-- 房屋 轮廓 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3.5 10.5 12 4.5l8.5 6"/>
+                    <path d="M5.5 9.5V20a1 1 0 0 0 1 1h3.5v-5h4v5H17.5a1 1 0 0 0 1-1V9.5"/>
+                </svg>
+                <span data-i18n="tab_home">首页</span>
+            </div>
+            <div class="tab-item" data-tab="market">
+                <!-- 柱状图 三柱 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 20h16"/>
+                    <path d="M7 17v-7"/>
+                    <path d="M12 17V9"/>
+                    <path d="M17 17V6"/>
+                    <circle cx="7" cy="9.5" r="0.9"/>
+                    <circle cx="12" cy="8.5" r="0.9"/>
+                    <circle cx="17" cy="5.5" r="0.9"/>
+                </svg>
+                <span data-i18n="tab_market">市场</span>
+            </div>
+            <div class="tab-item" data-tab="my">
+                <!-- 人物轮廓 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.6"/>
+                    <path d="M5.5 20c.7-3.6 3.2-5.4 6.5-5.4S17.8 16.4 18.5 20"/>
+                </svg>
+                <span data-i18n="tab_my">我的</span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- 卡片介绍悬浮窗 -->
+<div class="modal-mask" id="cardInfoModal">
+    <div class="modal-sheet">
+        <div class="modal-grip"></div>
+        <button class="modal-x" id="modalCloseBtn">✕</button>
+        <div class="modal-title" data-i18n="modal_title">派友卡体系 · 权益说明</div>
+        <div class="modal-sub"   data-i18n="modal_sub">金色为派友AI卡（算力），紫色为派友股东卡（分红），可叠加持有。</div>
+
+        <div class="modal-block">
+            <h4 class="gold" data-i18n="modal_ai_title">⭐ 金色卡片（派友 AI 卡）</h4>
+            <ul>
+                <li data-i18n="modal_ai_p1">24 小时 AI 自动浏览派生态，产生持续算力收益</li>
+                <li data-i18n="modal_ai_p2">卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）</li>
+                <li data-i18n="modal_ai_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
+                <li data-i18n="modal_ai_p4">算力收益每日自动结算，可在「我的」查看未结分红</li>
+            </ul>
+        </div>
+
+        <div class="modal-block purple">
+            <h4 class="purple" data-i18n="modal_sh_title">💎 紫色卡片（派友 股东卡）</h4>
+            <ul>
+                <li data-i18n="modal_sh_p1">拥有生态分红池的股东权益，按等级比例瓜分每日平台分红</li>
+                <li data-i18n="modal_sh_p2">股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）</li>
+                <li data-i18n="modal_sh_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
+                <li data-i18n="modal_sh_p4">每日 0 点自动派息，可在「我的」查看分红累计记录</li>
+            </ul>
+        </div>
+
+        <div class="modal-note" data-i18n="modal_note">
+            💡 两种卡片可叠加持有，算力收益与股东分红互不冲突，同时生效。
+        </div>
     </div>
+</div>
 
-    <script>
-        // 页面切换
-        const navItems = document.querySelectorAll('.nav-item');
-        const pages = document.querySelectorAll('.page');
+<script>
+/* ==================== i18n 字典 ==================== */
+const I18N = {
+    'zh-CN': {
+        // 顶栏
+        'greeting_hi':   '您好',
+        'greeting_name': '派友 ☀️',
+        'btn_login': '🔐 Pi账号登录',
+        'btn_lang':  '语言',
+        // 底部Tab
+        'tab_home':   '首页',
+        'tab_market': '市场',
+        'tab_my':     '我的',
 
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const targetPage = item.dataset.page;
-                
-                navItems.forEach(nav => nav.classList.remove('active'));
-                pages.forEach(page => page.classList.remove('active'));
-                
-                item.classList.add('active');
-                document.getElementById(targetPage).classList.add('active');
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        });
+        // 首页AI股东卡
+        'ai_card_title':        '派友AI股东卡',
+        'ai_card_subtitle':     'AI 智能股东卡 · 派友专属',
+        'ai_auto_label_short':  '自动浏览生态算力奖励',
+        'ai_divi_label_short':  '派生态股份分红',
+        'ai_auto_desc':         'AI浏览派生态，获取派算力。\n参与派币生态股东生态分红。',
+        'ai_card_holder_label': '持有者',
+        'ai_card_holder_name':  '派友先锋者',
 
-        // 设置今日日期
-        function setTodayDate() {
-            const now = new Date();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-            const weekDay = weekDays[now.getDay()];
-            document.getElementById('today-date').textContent = `${month}月${day}日 ${weekDay}`;
+        // 生态分红池
+        'eco_pool_title': '生态分红池',
+        'eco_pool_label': '派币分红总值',
+        'eco_total_v':    '1,200',
+        'eco_people_v':   '58',
+        'eco_people_l':   '分红人数',
+        'eco_divi_v':     '286.52',
+        'eco_divi_l':     '分红派币',
+
+        // 市场标题
+        'mk_title_full': '派友 AI 卡 · 派友股东卡',
+        'mk_title_sub':  '左金 · 右紫 · 共10级',
+        'mk_ai_badge':   'AI · LV.1',
+        'mk_sh_badge':   '股东 · LV.1',
+        'mk_buy':        '立即购买',
+
+        // 介绍卡片
+        'intro_title': '派友AI卡 & 股东卡说明',
+        'intro_desc':  '点击查看两种卡的权益、分红与算力规则',
+
+        // 5×2 卡片名称
+        'mk_ai_card_1': '派友AI卡 · 铜',
+        'mk_ai_card_2': '派友AI卡 · 白银',
+        'mk_ai_card_3': '派友AI卡 · 黄金',
+        'mk_ai_card_4': '派友AI卡 · 铂金',
+        'mk_ai_card_5': '派友AI卡 · 至尊',
+        'mk_sh_card_1': '派友股东卡 · 青铜',
+        'mk_sh_card_2': '派友股东卡 · 白银',
+        'mk_sh_card_3': '派友股东卡 · 黄金',
+        'mk_sh_card_4': '派友股东卡 · 钻石',
+        'mk_sh_card_5': '派友股东卡 · 至尊',
+
+        // 描述
+        'mk_ai_desc_1': '基础AI算力权益',
+        'mk_ai_desc_2': '2倍AI算力权益',
+        'mk_ai_desc_3': '3倍AI算力权益',
+        'mk_ai_desc_4': '4倍AI算力权益',
+        'mk_ai_desc_5': '5倍顶级AI算力权益',
+        'mk_sh_desc_1': '基础股东分红权益',
+        'mk_sh_desc_2': '2倍股东分红权益',
+        'mk_sh_desc_3': '3倍股东分红权益',
+        'mk_sh_desc_4': '4倍股东分红权益',
+        'mk_sh_desc_5': '5倍顶级股东分红权益',
+
+        // 金额
+        'mk_p_1': '100',
+        'mk_p_2': '300',
+        'mk_p_3': '500',
+        'mk_p_4': '800',
+        'mk_p_5': '1000',
+
+        // 我的页
+        'my_name': '派友先锋者',
+        'my_sub':  'ID: 3141-5926 · 认证先锋',
+        'my_stat_pi_v':     '1,286.52',
+        'my_stat_pi_l':     '持有派币',
+        'my_stat_aicard_v': '3',
+        'my_stat_aicard_l': 'AI卡 张数',
+        'my_stat_shcard_v': '2',
+        'my_stat_shcard_l': '股东卡 张数',
+        // 菜单
+        'menu_wallet':        '我的钱包',
+        'menu_wallet_v':      '1,286.52 π',
+        'menu_my_ai_card':    '我的 AI 卡',
+        'menu_my_ai_card_v':  '3 张',
+        'menu_my_sh_card':    '我的股东卡',
+        'menu_my_sh_card_v':  '2 张',
+        'menu_security':      '账户安全',
+        'menu_invite':        '邀请好友',
+        'menu_help':          '帮助中心',
+        'menu_about':         '关于派币',
+
+        // Modal
+        'modal_title': '派友卡体系 · 权益说明',
+        'modal_sub':   '金色为派友AI卡（算力），紫色为派友股东卡（分红），可叠加持有。',
+        'modal_ai_title': '⭐ 金色卡片（派友 AI 卡）',
+        'modal_ai_p1':    '24 小时 AI 自动浏览派生态，产生持续算力收益',
+        'modal_ai_p2':    '卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）',
+        'modal_ai_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
+        'modal_ai_p4':    '算力收益每日自动结算，可在「我的」查看未结分红',
+        'modal_sh_title': '💎 紫色卡片（派友 股东卡）',
+        'modal_sh_p1':    '拥有生态分红池的股东权益，按等级比例瓜分每日平台分红',
+        'modal_sh_p2':    '股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）',
+        'modal_sh_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
+        'modal_sh_p4':    '每日 0 点自动派息，可在「我的」查看分红累计记录',
+        'modal_note':     '💡 两种卡片可叠加持有，算力收益与股东分红互不冲突，同时生效。',
+    },
+    'en': {
+        // Topbar
+        'greeting_hi':   'Hello',
+        'greeting_name': 'PiFriend ☀️',
+        'btn_login': '🔐 Pi Login',
+        'btn_lang':  'Lang',
+        // Tabs
+        'tab_home':   'Home',
+        'tab_market': 'Market',
+        'tab_my':     'Me',
+
+        // Home AI Shareholder Card
+        'ai_card_title':        'PiFriends AI Shareholder Card',
+        'ai_card_subtitle':     'AI Smart Shareholder Card · PiFriends Exclusive',
+        'ai_auto_label_short':  'Auto-browse Eco Power Rewards',
+        'ai_divi_label_short':  'Pi Ecosystem Share Dividend',
+        'ai_auto_desc':         'AI browses Pi ecosystem, gains Pi power.\\nParticipate in Pi Eco Shareholder dividends.',
+        'ai_card_holder_label': 'HOLDER',
+        'ai_card_holder_name':  'PI FRIEND PIONEER',
+
+        // Eco pool
+        'eco_pool_title': 'Eco Dividend Pool',
+        'eco_pool_label': 'Total Pi Dividends',
+        'eco_total_v':    '1,200',
+        'eco_people_v':   '58',
+        'eco_people_l':   'Dividend Users',
+        'eco_divi_v':     '286.52',
+        'eco_divi_l':     'Dividend Pi',
+
+        // Market
+        'mk_title_full': 'PiFriends AI Cards · Shareholder Cards',
+        'mk_title_sub':  'Left Gold · Right Purple · 10 Levels Total',
+        'mk_ai_badge':   'AI · LV.1',
+        'mk_sh_badge':   'SH · LV.1',
+        'mk_buy':        'Buy Now',
+
+        'intro_title': 'PiFriends AI & Shareholder Cards Guide',
+        'intro_desc':  'Tap to view power, dividend and reward rules of both card types',
+
+        'mk_ai_card_1': 'PiFriends AI Card · Bronze',
+        'mk_ai_card_2': 'PiFriends AI Card · Silver',
+        'mk_ai_card_3': 'PiFriends AI Card · Gold',
+        'mk_ai_card_4': 'PiFriends AI Card · Platinum',
+        'mk_ai_card_5': 'PiFriends AI Card · Supreme',
+        'mk_sh_card_1': 'PiFriends Share Card · Bronze',
+        'mk_sh_card_2': 'PiFriends Share Card · Silver',
+        'mk_sh_card_3': 'PiFriends Share Card · Gold',
+        'mk_sh_card_4': 'PiFriends Share Card · Diamond',
+        'mk_sh_card_5': 'PiFriends Share Card · Supreme',
+
+        'mk_ai_desc_1': 'Basic AI computing power',
+        'mk_ai_desc_2': '2x AI computing power',
+        'mk_ai_desc_3': '3x AI computing power',
+        'mk_ai_desc_4': '4x AI computing power',
+        'mk_ai_desc_5': '5x Top tier AI computing power',
+        'mk_sh_desc_1': 'Basic shareholder dividend',
+        'mk_sh_desc_2': '2x shareholder dividend',
+        'mk_sh_desc_3': '3x shareholder dividend',
+        'mk_sh_desc_4': '4x shareholder dividend',
+        'mk_sh_desc_5': '5x Top shareholder dividend',
+
+        'mk_p_1': '100',
+        'mk_p_2': '300',
+        'mk_p_3': '500',
+        'mk_p_4': '800',
+        'mk_p_5': '1000',
+
+        // My page
+        'my_name': 'Pi Friend Pioneer',
+        'my_sub':  'ID: 3141-5926 · Verified Pioneer',
+        'my_stat_pi_v':     '1,286.52',
+        'my_stat_pi_l':     'Pi Holdings',
+        'my_stat_aicard_v': '3',
+        'my_stat_aicard_l': 'AI Cards',
+        'my_stat_shcard_v': '2',
+        'my_stat_shcard_l': 'Share Cards',
+
+        'menu_wallet':        'My Wallet',
+        'menu_wallet_v':      '1,286.52 π',
+        'menu_my_ai_card':    'My AI Cards',
+        'menu_my_ai_card_v':  '3 Cards',
+        'menu_my_sh_card':    'My Shareholder Cards',
+        'menu_my_sh_card_v':  '2 Cards',
+        'menu_security':      'Account Security',
+        'menu_invite':        'Invite Friends',
+        'menu_help':          'Help Center',
+        'menu_about':         'About Pi',
+
+        // Modal
+        'modal_title': 'PiFriends Cards · Benefits',
+        'modal_sub':   'Gold = AI Card (power), Purple = Shareholder Card (dividends). Stack both.',
+        'modal_ai_title': '⭐ Gold Cards (PiFriends AI Cards)',
+        'modal_ai_p1':    '24/7 AI auto-browses Pi ecosystem, generates continuous power rewards',
+        'modal_ai_p2':    'Higher level → higher power multiplier (1x / 2x / 3x / 4x / 5x)',
+        'modal_ai_p3':    'Investment tiers: 100 / 300 / 500 / 800 / 1000 π (5 levels)',
+        'modal_ai_p4':    'Power rewards settle daily, visible in "Me" page',
+        'modal_sh_title': '💎 Purple Cards (PiFriends Shareholder Cards)',
+        'modal_sh_p1':    'Own a share of Eco Dividend Pool · proportional daily platform dividends',
+        'modal_sh_p2':    'Higher level → bigger dividend weight (1x / 2x / 3x / 4x / 5x)',
+        'modal_sh_p3':    'Investment tiers: 100 / 300 / 500 / 800 / 1000 π (5 levels)',
+        'modal_sh_p4':    'Daily dividends at 00:00. Track totals in "Me" page',
+        'modal_note':     '💡 You may stack both card types. Power rewards and dividends run independently.',
+    }
+};
+
+/* ==================== 应用语言 ==================== */
+let CUR_LANG = 'zh-CN';
+function applyLanguage(lang) {
+    CUR_LANG = lang in I18N ? lang : 'zh-CN';
+    const dict = I18N[CUR_LANG];
+    const els = document.querySelectorAll('[data-i18n]');
+    for (let i = 0; i < els.length; i++) {
+        const el = els[i];
+        const key = el.getAttribute('data-i18n');
+        if (!(key in dict)) continue;
+        let v = dict[key];
+        if (v.indexOf('\\n') > -1) {
+            el.innerHTML = v.split('\\n').join('<br/>');
+        } else {
+            el.textContent = v;
         }
+    }
+    // 语言按钮标志
+    const flag = CUR_LANG === 'zh-CN' ? '🇨🇳' : '🇬🇧';
+    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3').forEach(b => {
+        if (b) b.innerHTML = `${flag} <span data-i18n="btn_lang">${dict['btn_lang']}</span>`;
+    });
+}
+document.addEventListener('click', function(e){
+    const t = e.target;
+    if (!t) return;
+    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3') {
+        const next = CUR_LANG === 'zh-CN' ? 'en' : 'zh-CN';
+        applyLanguage(next);
+    }
+});
 
-        setTodayDate();
+/* ==================== 页面/Tab切换 ==================== */
+function showPage(pageName) {
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === pageName));
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === pageName));
+    // 切回首页时重启动画（防止后台停止）
+    if (pageName === 'home') {
+        if (window.restartEcoParticle) window.restartEcoParticle();
+    }
+}
+document.addEventListener('click', function(e){
+    const tab = e.target.closest('.tab-item');
+    if (tab) { showPage(tab.dataset.tab); return; }
+    // 菜单点击切换
+    const mi = e.target.closest('.menu-item');
+    if (mi) {
+        const txt = mi.querySelector('.menu-text');
+        if (!txt) return;
+        if (/我的 AI 卡|My AI Cards/i.test(txt.textContent || '')) { showPage('market'); return; }
+        if (/我的股东卡|Shareholder Cards/i.test(txt.textContent || '')) { showPage('market'); return; }
+        if (/我的钱包|My Wallet/i.test(txt.textContent || '')) { return; }
+    }
+});
 
-        // 为所有可点击元素添加轻微触觉反馈动画
-        document.querySelectorAll('.data-item, .action-item, .coin-item, .menu-item, .nav-item').forEach(el => {
-            el.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.96)';
-            });
-            el.addEventListener('touchend', function() {
-                this.style.transform = '';
-            });
-        });
-    </script>
+/* ==================== 市场介绍 Modal ==================== */
+const mask = document.getElementById('cardInfoModal');
+function openModal(){ if (mask) mask.classList.add('active'); }
+function closeModal(){ if (mask) mask.classList.remove('active'); }
+document.addEventListener('click', function(e){
+    const t = e.target;
+    if (t.closest && t.closest('#btnMkIntro')) { openModal(); return; }
+    if (t.closest && t.closest('#modalCloseBtn')) { closeModal(); return; }
+    if (t === mask) { closeModal(); return; }
+});
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+/* ==================== 首页：生态分红池 金黄色闪电/线条粒子 分发系统 ==================== */
+(function(){
+    const pool = document.getElementById('ecoPoolCard');
+    if (!pool) return;
+    const wrap = document.getElementById('ecoParticles');
+    const circle = document.getElementById('ecoCircle');
+    const btnPeople = document.getElementById('btnEcoPeople');
+    const btnDividend = document.getElementById('btnEcoDividend');
+
+    let tPeople, tDividend;
+    let aliveCount = 0;
+    const MAX_ALIVE = 12;
+
+    function randomInt(a, b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+    function pickTarget(which) {
+        return which === 'people' ? btnPeople : btnDividend;
+    }
+    function getCenter(el) {
+        const r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height };
+    }
+
+    function flashButton(btn) {
+        if (!btn) return;
+        btn.classList.remove('receive-flash');
+        // 强制重绘
+        void btn.offsetWidth;
+        btn.classList.add('receive-flash');
+    }
+
+    function createBoltSVG() {
+        // 金黄色闪电
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        const gradId = 'bp' + Math.floor(Math.random()*1e9);
+        const defs = document.createElementNS(svgNS, 'defs');
+        const lg = document.createElementNS(svgNS, 'linearGradient');
+        lg.setAttribute('id', gradId);
+        lg.setAttribute('x1','0'); lg.setAttribute('y1','0');
+        lg.setAttribute('x2','1'); lg.setAttribute('y2','1');
+        function stop(offset, color, opacity){
+            const s = document.createElementNS(svgNS, 'stop');
+            s.setAttribute('offset', offset);
+            s.setAttribute('stop-color', color);
+            s.setAttribute('stop-opacity', opacity);
+            return s;
+        }
+        lg.appendChild(stop('0%',   '#fff4c8', '1'));
+        lg.appendChild(stop('45%',  '#fde68a', '1'));
+        lg.appendChild(stop('100%', '#d4af37', '1'));
+        defs.appendChild(lg);
+        svg.appendChild(defs);
+        const p = document.createElementNS(svgNS, 'path');
+        p.setAttribute('d', 'M13 2 L5 15 h5 l-2 7 8-13 h-5 l2-7 Z');
+        p.setAttribute('fill', `url(#${gradId})`);
+        svg.appendChild(p);
+        svg.setAttribute('width', '20');
+        svg.setAttribute('height', '20');
+        svg.setAttribute('aria-hidden', 'true');
+        return svg;
+    }
+
+    function fireParticle(which) {
+        if (aliveCount > MAX_ALIVE) return;
+        if (document.hidden) return;
+        try {
+            const poolR = pool.getBoundingClientRect();
+            const cc = getCenter(circle);
+            const target = pickTarget(which);
+            const tc = getCenter(target);
+            const mode = Math.random() < 0.5 ? 'bolt' : 'line';
+
+            // 从圆环外沿上随机一个点射出，朝向目标方向（带少量角度）
+            const CIRCLE_R = 80; // 约等于 eco-circle半径
+            const baseAngle = Math.atan2(tc.y - cc.y, tc.x - cc.x);
+            const jitter = (Math.random() - 0.5) * 0.35; // 角度轻微扰动
+            const ang = baseAngle + jitter;
+            const sx = cc.x - poolR.left + Math.cos(ang) * CIRCLE_R;
+            const sy = cc.y - poolR.top  + Math.sin(ang) * CIRCLE_R;
+
+            const ex = tc.x - poolR.left;
+            const ey = tc.y - poolR.top;
+
+            const p = document.createElement('div');
+            p.className = 'eco-particle ' + mode;
+            p.style.left = sx + 'px';
+            p.style.top  = sy + 'px';
+            if (mode === 'bolt') {
+                p.appendChild(createBoltSVG());
+            }
+            // 让线条/闪电朝目标方向旋转
+            const rot = ang * 180 / Math.PI;
+            p.style.transformOrigin = mode === 'line' ? '0% 50%' : '50% 50%';
+            p.style.transform = `rotate(${rot}deg)`;
+
+            wrap.appendChild(p);
+            aliveCount++;
+
+            // 0~70ms 渐显
+            p.style.animation = 'ecoPartIn 70ms ease forwards';
+            // 开始飞行：贝塞尔（前慢后急）
+            const steps = 12;
+            const dx = ex - sx;
+            const dy = ey - sy;
+            const curved = (Math.random() - 0.5) * 40; // 弯曲幅度
+            const totalMs = mode === 'bolt' ? randomInt(520, 680) : randomInt(560, 720);
+            let start = null;
+            function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+            function tick(ts) {
+                if (!start) start = ts;
+                const t = Math.min(1, (ts - start) / totalMs);
+                const k = easeOutCubic(t);
+                // 二次贝塞尔，控制点向垂直方向偏移
+                const mx = sx + dx/2 + (-dy) * curved * 0.003;
+                const my = sy + dy/2 + ( dx) * curved * 0.003;
+                const x = (1-k)*(1-k)*sx + 2*(1-k)*k*mx + k*k*ex;
+                const y = (1-k)*(1-k)*sy + 2*(1-k)*k*my + k*k*ey;
+                p.style.left = x + 'px';
+                p.style.top  = y + 'px';
+                if (t < 0.15) {
+                    p.style.opacity = (t / 0.15);
+                } else if (t > 0.85) {
+                    p.style.opacity = Math.max(0, (1 - t) / 0.15);
+                } else {
+                    p.style.opacity = 1;
+                }
+                if (t < 1 && p.isConnected) {
+                    requestAnimationFrame(tick);
+                } else {
+                    flashButton(target);
+                    try { if (p.parentNode) p.parentNode.removeChild(p); } catch(_){}
+                    aliveCount = Math.max(0, aliveCount - 1);
+                }
+            }
+            requestAnimationFrame(tick);
+
+            // 2秒兜底，移除泄漏节点
+            setTimeout(() => {
+                if (p && p.parentNode) {
+                    try { p.parentNode.removeChild(p); } catch(_){}
+                    aliveCount = Math.max(0, aliveCount - 1);
+                }
+            }, totalMs + 400);
+        } catch(err) {
+            aliveCount = Math.max(0, aliveCount - 1);
+        }
+    }
+
+    // 分红人数：1.4~2.1秒 低频
+    function schedulePeople() {
+        tPeople = setTimeout(() => {
+            try { fireParticle('people'); } finally { schedulePeople(); }
+        }, randomInt(1400, 2100));
+    }
+    // 分红派币：0.65~1.05秒 + 30%概率追加 → 平均≈2秒内3次
+    function scheduleDividend() {
+        tDividend = setTimeout(() => {
+            try {
+                fireParticle('dividend');
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        if (!document.hidden) fireParticle('dividend');
+                    }, randomInt(150, 340));
+                }
+            } finally { scheduleDividend(); }
+        }, randomInt(650, 1050));
+    }
+
+    function startAll() {
+        stopAll();
+        // 延迟启动，保证布局OK
+        setTimeout(() => {
+            schedulePeople();
+            scheduleDividend();
+        }, 650);
+    }
+    function stopAll() {
+        if (tPeople)   { clearTimeout(tPeople);   tPeople = null; }
+        if (tDividend) { clearTimeout(tDividend); tDividend = null; }
+    }
+    window.restartEcoParticle = function(){
+        startAll();
+    };
+    document.addEventListener('visibilitychange', function(){
+        if (document.hidden) stopAll();
+        else if (document.querySelector('.page.home-page').classList.contains('active')) startAll();
+    });
+    startAll();
+})();
+
+/* ==================== 初始化 ==================== */
+// 三重保障确保 i18n 文本正确应用
+(function initI18n(){
+    const go = function(){ try { applyLanguage('zh-CN'); } catch(e){} };
+    go();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', go);
+    }
+    window.addEventListener('load', function(){ setTimeout(go, 30); });
+})();
+// 保持底部安全区（iOS）
+function fixSafeArea(){
+    const app = document.getElementById('app');
+    if (!app) return;
+    const h = Math.max(window.innerHeight || 667, 667);
+    app.style.minHeight = h + 'px';
+}
+window.addEventListener('resize', fixSafeArea);
+if (document.readyState !== 'loading') fixSafeArea();
+else document.addEventListener('DOMContentLoaded', fixSafeArea);
+</script>
 </body>
 </html>
