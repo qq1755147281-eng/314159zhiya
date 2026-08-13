@@ -546,187 +546,309 @@
         }
         .mk-intro-desc { position: relative; z-index: 1; margin-top: 3px; font-size: 11px; color: var(--text-tertiary); }
 
-        /* 长方形横向卡：1列 */
+        /* ============ 市场页双列卡片（严格左5/右5 纵向分组） ============ */
+        /* 外层：两列等宽、中间留间距 */
         .ai-cards-grid {
-            margin: 0 var(--space-md) 0;
+            margin: 0 var(--space-md) 4px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 8px;
+            align-items: start;
+        }
+        /* 左右两列：独立纵向堆叠卡片 */
+        .cards-col {
             display: flex;
             flex-direction: column;
-            gap: 9px;
+            gap: 7px;
+            align-items: stretch;
         }
+
+        /* 单张卡片：复刻【派友AI股东卡】风格，等比例缩小版 */
         .ai-level-card {
             position: relative;
-            border-radius: 13px;
-            padding: 11px 12px 11px 12px;
-            background:
-                linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 100%);
+            border-radius: 15px;
+            padding: 9px 10px 9px 10px;
+            min-height: 180px;                /* 统一等高：保证左右列对齐 */
             overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            transition: transform 0.22s ease, box-shadow 0.28s ease;
             cursor: pointer;
             display: flex;
-            align-items: stretch;
-            gap: 12px;
+            flex-direction: column;
+            gap: 6px;
+            animation: cardFloatMini 4.6s ease-in-out infinite;
         }
-        .ai-level-card:hover { transform: translateY(-1.5px); box-shadow: 0 12px 24px rgba(0,0,0,0.38); }
-        .ai-level-card::after {
-            content: ''; position: absolute; top: -40%; left: -30%; width: 36%; height: 220%;
-            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+        /* 轻微上下悬浮动效，和首页AI卡交互一致 */
+        @keyframes cardFloatMini {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
+        }
+        /* 每列第 2n 张错开浮动相位，整体更生动 */
+        .cards-col .ai-level-card:nth-child(even) { animation-delay: -2.3s; }
+        .ai-level-card:hover {
+            transform: translateY(-5px) scale(1.015);
+        }
+
+        /* 外光晕：和首页 ai-card-wrapper::before 一致 */
+        .ai-level-card.ai-gold {
+            background:
+                linear-gradient(140deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 45%, rgba(24,20,8,0.96) 100%);
+            box-shadow:
+                0 10px 22px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(212,175,55,0.18),
+                0 0 28px rgba(212,175,55,0.14);
+        }
+        .ai-level-card.ai-gold::after {
+            /* 光晕底层 */
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 180px; height: 140px;
+            background: radial-gradient(ellipse at 50% 40%, rgba(212,175,55,0.26) 0%, rgba(212,175,55,0.06) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none; z-index: 0;
+        }
+        .ai-level-card.sh-purple {
+            background:
+                linear-gradient(140deg, rgba(28,22,50,0.94) 0%, rgba(18,14,36,0.96) 45%, rgba(20,12,40,0.96) 100%);
+            box-shadow:
+                0 10px 22px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(139,92,246,0.18),
+                0 0 28px rgba(139,92,246,0.14);
+        }
+        .ai-level-card.sh-purple::after {
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 180px; height: 140px;
+            background: radial-gradient(ellipse at 50% 40%, rgba(139,92,246,0.26) 0%, rgba(139,92,246,0.06) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* 扫光层：复用首页 cardShine 动画 */
+        .ai-level-card::before {
+            content: ''; position: absolute; top: -55%; left: -40%; width: 60%; height: 230%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%);
             transform: rotate(18deg);
-            animation: cardShine 5.8s ease-in-out infinite;
+            animation: cardShine 5.6s ease-in-out infinite;
             pointer-events: none;
+            z-index: 1;
         }
-        /* 左色条：金色AI卡/紫色股东卡 */
-        .ai-level-card .lvl-side {
-            width: 6px;
-            flex-shrink: 0;
-            border-radius: 4px;
-            position: relative; z-index: 1;
-            align-self: stretch;
-        }
-        .ai-level-card.ai-gold .lvl-side {
-            background: linear-gradient(180deg, #fff4c8 0%, #d4af37 50%, #a77e1f 100%);
-            box-shadow: 0 0 10px rgba(212,175,55,0.45);
-        }
-        .ai-level-card.sh-purple .lvl-side {
-            background: linear-gradient(180deg, #ede9fe 0%, #8b5cf6 50%, #5b21b6 100%);
-            box-shadow: 0 0 10px rgba(139,92,246,0.45);
-        }
-        /* 金色（AI卡）外描边 */
-        .ai-level-card.ai-gold::before {
-            content: ''; position: absolute; inset: 0; border-radius: 13px; padding: 1.1px;
-            background: linear-gradient(135deg, rgba(253,230,138,0.95) 0%, rgba(212,175,55,0.3) 35%, rgba(212,175,55,0.88) 65%, rgba(253,230,138,0.3) 100%);
+        /* 金色（AI卡）金边：和首页 ai-bank-card::after 一致 */
+        .ai-level-card.ai-gold > .card-border {
+            content: ''; position: absolute; inset: 0; border-radius: 15px; padding: 1px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(212,175,55,0.3) 30%, rgba(212,175,55,0.9) 60%, rgba(253,230,138,0.3) 100%);
             -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
             pointer-events: none;
-            filter: drop-shadow(0 0 6px rgba(212,175,55,0.35));
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.26));
+            z-index: 2;
         }
-        /* 紫色（股东卡）外描边 */
-        .ai-level-card.sh-purple::before {
-            content: ''; position: absolute; inset: 0; border-radius: 13px; padding: 1.1px;
-            background: linear-gradient(135deg, rgba(233,213,255,0.95) 0%, rgba(139,92,246,0.3) 35%, rgba(139,92,246,0.88) 65%, rgba(233,213,255,0.3) 100%);
+        /* 紫色（股东卡）紫边 */
+        .ai-level-card.sh-purple > .card-border {
+            position: absolute; inset: 0; border-radius: 15px; padding: 1px;
+            background: linear-gradient(135deg, rgba(233,213,255,0.9) 0%, rgba(139,92,246,0.3) 30%, rgba(139,92,246,0.9) 60%, rgba(233,213,255,0.3) 100%);
             -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
             pointer-events: none;
-            filter: drop-shadow(0 0 7px rgba(139,92,246,0.38));
+            filter: drop-shadow(0 0 5px rgba(196,181,253,0.26));
+            z-index: 2;
         }
-        .lvl-main { flex: 1; display: flex; flex-direction: column; gap: 7px; position: relative; z-index: 1; min-width: 0; }
-        .lvl-top-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-        .lvl-top-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-        .ai-level-badge {
-            display: inline-flex; align-items: center; gap: 4px;
-            height: 18px; padding: 0 7px; border-radius: 999px;
-            font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em;
+
+        /* ===== 卡片顶部（仿首页芯片+品牌区） ===== */
+        .mc-top {
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; z-index: 3;
+        }
+        .mc-chip-row { display: flex; align-items: center; gap: 6px; }
+        .mc-chip {
+            width: 22px; height: 16px; border-radius: 4px; position: relative; overflow: hidden;
             flex-shrink: 0;
         }
-        .ai-gold .ai-level-badge {
-            color: #efd68a;
-            background: rgba(212,175,55,0.14);
-            border: 1px solid rgba(253,230,138,0.26);
+        .ai-gold .mc-chip {
+            background: linear-gradient(135deg, #d4af37 0%, #fde68a 50%, #d4af37 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 4px rgba(0,0,0,0.3);
         }
-        .sh-purple .ai-level-badge {
+        .sh-purple .mc-chip {
+            background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #8b5cf6 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .mc-chip::before, .mc-chip::after {
+            content: ''; position: absolute; left: 18%; right: 18%; height: 1px;
+        }
+        .ai-gold .mc-chip::before, .ai-gold .mc-chip::after { background: rgba(120,80,10,0.6); }
+        .sh-purple .mc-chip::before, .sh-purple .mc-chip::after { background: rgba(70,40,120,0.55); }
+        .mc-chip::before { top: 30%; }
+        .mc-chip::after  { top: 62%; }
+        .mc-chip-num {
+            font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.62);
+        }
+        .mc-brand { display: flex; align-items: center; gap: 5px; }
+        .mc-pi-mark {
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900;
+            flex-shrink: 0;
+        }
+        .ai-gold .mc-pi-mark {
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.5), 0 0 6px rgba(212,175,55,0.3);
+        }
+        .sh-purple .mc-pi-mark {
+            background: radial-gradient(circle at 30% 25%, #ede9fe 0%, #8b5cf6 55%, #4c1d95 100%);
+            color: #2e1065;
+            box-shadow: 0 0 0 1px rgba(233,213,255,0.5), 0 0 6px rgba(139,92,246,0.3);
+        }
+        .mc-type-pill {
+            padding: 2px 6px; border-radius: 999px;
+            font-size: 8.5px; font-weight: 800; letter-spacing: 0.08em;
+        }
+        .ai-gold .mc-type-pill {
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(253,230,138,0.3);
+            color: var(--accent-gold-2);
+        }
+        .sh-purple .mc-type-pill {
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(233,213,255,0.3);
             color: #e9d5ff;
-            background: rgba(139,92,246,0.14);
-            border: 1px solid rgba(233,213,255,0.26);
         }
-        .lvl-status-tag {
-            display: inline-flex; align-items: center; gap: 4px;
-            height: 18px; padding: 0 7px; border-radius: 999px;
-            font-size: 9.5px; font-weight: 700;
+
+        /* ===== 卡标题（仿首页AI卡渐变标题） ===== */
+        .mc-title-block {
+            display: flex; flex-direction: column; gap: 1.5px;
+            position: relative; z-index: 3;
+        }
+        .mc-title-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .mc-title {
+            font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+            line-height: 1.2;
+        }
+        .ai-gold .mc-title {
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 3px rgba(253,230,138,0.28));
+        }
+        .sh-purple .mc-title {
+            background: linear-gradient(180deg, #ede9fe 0%, #c4b5fd 55%, #8b5cf6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 3px rgba(196,181,253,0.28));
+        }
+        .mc-status-tag {
+            display: inline-flex; align-items: center; gap: 3px;
+            height: 15px; padding: 0 5px; border-radius: 999px;
+            font-size: 8.5px; font-weight: 700;
             background: rgba(16,185,129,0.12);
             border: 1px solid rgba(16,185,129,0.25);
             color: #6ee7b7;
+            flex-shrink: 0;
         }
-        .lvl-status-tag .sdot {
-            width: 4.5px; height: 4.5px; border-radius: 50%;
+        .mc-status-tag .sdot {
+            width: 3.5px; height: 3.5px; border-radius: 50%;
             background: #10b981;
-            box-shadow: 0 0 6px rgba(16,185,129,0.8);
+            box-shadow: 0 0 5px rgba(16,185,129,0.8);
             animation: pulseDot 2s ease-in-out infinite;
         }
-        .ai-level-name {
-            font-size: 13px; font-weight: 800; letter-spacing: 0.02em;
-            line-height: 1.2;
-        }
-        .ai-gold .ai-level-name { color: var(--text-primary); }
-        .sh-purple .ai-level-name { color: var(--text-primary); }
-
-        /* 数据面板行：算力值 + 分红人数 + 闪电标识 */
-        .lvl-data-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            align-items: stretch;
-        }
-        .lvl-data-cell {
-            background: rgba(255,255,255,0.035);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 9px;
-            padding: 6px 7px;
-            display: flex; flex-direction: column; gap: 2px;
-            min-width: 0;
-        }
-        .ai-gold .lvl-data-cell { border-color: rgba(212,175,55,0.14); background: rgba(212,175,55,0.045); }
-        .sh-purple .lvl-data-cell { border-color: rgba(139,92,246,0.14); background: rgba(139,92,246,0.045); }
-        .lvl-data-cell .dl {
-            font-size: 9px; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.04em;
+        .mc-sub {
+            font-size: 8.5px; font-weight: 600; letter-spacing: 0.06em;
             display: flex; align-items: center; gap: 4px;
         }
-        .lvl-data-cell .dl .mini-bolt {
-            width: 10px; height: 10px;
-            display: inline-flex; align-items: center; justify-content: center;
-            color: var(--accent-gold-2);
-            filter: drop-shadow(0 0 3px rgba(253,230,138,0.7));
+        .ai-gold .mc-sub { color: rgba(253,230,138,0.68); }
+        .sh-purple .mc-sub { color: rgba(233,213,255,0.68); }
+        .mc-sub .dot-green {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+            animation: pulseDot 2s ease-in-out infinite;
         }
-        .sh-purple .lvl-data-cell .dl .mini-bolt { color: #e9d5ff; filter: drop-shadow(0 0 3px rgba(139,92,246,0.65)); }
-        .lvl-data-cell .dv {
-            font-size: 12px; font-weight: 800; line-height: 1.1;
+
+        /* ===== 数据面板（压缩版，2列更贴合窄卡） ===== */
+        .mc-data {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            position: relative; z-index: 3;
+        }
+        .mc-data-cell {
+            border-radius: 7px;
+            padding: 5px 6px;
+            display: flex; flex-direction: column; gap: 2px;
+            min-width: 0;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .ai-gold .mc-data-cell {
+            background: rgba(212,175,55,0.055);
+            border: 1px solid rgba(212,175,55,0.15);
+        }
+        .sh-purple .mc-data-cell {
+            background: rgba(139,92,246,0.055);
+            border: 1px solid rgba(139,92,246,0.15);
+        }
+        .mc-dl {
+            font-size: 8px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em;
+            display: flex; align-items: center; gap: 3px;
+        }
+        .mc-dl .mini-bolt {
+            font-size: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .ai-gold .mc-dl .mini-bolt { color: var(--accent-gold-2); filter: drop-shadow(0 0 2px rgba(253,230,138,0.7)); }
+        .sh-purple .mc-dl .mini-bolt { color: #e9d5ff; filter: drop-shadow(0 0 2px rgba(139,92,246,0.65)); }
+        .mc-dv {
+            font-size: 10.5px; font-weight: 800; line-height: 1.1;
             display: inline-flex; align-items: baseline; gap: 1.5px;
         }
-        .lvl-data-cell .dv .du { font-size: 9px; font-weight: 600; color: var(--text-tertiary); }
-        .ai-gold .lvl-data-cell .dv { color: var(--accent-gold-2); }
-        .sh-purple .lvl-data-cell .dv { color: #e9d5ff; }
+        .mc-dv .du { font-size: 8px; font-weight: 600; color: var(--text-tertiary); }
+        .ai-gold .mc-dv { color: var(--accent-gold-2); }
+        .sh-purple .mc-dv { color: #e9d5ff; }
 
-        /* 底部：派币价格 + 购买按钮 */
-        .ai-level-bottom-row {
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
-            margin-top: 2px;
+        /* ===== 底部：派币价格 + 购买按钮（缩小版） ===== */
+        .mc-bottom {
+            display: flex; align-items: center; justify-content: space-between; gap: 6px;
+            margin-top: auto;      /* 贴底，保证等高时内容分布一致 */
+            position: relative; z-index: 3;
         }
-        .ai-level-price-block { display: flex; align-items: baseline; gap: 5px; }
-        .ai-level-price-label {
-            font-size: 9.5px; color: var(--text-tertiary); font-weight: 600;
+        .mc-price-block { display: flex; align-items: baseline; gap: 3px; flex-direction: column; }
+        .mc-price-label {
+            font-size: 8px; color: var(--text-tertiary); font-weight: 600;
             letter-spacing: 0.04em;
         }
-        .ai-level-price {
+        .mc-price {
             display: inline-flex; align-items: baseline;
             font-weight: 900; letter-spacing: -0.01em;
         }
-        .ai-level-price .num { font-size: 18px; line-height: 1; }
-        .ai-level-price .unit { font-size: 11px; margin-left: 1.5px; }
-        .ai-gold .ai-level-price {
+        .mc-price .num { font-size: 15px; line-height: 1; }
+        .mc-price .unit { font-size: 9px; margin-left: 1px; }
+        .ai-gold .mc-price {
             background: var(--accent-gold-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .sh-purple .ai-level-price {
+        .sh-purple .mc-price {
             background: var(--accent-purple-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .ai-level-buy {
-            position: relative; z-index: 1;
-            height: 28px; padding: 0 12px;
+        .mc-buy {
+            position: relative; z-index: 3;
+            height: 23px; padding: 0 9px;
             border-radius: 999px;
-            font-size: 11px; font-weight: 800;
-            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 9.5px; font-weight: 800;
+            display: inline-flex; align-items: center; gap: 3px;
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            border: none;
         }
-        .ai-level-buy:active { transform: translateY(1px) scale(0.98); }
-        .ai-gold .ai-level-buy {
+        .mc-buy:active { transform: translateY(1px) scale(0.97); }
+        .ai-gold .mc-buy {
             color: #3b2c06;
             background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
-            box-shadow: 0 3px 9px rgba(212,175,55,0.33), inset 0 1px 0 rgba(255,255,255,0.4);
+            box-shadow: 0 2px 7px rgba(212,175,55,0.32), inset 0 1px 0 rgba(255,255,255,0.4);
         }
-        .sh-purple .ai-level-buy {
+        .sh-purple .mc-buy {
             color: #2e1065;
             background: linear-gradient(135deg, #ede9fe 0%, var(--accent-purple) 60%, #4c1d95 100%);
-            box-shadow: 0 3px 9px rgba(139,92,246,0.33), inset 0 1px 0 rgba(255,255,255,0.4);
+            box-shadow: 0 2px 7px rgba(139,92,246,0.32), inset 0 1px 0 rgba(255,255,255,0.4);
         }
 
         /* ========== 我的页 ========== */
@@ -1124,374 +1246,454 @@
             </div>
         </div>
 
-        <!-- 10张长方形横向卡片：左5金色AI卡 + 右5紫色股东卡（单列数据流） -->
+        <!-- 10张卡片：严格双列分组，左列5张AI卡（金色）+ 右列5张股东卡（紫色） -->
         <div class="ai-cards-grid">
-            <!-- AI卡 · 金色 LV.1 -->
-            <div class="ai-level-card ai-gold">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_ai_badge_1">AI · LV.1</span>
-                            <div class="ai-level-name" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
+            <!-- ============ 左列：AI卡 5级（金色） ============ -->
+            <div class="cards-col cards-col-left">
+                <!-- AI卡 · LV.1 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <!-- 卡顶：芯片 + 品牌π -->
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV1 · 3141</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">1.2<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">12<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">24.0<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                    <!-- 卡标题 -->
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_1">AI · LV.1 基础算力</span>
+                        </div>
+                    </div>
+                    <!-- 双列数据面板 -->
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">1.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">12<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <!-- 底行：价格 + 购买 -->
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.2 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV2 · 2718</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_2">派友AI卡 · 白银</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_2">AI · LV.2 进阶算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">2.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">26<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.3 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV3 · 1414</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_3">派友AI卡 · 黄金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_3">AI · LV.3 精英算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">3.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">42<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.4 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV4 · 1732</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_4">派友AI卡 · 铂金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_4">AI · LV.4 旗舰算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">4.3<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">66<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.5 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV5 · 0001</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_5">派友AI卡 · 至尊</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_5">AI · LV.5 至尊算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">5.5<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">88<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 股东卡 · 紫色 LV.1 -->
-            <div class="ai-level-card sh-purple">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_sh_badge_1">股东 · LV.1</span>
-                            <div class="ai-level-name" data-i18n="mk_sh_card_1">派友股东卡 · 青铜</div>
+            <!-- ============ 右列：股东卡 5级（紫色） ============ -->
+            <div class="cards-col cards-col-right">
+                <!-- 股东卡 · LV.1 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV1 · 4182</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">1.0<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">8<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">18.5<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_1">派友股东卡 · 青铜</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI卡 · 金色 LV.2 -->
-            <div class="ai-level-card ai-gold">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_ai_badge_2">AI · LV.2</span>
-                            <div class="ai-level-name" data-i18n="mk_ai_card_2">派友AI卡 · 白银</div>
-                        </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红</span>
                         </div>
                     </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">2.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">1.0<span class="du" data-i18n="mk_unit_x">x</span></div>
                         </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">26<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">78.0<span class="du">π</span></div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">8<span class="du" data-i18n="mk_unit_people">人</span></div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- 股东卡 · 紫色 LV.2 -->
-            <div class="ai-level-card sh-purple">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_sh_badge_2">股东 · LV.2</span>
-                            <div class="ai-level-name" data-i18n="mk_sh_card_2">派友股东卡 · 白银</div>
+                <!-- 股东卡 · LV.2 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV2 · 7932</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">2.0<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">18<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">62.5<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_2">派友股东卡 · 白银</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">2.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">18<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- AI卡 · 金色 LV.3 -->
-            <div class="ai-level-card ai-gold">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_ai_badge_3">AI · LV.3</span>
-                            <div class="ai-level-name" data-i18n="mk_ai_card_3">派友AI卡 · 黄金</div>
+                <!-- 股东卡 · LV.3 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV3 · 8888</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">3.2<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">42<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">168.0<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_3">派友股东卡 · 黄金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">3.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">32<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- 股东卡 · 紫色 LV.3 -->
-            <div class="ai-level-card sh-purple">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_sh_badge_3">股东 · LV.3</span>
-                            <div class="ai-level-name" data-i18n="mk_sh_card_3">派友股东卡 · 黄金</div>
+                <!-- 股东卡 · LV.4 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV4 · 3333</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">3.0<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">32<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">138.5<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_4">派友股东卡 · 钻石</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_4">股东 · LV.4 旗舰分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">4.1<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">54<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- AI卡 · 金色 LV.4 -->
-            <div class="ai-level-card ai-gold">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_ai_badge_4">AI · LV.4</span>
-                            <div class="ai-level-name" data-i18n="mk_ai_card_4">派友AI卡 · 铂金</div>
+                <!-- 股东卡 · LV.5 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV5 · 9999</div>
                         </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">4.3<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">66<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">344.0<span class="du">π</span></div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_5">派友股东卡 · 至尊</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 股东卡 · 紫色 LV.4 -->
-            <div class="ai-level-card sh-purple">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_sh_badge_4">股东 · LV.4</span>
-                            <div class="ai-level-name" data-i18n="mk_sh_card_4">派友股东卡 · 钻石</div>
-                        </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_5">股东 · LV.5 至尊分红</span>
                         </div>
                     </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">4.1<span class="du" data-i18n="mk_unit_x">x</span></div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">5.2<span class="du" data-i18n="mk_unit_x">x</span></div>
                         </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">54<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">288.0<span class="du">π</span></div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">76<span class="du" data-i18n="mk_unit_people">人</span></div>
                         </div>
                     </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
                         </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI卡 · 金色 LV.5 -->
-            <div class="ai-level-card ai-gold">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_ai_badge_5">AI · LV.5</span>
-                            <div class="ai-level-name" data-i18n="mk_ai_card_5">派友AI卡 · 至尊</div>
-                        </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">5.5<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">88<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">560.0<span class="du">π</span></div>
-                        </div>
-                    </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
-                        </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 股东卡 · 紫色 LV.5 -->
-            <div class="ai-level-card sh-purple">
-                <div class="lvl-side"></div>
-                <div class="lvl-main">
-                    <div class="lvl-top-row">
-                        <div class="lvl-top-left">
-                            <span class="ai-level-badge" data-i18n="mk_sh_badge_5">股东 · LV.5</span>
-                            <div class="ai-level-name" data-i18n="mk_sh_card_5">派友股东卡 · 至尊</div>
-                        </div>
-                        <div class="lvl-status-tag">
-                            <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                        </div>
-                    </div>
-                    <div class="lvl-data-row">
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">⚡</span> <span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="dv">5.2<span class="du" data-i18n="mk_unit_x">x</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">👥</span> <span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="dv">76<span class="du" data-i18n="mk_unit_people">人</span></div>
-                        </div>
-                        <div class="lvl-data-cell">
-                            <div class="dl"><span class="mini-bolt">💠</span> <span data-i18n="mk_data_pi">派币数量</span></div>
-                            <div class="dv">480.0<span class="du">π</span></div>
-                        </div>
-                    </div>
-                    <div class="ai-level-bottom-row">
-                        <div class="ai-level-price-block">
-                            <div class="ai-level-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="ai-level-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
-                        </div>
-                        <button class="ai-level-buy" data-i18n="mk_buy">立即购买</button>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
             </div>
@@ -1688,17 +1890,19 @@ const I18N = {
         'mk_ai_badge':   'AI · LV.1',
         'mk_sh_badge':   '股东 · LV.1',
         'mk_buy':        '立即购买',
-        // 市场卡片：5级 badge（单列布局每张独立）
-        'mk_ai_badge_1': 'AI · LV.1',
-        'mk_ai_badge_2': 'AI · LV.2',
-        'mk_ai_badge_3': 'AI · LV.3',
-        'mk_ai_badge_4': 'AI · LV.4',
-        'mk_ai_badge_5': 'AI · LV.5',
-        'mk_sh_badge_1': '股东 · LV.1',
-        'mk_sh_badge_2': '股东 · LV.2',
-        'mk_sh_badge_3': '股东 · LV.3',
-        'mk_sh_badge_4': '股东 · LV.4',
-        'mk_sh_badge_5': '股东 · LV.5',
+        // 市场卡片：徽章 + 类型
+        'mk_ai_type':      'AI 卡',
+        'mk_sh_type':      '股东卡',
+        'mk_ai_badge_1': 'AI · LV.1 基础算力',
+        'mk_ai_badge_2': 'AI · LV.2 进阶算力',
+        'mk_ai_badge_3': 'AI · LV.3 精英算力',
+        'mk_ai_badge_4': 'AI · LV.4 旗舰算力',
+        'mk_ai_badge_5': 'AI · LV.5 至尊算力',
+        'mk_sh_badge_1': '股东 · LV.1 基础分红',
+        'mk_sh_badge_2': '股东 · LV.2 进阶分红',
+        'mk_sh_badge_3': '股东 · LV.3 精英分红',
+        'mk_sh_badge_4': '股东 · LV.4 旗舰分红',
+        'mk_sh_badge_5': '股东 · LV.5 至尊分红',
         // 状态标签
         'mk_status_active': '活跃中',
         // 数据面板
@@ -1816,17 +2020,19 @@ const I18N = {
         'mk_ai_badge':   'AI · LV.1',
         'mk_sh_badge':   'SH · LV.1',
         'mk_buy':        'Buy Now',
-        // Market card badges (single column layout)
-        'mk_ai_badge_1': 'AI · LV.1',
-        'mk_ai_badge_2': 'AI · LV.2',
-        'mk_ai_badge_3': 'AI · LV.3',
-        'mk_ai_badge_4': 'AI · LV.4',
-        'mk_ai_badge_5': 'AI · LV.5',
-        'mk_sh_badge_1': 'SH · LV.1',
-        'mk_sh_badge_2': 'SH · LV.2',
-        'mk_sh_badge_3': 'SH · LV.3',
-        'mk_sh_badge_4': 'SH · LV.4',
-        'mk_sh_badge_5': 'SH · LV.5',
+        // Market card badges + type
+        'mk_ai_type':      'AI Card',
+        'mk_sh_type':      'SH Card',
+        'mk_ai_badge_1': 'AI · LV.1 Basic',
+        'mk_ai_badge_2': 'AI · LV.2 Advanced',
+        'mk_ai_badge_3': 'AI · LV.3 Elite',
+        'mk_ai_badge_4': 'AI · LV.4 Flagship',
+        'mk_ai_badge_5': 'AI · LV.5 Supreme',
+        'mk_sh_badge_1': 'SH · LV.1 Basic',
+        'mk_sh_badge_2': 'SH · LV.2 Advanced',
+        'mk_sh_badge_3': 'SH · LV.3 Elite',
+        'mk_sh_badge_4': 'SH · LV.4 Flagship',
+        'mk_sh_badge_5': 'SH · LV.5 Supreme',
         // Status tag
         'mk_status_active': 'Active',
         // Data panel
