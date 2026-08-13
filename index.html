@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pi Network</title>
+    <style>
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        :root {
+            --bg-dark-1: #0b1220;
+            --bg-dark-2: #0f172a;
+            --bg-dark-3: #121a2e;
+            --bg-card: rgba(255,255,255,0.04);
+            --bg-elevated: rgba(255,255,255,0.07);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --text-quaternary: #64748b;
+            --glass-border: rgba(255,255,255,0.07);
+            --glass-border-strong: rgba(255,255,255,0.12);
+            --accent-gold: #d4af37;
+            --accent-gold-2: #fde68a;
+            --accent-gold-gradient: linear-gradient(135deg, #fde68a 0%, #d4af37 60%, #a77e1f 100%);
+            --accent-purple: #8b5cf6;
+            --accent-purple-2: #c4b5fd;
+            --accent-purple-gradient: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 60%, #5b21b6 100%);
+            --success: #10b981;
+            --fs-10: 10px; --fs-11: 11px; --fs-12: 12px;
+            --fs-13: 13px; --fs-14: 14px; --fs-15: 15px;
+            --fs-16: 16px; --fs-18: 18px; --fs-20: 20px;
+            --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+            --space-xs: 6px; --space-sm: 10px; --space-md: 16px;
+            --space-lg: 20px; --space-xl: 28px;
+        }
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background:
+                radial-gradient(1200px 800px at 20% 0%, #1e293b 0%, #0b1220 45%, #080c18 100%),
+                #070b15;
+            min-height: 100vh;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            /* 9:16 竖屏比例 */
+            aspect-ratio: 9 / 16;
+            min-height: 100vh;
+            max-height: 100vh;
+            margin: 0 auto;
+            background:
+                radial-gradient(700px 420px at 80% -10%, rgba(139,92,246,0.14) 0%, transparent 60%),
+                radial-gradient(600px 480px at -10% 100%, rgba(212,175,55,0.12) 0%, transparent 60%),
+                linear-gradient(180deg, #0d1424 0%, #0a0f1e 60%, #080c18 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 86px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-left: 1px solid rgba(255,255,255,0.03);
+            border-right: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 0 120px rgba(0,0,0,0.6);
+        }
+        /* 大屏（>420px）时严格按9:16居中显示，手机宽屏/浏览器横屏都显示一个手机框 */
+        @media (min-width: 421px) {
+            .app-container {
+                min-height: 0;
+                max-height: 100vh;
+                height: 100vh;
+                aspect-ratio: 9 / 16;
+                margin: 0 auto;
+                border-radius: 28px;
+                border: 1px solid rgba(255,255,255,0.06);
+                box-shadow:
+                    0 30px 80px rgba(0,0,0,0.7),
+                    0 0 0 8px rgba(255,255,255,0.015),
+                    inset 0 1px 0 rgba(255,255,255,0.04);
+            }
+            body { padding: 14px 0; align-items: center; }
+        }
+        /* 滚动条样式（仅容器内） */
+        .app-container::-webkit-scrollbar { width: 0; height: 0; }
+        /* ========== 页面切换 ========== */
+        .page { display: none; flex: 1; animation: fadeIn 0.25s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+
+        /* ========== 通用顶栏 ========== */
+        .top-bar {
+            padding: 42px var(--space-md) 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; z-index: 5;
+        }
+        .greeting {
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .greeting .hi { font-size: 13px; color: var(--text-tertiary); }
+        .greeting .name { font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.01em; }
+        .top-right-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-pill {
+            height: 34px; padding: 0 14px; border-radius: 999px;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-size: 12.5px; font-weight: 600;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-pill:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--glass-border-strong); }
+
+        /* ========== 首页：AI股东卡（上下漂浮 · 收窄精致版） ========== */
+        .home-section-ai {
+            padding: 2px var(--space-md) 0;
+            display: flex; justify-content: center;
+            position: relative; z-index: 2;
+        }
+        .ai-card-wrapper {
+            width: 252px;          /* 收窄：292 -> 252 */
+            height: 160px;         /* 高度略缩：183 -> 160 */
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            animation: cardFloat 5.2s ease-in-out infinite;
+        }
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-7px); }
+        }
+        .ai-card-wrapper::before {
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 280px; height: 200px;
+            background: radial-gradient(ellipse at 50% 45%, rgba(212,175,55,0.24) 0%, rgba(212,175,55,0.06) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .ai-bank-card {
+            position: relative; z-index: 1;
+            width: 100%; height: 100%;
+            border-radius: 18px;
+            padding: 12px 14px 10px;   /* padding缩小：16/18 -> 12/14 */
+            background:
+                linear-gradient(140deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 45%, rgba(24,20,8,0.96) 100%);
+            box-shadow:
+                0 14px 30px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(212,175,55,0.2),
+                0 0 36px rgba(212,175,55,0.16);
+            overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        /* 扫光 */
+        .ai-bank-card::before {
+            content: ''; position: absolute; top: -50%; left: -40%; width: 60%; height: 220%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+            transform: rotate(18deg);
+            animation: cardShine 5.2s ease-in-out infinite;
+        }
+        @keyframes cardShine {
+            0%, 40%, 100% { transform: translateX(0) rotate(18deg); opacity: 0; }
+            55%          { transform: translateX(320px) rotate(18deg); opacity: 1; }
+            70%          { transform: translateX(640px) rotate(18deg); opacity: 0; }
+        }
+        /* 金边 */
+        .ai-bank-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 18px; padding: 1.1px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(212,175,55,0.3) 30%, rgba(212,175,55,0.9) 60%, rgba(253,230,138,0.3) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.28));
+        }
+        .ai-card-top { display: flex; justify-content: space-between; align-items: center; }
+        .ai-chip-number-row { display: flex; align-items: center; gap: 8px; }
+        .ai-card-chip {
+            width: 32px; height: 24px; border-radius: 6px; position: relative; overflow: hidden;
+            background:
+                linear-gradient(135deg, #d4af37 0%, #fde68a 50%, #d4af37 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 5px rgba(0,0,0,0.28);
+        }
+        .ai-card-chip::before, .ai-card-chip::after {
+            content: ''; position: absolute; left: 18%; right: 18%; height: 1px;
+            background: rgba(120,80,10,0.6);
+        }
+        .ai-card-chip::before { top: 30%; }
+        .ai-card-chip::after  { top: 62%; }
+        .ai-card-number.chip-adjacent {
+            font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.78);
+        }
+        .ai-card-brand { display: flex; align-items: center; gap: 7px; }
+        .ai-card-brand .pi-mark {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 900;
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.5), 0 0 8px rgba(212,175,55,0.38);
+        }
+        .ai-card-brand .ai-pill {
+            padding: 3px 8px; border-radius: 999px;
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(253,230,138,0.3);
+            color: var(--accent-gold-2);
+            font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em;
+        }
+        .ai-card-title-row { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+        .ai-card-title {
+            font-size: 14.5px; font-weight: 800;
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(253,230,138,0.32));
+            letter-spacing: 0.02em;
+        }
+        .ai-card-subtitle { font-size: 9.5px; color: rgba(253,230,138,0.72); letter-spacing: 0.08em; font-weight: 600; }
+
+        /* 卡片底部 — 中段信息整体上移/压缩 */
+        .ai-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px; }
+        .ai-growth-block { display: flex; flex-direction: column; gap: 4px; }  /* gap从7缩到4 */
+        .ai-growth-label {
+            font-size: 11px; color: rgba(255,255,255,0.80); font-weight: 700;
+            letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; line-height: 1.2;
+        }
+        .ai-growth-label--sub { font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: rgba(255,255,255,0.76); }
+        .ai-growth-label .dot-green {
+            width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success), 0 0 16px rgba(16,185,129,0.32);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 0.6; transform: scale(1); box-shadow: 0 0 5px var(--success); }
+            50%      { opacity: 1;   transform: scale(1.15); box-shadow: 0 0 12px var(--success); }
+        }
+        .ai-card-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+        .ai-card-holder { font-size: 9.5px; color: rgba(255,255,255,0.45); letter-spacing: 0.2em; text-transform: uppercase; }
+        .ai-card-holder-name { font-size: 11px; color: rgba(253,230,138,0.85); font-weight: 700; letter-spacing: 0.06em; }
+
+        /* ========== 生态分红池标题行 ========== */
+        .eco-title-row {
+            margin: 4px var(--space-md) 0px;          /* 整体上移 */
+            display: flex; justify-content: center; align-items: center;
+        }
+        .eco-title-row h3 {
+            font-size: 13px; font-weight: 700; color: var(--text-primary);
+            letter-spacing: 0.12em;
+        }
+
+        /* ========== 生态分红池：大圆圈（分级进度+节点） + 两个金黄按钮 ========== */
+        .eco-card-wrapper { margin: 0 var(--space-md) 0; }
+        .eco-pool-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(26,34,54,0.92) 0%, rgba(17,24,39,0.96) 100%);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border-strong);
+            border-radius: 16px;
+            padding: 10px 12px 12px;                  /* 更小更紧凑 */
+            overflow: hidden;
+            box-shadow: 0 9px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(212,175,55,0.05);
+        }
+        .eco-pool-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
+            opacity: 0.35;
+        }
+        .eco-pool-card::after {
+            content: ''; position: absolute; top: -40%; right: -10%;
+            width: 240px; height: 240px;
+            background: radial-gradient(circle, rgba(212,175,55,0.11) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .eco-circle-wrap {
+            position: relative; z-index: 1;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0px 0 10px;
+        }
+        .eco-circle {
+            position: relative;
+            width: 148px; height: 148px;                 /* 略小更精致 */
+            border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 35%, rgba(255,235,160,0.18) 0%, rgba(212,175,55,0.06) 55%, rgba(17,24,39,0.9) 100%);
+        }
+        /* 1) 外层旋转金边（保留） */
+        .eco-circle::before {
+            content: '';
+            position: absolute; inset: -1.5px;
+            border-radius: 50%; padding: 1.25px;
+            background: conic-gradient(from 0deg, #d4af37 0%, #fde68a 18%, #d4af37 40%, rgba(212,175,55,0.25) 58%, #d4af37 76%, #fde68a 90%, #d4af37 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            animation: ecoRingSpin 9s linear infinite;
+            filter: drop-shadow(0 0 9px rgba(212,175,55,0.42));
+        }
+        /* 2) 内层呼吸金边（保留） */
+        .eco-circle::after {
+            content: '';
+            position: absolute; inset: 7px;
+            border-radius: 50%; padding: 1px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.85), rgba(212,175,55,0.25), rgba(253,230,138,0.85));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.8;
+            animation: ecoPulse 3.6s ease-in-out infinite;
+        }
+        @keyframes ecoRingSpin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+        @keyframes ecoPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); filter: drop-shadow(0 0 5px rgba(253,230,138,0.3)); }
+            50%      { opacity: 1;   transform: scale(1.015); filter: drop-shadow(0 0 14px rgba(253,230,138,0.65)); }
+        }
+        /* 3) 圆环外发光 */
+        .eco-circle-glow {
+            position: absolute; inset: -16px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(253,230,138,0.30) 0%, rgba(212,175,55,0.13) 38%, transparent 72%);
+            filter: blur(0.5px);
+            animation: ecoGlowPulse 3.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes ecoGlowPulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); }
+            50%      { opacity: 1;    transform: scale(1.05); }
+        }
+        /* 4) 分级进度环 SVG — 绕圆周围 */
+        .eco-ring-svg {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 182px; height: 182px;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .eco-ring-svg .seg {
+            fill: none;
+            stroke-linecap: round;
+        }
+        .eco-ring-svg .seg-dim { stroke: rgba(212,175,55,0.12); }
+        .eco-ring-svg .seg-1   { stroke: #fff4c8; filter: drop-shadow(0 0 3px rgba(253,230,138,0.9)); }
+        .eco-ring-svg .seg-2   { stroke: #fde68a; filter: drop-shadow(0 0 3px rgba(253,230,138,0.7)); }
+        .eco-ring-svg .seg-3   { stroke: #d4af37; filter: drop-shadow(0 0 4px rgba(212,175,55,0.75)); }
+        .eco-ring-svg .seg-4   { stroke: #b69027; opacity: 0.9; }
+        /* 5) 圆环节点（12个）：闪电或竖线随机出现在这些节点上 */
+        .eco-circle-nodes {
+            position: absolute; top: 50%; left: 50%;
+            width: 182px; height: 182px;
+            transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 4;
+        }
+        .eco-node {
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0;
+        }
+        .eco-node .node-dot {
+            position: absolute;
+            left: -2.5px; top: -2.5px;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: rgba(253,230,138,0.28);
+        }
+        .eco-node .node-dot.active {
+            background: #fff4c8;
+            box-shadow: 0 0 8px rgba(253,230,138,0.95), 0 0 16px rgba(212,175,55,0.55);
+            animation: nodeBlink 0.85s ease-out forwards;
+        }
+        @keyframes nodeBlink {
+            0%   { opacity: 0; transform: scale(0.5); }
+            25%  { opacity: 1; transform: scale(1.35); }
+            100% { opacity: 0; transform: scale(2.2); }
+        }
+        /* 节点上随机出现的闪电/竖线 */
+        .eco-node-fx {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+        }
+        .eco-node-fx.bolt {
+            width: 18px; height: 18px;
+            filter:
+                drop-shadow(0 0 4px rgba(253,230,138,1))
+                drop-shadow(0 0 8px rgba(212,175,55,0.85));
+        }
+        .eco-node-fx.vbar {
+            width: 2.5px; height: 22px;
+            border-radius: 2px;
+            background: linear-gradient(180deg, rgba(212,175,55,0) 0%, rgba(255,244,200,1) 50%, rgba(212,175,55,0) 100%);
+            box-shadow:
+                0 0 5px rgba(253,230,138,0.95),
+                0 0 12px rgba(212,175,55,0.7);
+        }
+        @keyframes nodeFxBolt {
+            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-10deg); }
+            20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(8deg); }
+            45%  { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4) rotate(0deg); }
+        }
+        @keyframes nodeFxVbar {
+            0%   { opacity: 0; transform: translate(-50%, -50%) scaleY(0.2); }
+            25%  { opacity: 1; transform: translate(-50%, -50%) scaleY(1.2); }
+            70%  { opacity: 0.95; transform: translate(-50%, -50%) scaleY(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scaleY(0.25); }
+        }
+
+        .eco-circle-label {
+            font-size: 10.5px; color: #efd68a; font-weight: 600; letter-spacing: 0.08em;
+            margin-bottom: 4px;
+            position: relative; z-index: 2;
+            transform: translateY(-3px);
+        }
+        .eco-circle-amount {
+            font-size: 25px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 5px rgba(212,175,55,0.32));
+            position: relative; z-index: 2;
+            transform: translateY(-2px);
+            display: inline-flex; align-items: baseline;
+        }
+        .eco-circle-amount .unit { font-size: 14px; margin-left: 2px; }
+
+        /* 两个金黄按钮 */
+        .eco-btns {
+            position: relative; z-index: 1;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 7px;
+        }
+        .eco-btn {
+            display: flex; align-items: center; gap: 7px;
+            padding: 9px 10px;
+            border-radius: 11px;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%),
+                rgba(255,255,255,0.015);
+            border: 1px solid rgba(212,175,55,0.34);
+            box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .eco-btn:hover, .eco-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(0,0,0,0.28), 0 0 20px rgba(212,175,55,0.2);
+            border-color: rgba(253,230,138,0.6);
+        }
+        .eco-btn-icon {
+            width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+        }
+        .eco-btn-icon.team, .eco-btn-icon.reward {
+            background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(212,175,55,0.08));
+            border: 1px solid rgba(212,175,55,0.28);
+        }
+        .eco-btn-body { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+        .eco-btn-val { font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; line-height: 1.15; }
+        .eco-btn-lbl { font-size: 9.5px; color: var(--text-tertiary); font-weight: 500; margin-top: 1px; }
+        .eco-btn.receive-flash { animation: ecoBtnFlash 0.55s ease-out; }
+        @keyframes ecoBtnFlash {
+            0%   { box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085); border-color: rgba(253,230,138,0.82); }
+            30%  { box-shadow: 0 0 24px rgba(253,230,138,0.65), 0 0 50px rgba(212,175,55,0.32); border-color: #fff4c8; }
+            100% { box-shadow: 0 0 0 1px rgba(212,175,55,0.08), 0 0 12px rgba(212,175,55,0.085); border-color: rgba(212,175,55,0.32); }
+        }
+        /* 粒子覆盖层 */
+        .eco-pool-card { position: relative; }
+        .eco-particles {
+            position: absolute; inset: 0;
+            pointer-events: none; overflow: visible;
+            z-index: 10;
+        }
+        .eco-particle {
+            position: absolute; left: 0; top: 0;
+            will-change: transform, opacity;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .eco-particle.bolt {
+            width: 20px; height: 20px;
+            filter:
+                drop-shadow(0 0 4px rgba(253,230,138,0.9))
+                drop-shadow(0 0 8px rgba(212,175,55,0.7))
+                drop-shadow(0 0 14px rgba(212,175,55,0.35));
+        }
+        .eco-particle.line {
+            width: 36px; height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, rgba(212,175,55,0) 0%, rgba(255,244,200,0.98) 25%, rgba(253,230,138,0.95) 55%, rgba(212,175,55,0) 100%);
+            box-shadow:
+                0 0 6px rgba(253,230,138,0.85),
+                0 0 14px rgba(212,175,55,0.55),
+                0 0 24px rgba(212,175,55,0.25);
+        }
+        @keyframes ecoPartIn  { from { opacity: 0; transform: scale(0.6);} to { opacity: 1; transform: scale(1);} }
+        @keyframes ecoPartOut { from { opacity: 1; } to { opacity: 0; } }
+
+        /* ========== 通用 Section 标题 ========== */
+        .section-title {
+            margin: 16px var(--space-md) 8px;
+            display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+        }
+        .section-title h3 { font-size: 14px; font-weight: 800; letter-spacing: 0.06em; color: var(--text-primary); }
+        .section-title .sub { font-size: 11px; color: var(--text-tertiary); }
+
+        /* ========== 市场页：顶部介绍卡片 + 10张长方形横向卡片(单列数据流) ========== */
+        .mk-intro-card {
+            position: relative;
+            margin: 0 var(--space-md) 10px;
+            border-radius: 14px;
+            padding: 12px 14px;
+            background:
+                linear-gradient(145deg, rgba(26,34,54,0.88) 0%, rgba(17,24,39,0.94) 100%);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+        }
+        .mk-intro-card:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.35); }
+        .mk-intro-card::before {
+            content: ''; position: absolute; inset: 0; padding: 1.1px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, rgba(139,92,246,0.6) 45%, var(--accent-gold) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .mk-intro-card::after {
+            content: ''; position: absolute; top: -60%; left: -20%; width: 40%; height: 260%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+            transform: rotate(20deg);
+            animation: cardShine 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .mk-intro-title {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 800;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #e9d5ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .mk-intro-desc { position: relative; z-index: 1; margin-top: 3px; font-size: 11px; color: var(--text-tertiary); }
+
+        /* ============ 市场页双列卡片（严格左5/右5 纵向分组） ============ */
+        /* 外层：两列等宽、中间留间距 */
+        .ai-cards-grid {
+            margin: 0 var(--space-md) 4px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 8px;
+            align-items: start;
+        }
+        /* 左右两列：独立纵向堆叠卡片 */
+        .cards-col {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            align-items: stretch;
+        }
+
+        /* 单张卡片：复刻【派友AI股东卡】风格，等比例缩小版 */
+        .ai-level-card {
+            position: relative;
+            border-radius: 15px;
+            padding: 9px 10px 9px 10px;
+            min-height: 180px;                /* 统一等高：保证左右列对齐 */
+            overflow: hidden;
+            transition: transform 0.22s ease, box-shadow 0.28s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            animation: cardFloatMini 4.6s ease-in-out infinite;
+        }
+        /* 轻微上下悬浮动效，和首页AI卡交互一致 */
+        @keyframes cardFloatMini {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
+        }
+        /* 每列第 2n 张错开浮动相位，整体更生动 */
+        .cards-col .ai-level-card:nth-child(even) { animation-delay: -2.3s; }
+        .ai-level-card:hover {
+            transform: translateY(-5px) scale(1.015);
+        }
+
+        /* 外光晕：和首页 ai-card-wrapper::before 一致 */
+        .ai-level-card.ai-gold {
+            background:
+                linear-gradient(140deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 45%, rgba(24,20,8,0.96) 100%);
+            box-shadow:
+                0 10px 22px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(212,175,55,0.18),
+                0 0 28px rgba(212,175,55,0.14);
+        }
+        .ai-level-card.ai-gold::after {
+            /* 光晕底层 */
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 180px; height: 140px;
+            background: radial-gradient(ellipse at 50% 40%, rgba(212,175,55,0.26) 0%, rgba(212,175,55,0.06) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none; z-index: 0;
+        }
+        .ai-level-card.sh-purple {
+            background:
+                linear-gradient(140deg, rgba(28,22,50,0.94) 0%, rgba(18,14,36,0.96) 45%, rgba(20,12,40,0.96) 100%);
+            box-shadow:
+                0 10px 22px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(139,92,246,0.18),
+                0 0 28px rgba(139,92,246,0.14);
+        }
+        .ai-level-card.sh-purple::after {
+            content: ''; position: absolute;
+            left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 180px; height: 140px;
+            background: radial-gradient(ellipse at 50% 40%, rgba(139,92,246,0.26) 0%, rgba(139,92,246,0.06) 45%, transparent 72%);
+            filter: blur(0.5px);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* 扫光层：复用首页 cardShine 动画 */
+        .ai-level-card::before {
+            content: ''; position: absolute; top: -55%; left: -40%; width: 60%; height: 230%;
+            background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%);
+            transform: rotate(18deg);
+            animation: cardShine 5.6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* 金色（AI卡）金边：和首页 ai-bank-card::after 一致 */
+        .ai-level-card.ai-gold > .card-border {
+            content: ''; position: absolute; inset: 0; border-radius: 15px; padding: 1px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(212,175,55,0.3) 30%, rgba(212,175,55,0.9) 60%, rgba(253,230,138,0.3) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.26));
+            z-index: 2;
+        }
+        /* 紫色（股东卡）紫边 */
+        .ai-level-card.sh-purple > .card-border {
+            position: absolute; inset: 0; border-radius: 15px; padding: 1px;
+            background: linear-gradient(135deg, rgba(233,213,255,0.9) 0%, rgba(139,92,246,0.3) 30%, rgba(139,92,246,0.9) 60%, rgba(233,213,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(196,181,253,0.26));
+            z-index: 2;
+        }
+
+        /* ===== 卡片顶部（仿首页芯片+品牌区） ===== */
+        .mc-top {
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; z-index: 3;
+        }
+        .mc-chip-row { display: flex; align-items: center; gap: 6px; }
+        .mc-chip {
+            width: 22px; height: 16px; border-radius: 4px; position: relative; overflow: hidden;
+            flex-shrink: 0;
+        }
+        .ai-gold .mc-chip {
+            background: linear-gradient(135deg, #d4af37 0%, #fde68a 50%, #d4af37 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .sh-purple .mc-chip {
+            background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #8b5cf6 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .mc-chip::before, .mc-chip::after {
+            content: ''; position: absolute; left: 18%; right: 18%; height: 1px;
+        }
+        .ai-gold .mc-chip::before, .ai-gold .mc-chip::after { background: rgba(120,80,10,0.6); }
+        .sh-purple .mc-chip::before, .sh-purple .mc-chip::after { background: rgba(70,40,120,0.55); }
+        .mc-chip::before { top: 30%; }
+        .mc-chip::after  { top: 62%; }
+        .mc-chip-num {
+            font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.62);
+        }
+        .mc-brand { display: flex; align-items: center; gap: 5px; }
+        .mc-pi-mark {
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900;
+            flex-shrink: 0;
+        }
+        .ai-gold .mc-pi-mark {
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.5), 0 0 6px rgba(212,175,55,0.3);
+        }
+        .sh-purple .mc-pi-mark {
+            background: radial-gradient(circle at 30% 25%, #ede9fe 0%, #8b5cf6 55%, #4c1d95 100%);
+            color: #2e1065;
+            box-shadow: 0 0 0 1px rgba(233,213,255,0.5), 0 0 6px rgba(139,92,246,0.3);
+        }
+        .mc-type-pill {
+            padding: 2px 6px; border-radius: 999px;
+            font-size: 8.5px; font-weight: 800; letter-spacing: 0.08em;
+        }
+        .ai-gold .mc-type-pill {
+            background: rgba(212,175,55,0.15);
+            border: 1px solid rgba(253,230,138,0.3);
+            color: var(--accent-gold-2);
+        }
+        .sh-purple .mc-type-pill {
+            background: rgba(139,92,246,0.15);
+            border: 1px solid rgba(233,213,255,0.3);
+            color: #e9d5ff;
+        }
+
+        /* ===== 卡标题（仿首页AI卡渐变标题） ===== */
+        .mc-title-block {
+            display: flex; flex-direction: column; gap: 1.5px;
+            position: relative; z-index: 3;
+        }
+        .mc-title-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .mc-title {
+            font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+            line-height: 1.2;
+        }
+        .ai-gold .mc-title {
+            background: linear-gradient(180deg, #fff4c8 0%, #f0c85e 55%, #d4af37 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 3px rgba(253,230,138,0.28));
+        }
+        .sh-purple .mc-title {
+            background: linear-gradient(180deg, #ede9fe 0%, #c4b5fd 55%, #8b5cf6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 3px rgba(196,181,253,0.28));
+        }
+        .mc-status-tag {
+            display: inline-flex; align-items: center; gap: 3px;
+            height: 15px; padding: 0 5px; border-radius: 999px;
+            font-size: 8.5px; font-weight: 700;
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.25);
+            color: #6ee7b7;
+            flex-shrink: 0;
+        }
+        .mc-status-tag .sdot {
+            width: 3.5px; height: 3.5px; border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 5px rgba(16,185,129,0.8);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        .mc-sub {
+            font-size: 8.5px; font-weight: 600; letter-spacing: 0.06em;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .ai-gold .mc-sub { color: rgba(253,230,138,0.68); }
+        .sh-purple .mc-sub { color: rgba(233,213,255,0.68); }
+        .mc-sub .dot-green {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        /* ===== 数据面板（压缩版，2列更贴合窄卡） ===== */
+        .mc-data {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            position: relative; z-index: 3;
+        }
+        .mc-data-cell {
+            border-radius: 7px;
+            padding: 5px 6px;
+            display: flex; flex-direction: column; gap: 2px;
+            min-width: 0;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .ai-gold .mc-data-cell {
+            background: rgba(212,175,55,0.055);
+            border: 1px solid rgba(212,175,55,0.15);
+        }
+        .sh-purple .mc-data-cell {
+            background: rgba(139,92,246,0.055);
+            border: 1px solid rgba(139,92,246,0.15);
+        }
+        .mc-dl {
+            font-size: 8px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em;
+            display: flex; align-items: center; gap: 3px;
+        }
+        .mc-dl .mini-bolt {
+            font-size: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        .ai-gold .mc-dl .mini-bolt { color: var(--accent-gold-2); filter: drop-shadow(0 0 2px rgba(253,230,138,0.7)); }
+        .sh-purple .mc-dl .mini-bolt { color: #e9d5ff; filter: drop-shadow(0 0 2px rgba(139,92,246,0.65)); }
+        .mc-dv {
+            font-size: 10.5px; font-weight: 800; line-height: 1.1;
+            display: inline-flex; align-items: baseline; gap: 1.5px;
+        }
+        .mc-dv .du { font-size: 8px; font-weight: 600; color: var(--text-tertiary); }
+        .ai-gold .mc-dv { color: var(--accent-gold-2); }
+        .sh-purple .mc-dv { color: #e9d5ff; }
+
+        /* ===== 底部：派币价格 + 购买按钮（缩小版） ===== */
+        .mc-bottom {
+            display: flex; align-items: center; justify-content: space-between; gap: 6px;
+            margin-top: auto;      /* 贴底，保证等高时内容分布一致 */
+            position: relative; z-index: 3;
+        }
+        .mc-price-block { display: flex; align-items: baseline; gap: 3px; flex-direction: column; }
+        .mc-price-label {
+            font-size: 8px; color: var(--text-tertiary); font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .mc-price {
+            display: inline-flex; align-items: baseline;
+            font-weight: 900; letter-spacing: -0.01em;
+        }
+        .mc-price .num { font-size: 15px; line-height: 1; }
+        .mc-price .unit { font-size: 9px; margin-left: 1px; }
+        .ai-gold .mc-price {
+            background: var(--accent-gold-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .sh-purple .mc-price {
+            background: var(--accent-purple-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .mc-buy {
+            position: relative; z-index: 3;
+            height: 23px; padding: 0 9px;
+            border-radius: 999px;
+            font-size: 9.5px; font-weight: 800;
+            display: inline-flex; align-items: center; gap: 3px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            border: none;
+        }
+        .mc-buy:active { transform: translateY(1px) scale(0.97); }
+        .ai-gold .mc-buy {
+            color: #3b2c06;
+            background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
+            box-shadow: 0 2px 7px rgba(212,175,55,0.32), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+        .sh-purple .mc-buy {
+            color: #2e1065;
+            background: linear-gradient(135deg, #ede9fe 0%, var(--accent-purple) 60%, #4c1d95 100%);
+            box-shadow: 0 2px 7px rgba(139,92,246,0.32), inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        /* ========== 我的页 ========== */
+        .my-header {
+            margin: 10px var(--space-md) 14px;
+            padding: 16px;
+            border-radius: 18px;
+            position: relative; overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.92) 0%, rgba(14,20,36,0.96) 100%);
+            border: 1px solid var(--glass-border-strong);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+        }
+        .my-header::before {
+            content: ''; position: absolute; inset: 0; padding: 1.2px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-gold-2) 0%, rgba(212,175,55,0.3) 35%, rgba(139,92,246,0.4) 70%, var(--accent-gold-2) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .my-user-row {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .my-avatar {
+            width: 54px; height: 54px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
+            border: 2px solid rgba(253,230,138,0.6);
+            box-shadow: 0 0 18px rgba(212,175,55,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 900; color: #3b2c06;
+        }
+        .my-user-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+        .my-name { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+        .my-sub  { font-size: 11.5px; color: var(--text-tertiary); }
+
+        /* 我的页 统计四格 */
+        .my-stats-grid {
+            margin: 14px var(--space-md) 0;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .my-stat {
+            padding: 12px 10px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .my-stat .v { font-size: 17px; font-weight: 800; color: var(--accent-gold-2); letter-spacing: -0.01em; }
+        .my-stat .v.pi { background: var(--accent-gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .my-stat .l { margin-top: 4px; font-size: 10.5px; color: var(--text-tertiary); }
+
+        /* 菜单组 */
+        .menu-group {
+            margin: 18px var(--space-md) 0;
+            padding: 6px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .menu-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.18s ease;
+            position: relative;
+        }
+        .menu-item + .menu-item { margin-top: 2px; }
+        .menu-item:hover, .menu-item:active { background: var(--bg-elevated); }
+        .menu-icon {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+        .menu-icon.wallet { background: linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.06)); border: 1px solid rgba(212,175,55,0.3); color: var(--accent-gold-2); }
+        .menu-icon.aicard { background: linear-gradient(135deg, rgba(212,175,55,0.32), rgba(139,92,246,0.1)); border: 1px solid rgba(212,175,55,0.34); color: var(--accent-gold-2); }
+        .menu-icon.shcard { background: linear-gradient(135deg, rgba(139,92,246,0.32), rgba(212,175,55,0.1)); border: 1px solid rgba(139,92,246,0.34); color: #e9d5ff; }
+        .menu-text {
+            flex: 1; min-width: 0;
+            font-size: 14px; font-weight: 600; color: var(--text-primary);
+        }
+        .menu-right {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12px;
+            color: var(--text-quaternary);
+        }
+        .menu-hint {
+            padding: 3px 8px; border-radius: 999px;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.22);
+            color: var(--accent-gold-2);
+            font-weight: 700; font-size: 11px;
+        }
+        .menu-hint.purple {
+            background: rgba(139,92,246,0.12);
+            border-color: rgba(233,213,255,0.22);
+            color: #e9d5ff;
+        }
+        .menu-hint.gray {
+            background: rgba(148,163,184,0.08);
+            border-color: rgba(148,163,184,0.18);
+            color: var(--text-tertiary);
+        }
+
+        /* ========== 底部 Tab 高级线条图标 ========== */
+        .app-footer {
+            position: fixed; left: 50%; transform: translateX(-50%);
+            bottom: 0; width: 100%; max-width: 480px;
+            padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+            background: linear-gradient(180deg, rgba(10,15,30,0) 0%, rgba(8,12,24,0.72) 20%, rgba(8,12,24,0.92) 60%, rgba(8,12,24,0.98) 100%);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--glass-border);
+            z-index: 50;
+        }
+        .tab-bar {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            background: rgba(255,255,255,0.035);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 8px 6px;
+            position: relative;
+        }
+        .tab-item {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px;
+            padding: 6px 6px;
+            border-radius: 14px;
+            cursor: pointer;
+            color: var(--text-quaternary);
+            transition: color 0.22s ease, transform 0.22s ease, filter 0.22s ease;
+        }
+        .tab-item svg {
+            width: 24px; height: 24px;
+            stroke: currentColor;
+            stroke-width: 1.6;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.22s ease;
+        }
+        .tab-item span { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+        .tab-item.active {
+            color: var(--accent-gold-2);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(253,230,138,0.55));
+        }
+        .tab-item.active svg { stroke: var(--accent-gold-2); }
+        .tab-item:not(.active) { filter: grayscale(0.3); }
+
+        /* ========== 卡片介绍 悬浮窗 Modal ========== */
+        .modal-mask {
+            position: fixed; inset: 0;
+            background: rgba(4, 8, 16, 0.65);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: none; align-items: flex-end; justify-content: center;
+            z-index: 100;
+            padding: 0 0 calc(env(safe-area-inset-bottom));
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-mask.active { display: flex; }
+        .modal-sheet {
+            width: 100%; max-width: 480px;
+            border-radius: 22px 22px 0 0;
+            background:
+                radial-gradient(500px 260px at 10% 0%, rgba(212,175,55,0.12) 0%, transparent 60%),
+                radial-gradient(500px 260px at 100% 0%, rgba(139,92,246,0.14) 0%, transparent 60%),
+                linear-gradient(180deg, #131a2e 0%, #0c1223 100%);
+            border-top: 1px solid var(--glass-border-strong);
+            padding: 10px 18px 26px;
+            position: relative;
+            animation: sheetUp 0.26s cubic-bezier(.2,.8,.2,1);
+            box-shadow: 0 -20px 60px rgba(0,0,0,0.55);
+        }
+        @keyframes sheetUp { from { transform: translateY(30px); opacity: 0.6;} to {transform:none; opacity:1;} }
+        .modal-grip {
+            width: 42px; height: 4px; border-radius: 999px;
+            background: rgba(148,163,184,0.35);
+            margin: 6px auto 14px;
+        }
+        .modal-x {
+            position: absolute; top: 14px; right: 16px;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .modal-title {
+            font-size: 18px; font-weight: 800; letter-spacing: 0.05em;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #e9d5ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 4px;
+        }
+        .modal-sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 14px; }
+        .modal-block { margin-top: 12px; }
+        .modal-block h4 {
+            font-size: 13.5px; font-weight: 800; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .modal-block h4.gold   { color: var(--accent-gold-2); }
+        .modal-block h4.purple { color: #e9d5ff; }
+        .modal-block ul {
+            list-style: none;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 4px 10px;
+        }
+        .modal-block li {
+            padding: 10px 4px;
+            font-size: 12.5px; color: var(--text-secondary);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            line-height: 1.55;
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .modal-block li:first-child { border-top: none; }
+        .modal-block li::before { content: '·'; color: var(--accent-gold); font-weight: 900; font-size: 16px; line-height: 1; margin-top: 2px; }
+        .modal-block.purple li::before { color: var(--accent-purple-2); }
+        .modal-note {
+            margin-top: 16px; padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(253,230,138,0.06);
+            border: 1px dashed rgba(253,230,138,0.25);
+            font-size: 12px; color: var(--text-tertiary); line-height: 1.6;
+        }
+
+        /* 响应式（更窄屏） */
+        @media (max-width: 360px) {
+            .ai-card-wrapper { width: 270px; height: 170px; }
+            .eco-circle { width: 148px; height: 148px; }
+            .eco-circle-amount { font-size: 26px; }
+            .ai-level-price .num { font-size: 18px; }
+        }
+        @media (max-width: 330px) {
+            .ai-card-wrapper { width: 252px; height: 158px; }
+            .eco-circle { width: 140px; height: 140px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="app">
+    <!-- ================= 首页 ================= -->
+    <section class="page home-page active" data-page="home">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" data-i18n="btn_login">🔐 Pi账号登录</button>
+                <button class="btn-pill" id="btnToggleLang">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <!-- 漂浮派友AI股东卡 -->
+        <div class="home-section-ai">
+            <div class="ai-card-wrapper">
+                <div class="ai-bank-card">
+                    <!-- 卡片顶部 -->
+                    <div>
+                        <div class="ai-card-top">
+                            <div class="ai-chip-number-row">
+                                <div class="ai-card-chip"></div>
+                                <div class="ai-card-number chip-adjacent" id="chipCardNumber">3141592653</div>
+                            </div>
+                            <div class="ai-card-brand">
+                                <span class="pi-mark">π</span>
+                                <span class="ai-pill">AI BANK</span>
+                            </div>
+                        </div>
+                        <div class="ai-card-title-row">
+                            <div class="ai-card-title">
+                                <span data-i18n="ai_card_title">派友AI股东卡</span>
+                            </div>
+                            <div class="ai-card-subtitle" data-i18n="ai_card_subtitle">AI 智能股东卡 · 派友专属</div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片底部 -->
+                    <div class="ai-card-bottom">
+                        <div class="ai-growth-block">
+                            <div class="ai-growth-label">
+                                <span class="dot-green"></span>
+                                <span data-i18n="ai_auto_label_short">自动浏览生态算力奖励</span>
+                            </div>
+                            <div class="ai-growth-label ai-growth-label--sub">
+                                <span class="dot-green"></span>
+                                <span data-i18n="ai_divi_label_short">派生态股份分红</span>
+                            </div>
+                        </div>
+                        <div class="ai-card-meta">
+                            <div class="ai-card-holder" data-i18n="ai_card_holder_label">持有者</div>
+                            <div class="ai-card-holder-name" data-i18n="ai_card_holder_name">派友先锋者</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生态分红池标题 -->
+        <div class="eco-title-row">
+            <h3 data-i18n="eco_pool_title">生态分红池</h3>
+        </div>
+
+        <!-- 生态分红池卡片 -->
+        <div class="eco-card-wrapper">
+            <div class="eco-pool-card" id="ecoPoolCard">
+                <div class="eco-particles" id="ecoParticles"></div>
+
+                <!-- 大圆圈 -->
+                <div class="eco-circle-wrap">
+                    <div class="eco-circle" id="ecoCircle">
+                        <div class="eco-circle-glow"></div>
+
+                        <!-- 4) 外圈分级进度环 SVG（4级进度：亮→暗） -->
+                        <svg class="eco-ring-svg" viewBox="0 0 200 200">
+                            <!-- 底层暗环底 -->
+                            <circle class="seg seg-dim" cx="100" cy="100" r="92" stroke-width="4" />
+                            <!-- 分级进度：4段 弧长不一 -->
+                            <circle class="seg seg-1" cx="100" cy="100" r="92" stroke-width="4"
+                                    stroke-dasharray="62 520" stroke-dashoffset="0" />
+                            <circle class="seg seg-2" cx="100" cy="100" r="92" stroke-width="4"
+                                    stroke-dasharray="88 520" stroke-dashoffset="-70" />
+                            <circle class="seg seg-3" cx="100" cy="100" r="92" stroke-width="4"
+                                    stroke-dasharray="110 520" stroke-dashoffset="-170" />
+                            <circle class="seg seg-4" cx="100" cy="100" r="92" stroke-width="4"
+                                    stroke-dasharray="76 520" stroke-dashoffset="-295" />
+                        </svg>
+
+                        <!-- 5) 12个圆环节点容器，闪电/竖线随机出现在节点上 -->
+                        <div class="eco-circle-nodes" id="ecoCircleNodes">
+                            <!-- 12节点由JS注入 -->
+                        </div>
+
+                        <div class="eco-circle-label" data-i18n="eco_pool_label">派币分红总值</div>
+                        <div class="eco-circle-amount">
+                            <strong data-i18n="eco_total_v">1,200</strong><span class="unit">π</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 两个金黄按钮 -->
+                <div class="eco-btns">
+                    <div class="eco-btn" id="btnEcoPeople">
+                        <div class="eco-btn-icon team">👥</div>
+                        <div class="eco-btn-body">
+                            <div class="eco-btn-val" data-i18n="eco_people_v">58</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
+                        </div>
+                    </div>
+                    <div class="eco-btn" id="btnEcoDividend">
+                        <div class="eco-btn-icon reward">🎁</div>
+                        <div class="eco-btn-body">
+                            <div class="eco-btn-val" data-i18n="eco_divi_v">286.52</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 市场页 ================= -->
+    <section class="page market-page" data-page="market">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi" data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang2">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h3 data-i18n="mk_title_full">派友 AI 卡 · 派友股东卡</h3>
+            <span class="sub" data-i18n="mk_title_sub">左金 · 右紫 · 共10级</span>
+        </div>
+
+        <!-- 顶部介绍卡片 -->
+        <div class="mk-intro-card" id="btnMkIntro">
+            <div class="mk-intro-title">
+                📖 <span data-i18n="intro_title">派友AI卡 &amp; 股东卡说明</span>
+            </div>
+            <div class="mk-intro-desc" data-i18n="intro_desc">
+                点击查看两种卡的权益、分红与算力规则
+            </div>
+        </div>
+
+        <!-- 10张卡片：严格双列分组，左列5张AI卡（金色）+ 右列5张股东卡（紫色） -->
+        <div class="ai-cards-grid">
+            <!-- ============ 左列：AI卡 5级（金色） ============ -->
+            <div class="cards-col cards-col-left">
+                <!-- AI卡 · LV.1 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <!-- 卡顶：芯片 + 品牌π -->
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV1 · 3141</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <!-- 卡标题 -->
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_1">AI · LV.1 基础算力</span>
+                        </div>
+                    </div>
+                    <!-- 双列数据面板 -->
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">1.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">12<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <!-- 底行：价格 + 购买 -->
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.2 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV2 · 2718</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_2">派友AI卡 · 白银</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_2">AI · LV.2 进阶算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">2.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">26<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.3 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV3 · 1414</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_3">派友AI卡 · 黄金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_3">AI · LV.3 精英算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">3.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">42<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.4 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV4 · 1732</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_4">派友AI卡 · 铂金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_4">AI · LV.4 旗舰算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">4.3<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">66<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- AI卡 · LV.5 -->
+                <div class="ai-level-card ai-gold">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">A·LV5 · 0001</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_ai_card_5">派友AI卡 · 至尊</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_ai_badge_5">AI · LV.5 至尊算力</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">5.5<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">88<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ 右列：股东卡 5级（紫色） ============ -->
+            <div class="cards-col cards-col-right">
+                <!-- 股东卡 · LV.1 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV1 · 4182</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_1">派友股东卡 · 青铜</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">1.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">8<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- 股东卡 · LV.2 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV2 · 7932</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_2">派友股东卡 · 白银</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">2.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">18<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- 股东卡 · LV.3 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV3 · 8888</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_3">派友股东卡 · 黄金</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">3.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">32<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- 股东卡 · LV.4 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV4 · 3333</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_4">派友股东卡 · 钻石</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_4">股东 · LV.4 旗舰分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">4.1<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">54<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+
+                <!-- 股东卡 · LV.5 -->
+                <div class="ai-level-card sh-purple">
+                    <div class="card-border"></div>
+                    <div class="mc-top">
+                        <div class="mc-chip-row">
+                            <div class="mc-chip"></div>
+                            <div class="mc-chip-num">S·LV5 · 9999</div>
+                        </div>
+                        <div class="mc-brand">
+                            <div class="mc-pi-mark">π</div>
+                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
+                        </div>
+                    </div>
+                    <div class="mc-title-block">
+                        <div class="mc-title-row">
+                            <div class="mc-title" data-i18n="mk_sh_card_5">派友股东卡 · 至尊</div>
+                            <div class="mc-status-tag">
+                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
+                            </div>
+                        </div>
+                        <div class="mc-sub">
+                            <span class="dot-green"></span>
+                            <span data-i18n="mk_sh_badge_5">股东 · LV.5 至尊分红</span>
+                        </div>
+                    </div>
+                    <div class="mc-data">
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
+                            <div class="mc-dv">5.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                        </div>
+                        <div class="mc-data-cell">
+                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
+                            <div class="mc-dv">76<span class="du" data-i18n="mk_unit_people">人</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-bottom">
+                        <div class="mc-price-block">
+                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
+                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
+                        </div>
+                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 我的页 ================= -->
+    <section class="page my-page" data-page="my">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang3">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <!-- 用户卡头 -->
+        <div class="my-header">
+            <div class="my-user-row">
+                <div class="my-avatar">派</div>
+                <div class="my-user-info">
+                    <div class="my-name" data-i18n="my_name">派友先锋者</div>
+                    <div class="my-sub" data-i18n="my_sub">ID: 3141-5926 · 认证先锋</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三格统计（持有派币 / AI卡X张 / 股东卡X张） -->
+        <div class="my-stats-grid">
+            <div class="my-stat">
+                <div class="v pi" data-i18n="my_stat_pi_v">1,286.52</div>
+                <div class="l" data-i18n="my_stat_pi_l">持有派币</div>
+            </div>
+            <div class="my-stat">
+                <div class="v" data-i18n="my_stat_aicard_v">3</div>
+                <div class="l" data-i18n="my_stat_aicard_l">AI卡 张数</div>
+            </div>
+            <div class="my-stat">
+                <div class="v" data-i18n="my_stat_shcard_v">2</div>
+                <div class="l" data-i18n="my_stat_shcard_l">股东卡 张数</div>
+            </div>
+        </div>
+
+        <!-- 主菜单组 -->
+        <div class="menu-group">
+            <div class="menu-item">
+                <div class="menu-icon wallet">💰</div>
+                <div class="menu-text" data-i18n="menu_wallet">我的钱包</div>
+                <div class="menu-right"><span class="menu-hint gray" data-i18n="menu_wallet_v">1,286.52 π</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon aicard">💳</div>
+                <div class="menu-text" data-i18n="menu_my_ai_card">我的 AI 卡</div>
+                <div class="menu-right"><span class="menu-hint" data-i18n="menu_my_ai_card_v">3 张</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon shcard">📜</div>
+                <div class="menu-text" data-i18n="menu_my_sh_card">我的股东卡</div>
+                <div class="menu-right"><span class="menu-hint purple" data-i18n="menu_my_sh_card_v">2 张</span></div>
+            </div>
+        </div>
+
+        <div class="menu-group">
+            <div class="menu-item">
+                <div class="menu-icon">🔒</div>
+                <div class="menu-text" data-i18n="menu_security">账户安全</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">🎯</div>
+                <div class="menu-text" data-i18n="menu_invite">邀请好友</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">❓</div>
+                <div class="menu-text" data-i18n="menu_help">帮助中心</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+            <div class="menu-item">
+                <div class="menu-icon">ℹ️</div>
+                <div class="menu-text" data-i18n="menu_about">关于派币</div>
+                <div class="menu-right"><span>›</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 底部Tab ================= -->
+    <footer class="app-footer">
+        <div class="tab-bar">
+            <div class="tab-item active" data-tab="home">
+                <!-- 房屋 轮廓 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3.5 10.5 12 4.5l8.5 6"/>
+                    <path d="M5.5 9.5V20a1 1 0 0 0 1 1h3.5v-5h4v5H17.5a1 1 0 0 0 1-1V9.5"/>
+                </svg>
+                <span data-i18n="tab_home">首页</span>
+            </div>
+            <div class="tab-item" data-tab="market">
+                <!-- 柱状图 三柱 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 20h16"/>
+                    <path d="M7 17v-7"/>
+                    <path d="M12 17V9"/>
+                    <path d="M17 17V6"/>
+                    <circle cx="7" cy="9.5" r="0.9"/>
+                    <circle cx="12" cy="8.5" r="0.9"/>
+                    <circle cx="17" cy="5.5" r="0.9"/>
+                </svg>
+                <span data-i18n="tab_market">市场</span>
+            </div>
+            <div class="tab-item" data-tab="my">
+                <!-- 人物轮廓 线条 -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.6"/>
+                    <path d="M5.5 20c.7-3.6 3.2-5.4 6.5-5.4S17.8 16.4 18.5 20"/>
+                </svg>
+                <span data-i18n="tab_my">我的</span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- 卡片介绍悬浮窗 -->
+<div class="modal-mask" id="cardInfoModal">
+    <div class="modal-sheet">
+        <div class="modal-grip"></div>
+        <button class="modal-x" id="modalCloseBtn">✕</button>
+        <div class="modal-title" data-i18n="modal_title">派友卡体系 · 权益说明</div>
+        <div class="modal-sub"   data-i18n="modal_sub">金色为派友AI卡（算力），紫色为派友股东卡（分红），可叠加持有。</div>
+
+        <div class="modal-block">
+            <h4 class="gold" data-i18n="modal_ai_title">⭐ 金色卡片（派友 AI 卡）</h4>
+            <ul>
+                <li data-i18n="modal_ai_p1">24 小时 AI 自动浏览派生态，产生持续算力收益</li>
+                <li data-i18n="modal_ai_p2">卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）</li>
+                <li data-i18n="modal_ai_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
+                <li data-i18n="modal_ai_p4">算力收益每日自动结算，可在「我的」查看未结分红</li>
+            </ul>
+        </div>
+
+        <div class="modal-block purple">
+            <h4 class="purple" data-i18n="modal_sh_title">💎 紫色卡片（派友 股东卡）</h4>
+            <ul>
+                <li data-i18n="modal_sh_p1">拥有生态分红池的股东权益，按等级比例瓜分每日平台分红</li>
+                <li data-i18n="modal_sh_p2">股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）</li>
+                <li data-i18n="modal_sh_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
+                <li data-i18n="modal_sh_p4">每日 0 点自动派息，可在「我的」查看分红累计记录</li>
+            </ul>
+        </div>
+
+        <div class="modal-note" data-i18n="modal_note">
+            💡 两种卡片可叠加持有，算力收益与股东分红互不冲突，同时生效。
+        </div>
+    </div>
+</div>
+
+<script>
+/* ==================== i18n 字典 ==================== */
+const I18N = {
+    'zh-CN': {
+        // 顶栏
+        'greeting_hi':   '您好',
+        'greeting_name': '派友 ☀️',
+        'btn_login': '🔐 Pi账号登录',
+        'btn_lang':  '语言',
+        // 底部Tab
+        'tab_home':   '首页',
+        'tab_market': '市场',
+        'tab_my':     '我的',
+
+        // 首页AI股东卡
+        'ai_card_title':        '派友AI股东卡',
+        'ai_card_subtitle':     'AI 智能股东卡 · 派友专属',
+        'ai_auto_label_short':  '自动浏览生态算力奖励',
+        'ai_divi_label_short':  '派生态股份分红',
+        'ai_auto_desc':         'AI浏览派生态，获取派算力。\n参与派币生态股东生态分红。',
+        'ai_card_holder_label': '持有者',
+        'ai_card_holder_name':  '派友先锋者',
+
+        // 生态分红池
+        'eco_pool_title': '生态分红池',
+        'eco_pool_label': '派币分红总值',
+        'eco_total_v':    '1,200',
+        'eco_people_v':   '58',
+        'eco_people_l':   '分红人数',
+        'eco_divi_v':     '286.52',
+        'eco_divi_l':     '分红派币',
+
+        // 市场标题
+        'mk_title_full': '派友 AI 卡 · 派友股东卡',
+        'mk_title_sub':  '左金 · 右紫 · 共10级',
+        'mk_ai_badge':   'AI · LV.1',
+        'mk_sh_badge':   '股东 · LV.1',
+        'mk_buy':        '立即购买',
+        // 市场卡片：徽章 + 类型
+        'mk_ai_type':      'AI 卡',
+        'mk_sh_type':      '股东卡',
+        'mk_ai_badge_1': 'AI · LV.1 基础算力',
+        'mk_ai_badge_2': 'AI · LV.2 进阶算力',
+        'mk_ai_badge_3': 'AI · LV.3 精英算力',
+        'mk_ai_badge_4': 'AI · LV.4 旗舰算力',
+        'mk_ai_badge_5': 'AI · LV.5 至尊算力',
+        'mk_sh_badge_1': '股东 · LV.1 基础分红',
+        'mk_sh_badge_2': '股东 · LV.2 进阶分红',
+        'mk_sh_badge_3': '股东 · LV.3 精英分红',
+        'mk_sh_badge_4': '股东 · LV.4 旗舰分红',
+        'mk_sh_badge_5': '股东 · LV.5 至尊分红',
+        // 状态标签
+        'mk_status_active': '活跃中',
+        // 数据面板
+        'mk_data_power':   '算力值',
+        'mk_data_holders': '分红人数',
+        'mk_data_pi':      '派币数量',
+        'mk_unit_x':       'x',
+        'mk_unit_people':  '人',
+        // 价格行
+        'mk_price_label': '投资金额',
+
+        // 介绍卡片
+        'intro_title': '派友AI卡 & 股东卡说明',
+        'intro_desc':  '点击查看两种卡的权益、分红与算力规则',
+
+        // 5×2 卡片名称
+        'mk_ai_card_1': '派友AI卡 · 铜',
+        'mk_ai_card_2': '派友AI卡 · 白银',
+        'mk_ai_card_3': '派友AI卡 · 黄金',
+        'mk_ai_card_4': '派友AI卡 · 铂金',
+        'mk_ai_card_5': '派友AI卡 · 至尊',
+        'mk_sh_card_1': '派友股东卡 · 青铜',
+        'mk_sh_card_2': '派友股东卡 · 白银',
+        'mk_sh_card_3': '派友股东卡 · 黄金',
+        'mk_sh_card_4': '派友股东卡 · 钻石',
+        'mk_sh_card_5': '派友股东卡 · 至尊',
+
+        // 描述
+        'mk_ai_desc_1': '基础AI算力权益',
+        'mk_ai_desc_2': '2倍AI算力权益',
+        'mk_ai_desc_3': '3倍AI算力权益',
+        'mk_ai_desc_4': '4倍AI算力权益',
+        'mk_ai_desc_5': '5倍顶级AI算力权益',
+        'mk_sh_desc_1': '基础股东分红权益',
+        'mk_sh_desc_2': '2倍股东分红权益',
+        'mk_sh_desc_3': '3倍股东分红权益',
+        'mk_sh_desc_4': '4倍股东分红权益',
+        'mk_sh_desc_5': '5倍顶级股东分红权益',
+
+        // 金额
+        'mk_p_1': '100',
+        'mk_p_2': '300',
+        'mk_p_3': '500',
+        'mk_p_4': '800',
+        'mk_p_5': '1000',
+
+        // 我的页
+        'my_name': '派友先锋者',
+        'my_sub':  'ID: 3141-5926 · 认证先锋',
+        'my_stat_pi_v':     '1,286.52',
+        'my_stat_pi_l':     '持有派币',
+        'my_stat_aicard_v': '3',
+        'my_stat_aicard_l': 'AI卡 张数',
+        'my_stat_shcard_v': '2',
+        'my_stat_shcard_l': '股东卡 张数',
+        // 菜单
+        'menu_wallet':        '我的钱包',
+        'menu_wallet_v':      '1,286.52 π',
+        'menu_my_ai_card':    '我的 AI 卡',
+        'menu_my_ai_card_v':  '3 张',
+        'menu_my_sh_card':    '我的股东卡',
+        'menu_my_sh_card_v':  '2 张',
+        'menu_security':      '账户安全',
+        'menu_invite':        '邀请好友',
+        'menu_help':          '帮助中心',
+        'menu_about':         '关于派币',
+
+        // Modal
+        'modal_title': '派友卡体系 · 权益说明',
+        'modal_sub':   '金色为派友AI卡（算力），紫色为派友股东卡（分红），可叠加持有。',
+        'modal_ai_title': '⭐ 金色卡片（派友 AI 卡）',
+        'modal_ai_p1':    '24 小时 AI 自动浏览派生态，产生持续算力收益',
+        'modal_ai_p2':    '卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）',
+        'modal_ai_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
+        'modal_ai_p4':    '算力收益每日自动结算，可在「我的」查看未结分红',
+        'modal_sh_title': '💎 紫色卡片（派友 股东卡）',
+        'modal_sh_p1':    '拥有生态分红池的股东权益，按等级比例瓜分每日平台分红',
+        'modal_sh_p2':    '股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）',
+        'modal_sh_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
+        'modal_sh_p4':    '每日 0 点自动派息，可在「我的」查看分红累计记录',
+        'modal_note':     '💡 两种卡片可叠加持有，算力收益与股东分红互不冲突，同时生效。',
+    },
+    'en': {
+        // Topbar
+        'greeting_hi':   'Hello',
+        'greeting_name': 'PiFriend ☀️',
+        'btn_login': '🔐 Pi Login',
+        'btn_lang':  'Lang',
+        // Tabs
+        'tab_home':   'Home',
+        'tab_market': 'Market',
+        'tab_my':     'Me',
+
+        // Home AI Shareholder Card
+        'ai_card_title':        'PiFriends AI Shareholder Card',
+        'ai_card_subtitle':     'AI Smart Shareholder Card · PiFriends Exclusive',
+        'ai_auto_label_short':  'Auto-browse Eco Power Rewards',
+        'ai_divi_label_short':  'Pi Ecosystem Share Dividend',
+        'ai_auto_desc':         'AI browses Pi ecosystem, gains Pi power.\\nParticipate in Pi Eco Shareholder dividends.',
+        'ai_card_holder_label': 'HOLDER',
+        'ai_card_holder_name':  'PI FRIEND PIONEER',
+
+        // Eco pool
+        'eco_pool_title': 'Eco Dividend Pool',
+        'eco_pool_label': 'Total Pi Dividends',
+        'eco_total_v':    '1,200',
+        'eco_people_v':   '58',
+        'eco_people_l':   'Dividend Users',
+        'eco_divi_v':     '286.52',
+        'eco_divi_l':     'Dividend Pi',
+
+        // Market
+        'mk_title_full': 'PiFriends AI Cards · Shareholder Cards',
+        'mk_title_sub':  'Left Gold · Right Purple · 10 Levels Total',
+        'mk_ai_badge':   'AI · LV.1',
+        'mk_sh_badge':   'SH · LV.1',
+        'mk_buy':        'Buy Now',
+        // Market card badges + type
+        'mk_ai_type':      'AI Card',
+        'mk_sh_type':      'SH Card',
+        'mk_ai_badge_1': 'AI · LV.1 Basic',
+        'mk_ai_badge_2': 'AI · LV.2 Advanced',
+        'mk_ai_badge_3': 'AI · LV.3 Elite',
+        'mk_ai_badge_4': 'AI · LV.4 Flagship',
+        'mk_ai_badge_5': 'AI · LV.5 Supreme',
+        'mk_sh_badge_1': 'SH · LV.1 Basic',
+        'mk_sh_badge_2': 'SH · LV.2 Advanced',
+        'mk_sh_badge_3': 'SH · LV.3 Elite',
+        'mk_sh_badge_4': 'SH · LV.4 Flagship',
+        'mk_sh_badge_5': 'SH · LV.5 Supreme',
+        // Status tag
+        'mk_status_active': 'Active',
+        // Data panel
+        'mk_data_power':   'Power',
+        'mk_data_holders': 'Holders',
+        'mk_data_pi':      'Pi Amount',
+        'mk_unit_x':       'x',
+        'mk_unit_people':  'u',
+        // Price row
+        'mk_price_label': 'Investment',
+
+        'intro_title': 'PiFriends AI & Shareholder Cards Guide',
+        'intro_desc':  'Tap to view power, dividend and reward rules of both card types',
+
+        'mk_ai_card_1': 'PiFriends AI Card · Bronze',
+        'mk_ai_card_2': 'PiFriends AI Card · Silver',
+        'mk_ai_card_3': 'PiFriends AI Card · Gold',
+        'mk_ai_card_4': 'PiFriends AI Card · Platinum',
+        'mk_ai_card_5': 'PiFriends AI Card · Supreme',
+        'mk_sh_card_1': 'PiFriends Share Card · Bronze',
+        'mk_sh_card_2': 'PiFriends Share Card · Silver',
+        'mk_sh_card_3': 'PiFriends Share Card · Gold',
+        'mk_sh_card_4': 'PiFriends Share Card · Diamond',
+        'mk_sh_card_5': 'PiFriends Share Card · Supreme',
+
+        'mk_ai_desc_1': 'Basic AI computing power',
+        'mk_ai_desc_2': '2x AI computing power',
+        'mk_ai_desc_3': '3x AI computing power',
+        'mk_ai_desc_4': '4x AI computing power',
+        'mk_ai_desc_5': '5x Top tier AI computing power',
+        'mk_sh_desc_1': 'Basic shareholder dividend',
+        'mk_sh_desc_2': '2x shareholder dividend',
+        'mk_sh_desc_3': '3x shareholder dividend',
+        'mk_sh_desc_4': '4x shareholder dividend',
+        'mk_sh_desc_5': '5x Top shareholder dividend',
+
+        'mk_p_1': '100',
+        'mk_p_2': '300',
+        'mk_p_3': '500',
+        'mk_p_4': '800',
+        'mk_p_5': '1000',
+
+        // My page
+        'my_name': 'Pi Friend Pioneer',
+        'my_sub':  'ID: 3141-5926 · Verified Pioneer',
+        'my_stat_pi_v':     '1,286.52',
+        'my_stat_pi_l':     'Pi Holdings',
+        'my_stat_aicard_v': '3',
+        'my_stat_aicard_l': 'AI Cards',
+        'my_stat_shcard_v': '2',
+        'my_stat_shcard_l': 'Share Cards',
+
+        'menu_wallet':        'My Wallet',
+        'menu_wallet_v':      '1,286.52 π',
+        'menu_my_ai_card':    'My AI Cards',
+        'menu_my_ai_card_v':  '3 Cards',
+        'menu_my_sh_card':    'My Shareholder Cards',
+        'menu_my_sh_card_v':  '2 Cards',
+        'menu_security':      'Account Security',
+        'menu_invite':        'Invite Friends',
+        'menu_help':          'Help Center',
+        'menu_about':         'About Pi',
+
+        // Modal
+        'modal_title': 'PiFriends Cards · Benefits',
+        'modal_sub':   'Gold = AI Card (power), Purple = Shareholder Card (dividends). Stack both.',
+        'modal_ai_title': '⭐ Gold Cards (PiFriends AI Cards)',
+        'modal_ai_p1':    '24/7 AI auto-browses Pi ecosystem, generates continuous power rewards',
+        'modal_ai_p2':    'Higher level → higher power multiplier (1x / 2x / 3x / 4x / 5x)',
+        'modal_ai_p3':    'Investment tiers: 100 / 300 / 500 / 800 / 1000 π (5 levels)',
+        'modal_ai_p4':    'Power rewards settle daily, visible in "Me" page',
+        'modal_sh_title': '💎 Purple Cards (PiFriends Shareholder Cards)',
+        'modal_sh_p1':    'Own a share of Eco Dividend Pool · proportional daily platform dividends',
+        'modal_sh_p2':    'Higher level → bigger dividend weight (1x / 2x / 3x / 4x / 5x)',
+        'modal_sh_p3':    'Investment tiers: 100 / 300 / 500 / 800 / 1000 π (5 levels)',
+        'modal_sh_p4':    'Daily dividends at 00:00. Track totals in "Me" page',
+        'modal_note':     '💡 You may stack both card types. Power rewards and dividends run independently.',
+    }
+};
+
+/* ==================== 应用语言 ==================== */
+let CUR_LANG = 'zh-CN';
+function applyLanguage(lang) {
+    CUR_LANG = lang in I18N ? lang : 'zh-CN';
+    const dict = I18N[CUR_LANG];
+    const els = document.querySelectorAll('[data-i18n]');
+    for (let i = 0; i < els.length; i++) {
+        const el = els[i];
+        const key = el.getAttribute('data-i18n');
+        if (!(key in dict)) continue;
+        let v = dict[key];
+        if (v.indexOf('\\n') > -1) {
+            el.innerHTML = v.split('\\n').join('<br/>');
+        } else {
+            el.textContent = v;
+        }
+    }
+    // 语言按钮标志
+    const flag = CUR_LANG === 'zh-CN' ? '🇨🇳' : '🇬🇧';
+    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3').forEach(b => {
+        if (b) b.innerHTML = `${flag} <span data-i18n="btn_lang">${dict['btn_lang']}</span>`;
+    });
+}
+document.addEventListener('click', function(e){
+    const t = e.target;
+    if (!t) return;
+    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3') {
+        const next = CUR_LANG === 'zh-CN' ? 'en' : 'zh-CN';
+        applyLanguage(next);
+    }
+});
+
+/* ==================== 页面/Tab切换 ==================== */
+function showPage(pageName) {
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.dataset.page === pageName));
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === pageName));
+    // 切回首页时重启动画（防止后台停止）
+    if (pageName === 'home') {
+        if (window.restartEcoParticle) window.restartEcoParticle();
+    }
+}
+document.addEventListener('click', function(e){
+    const tab = e.target.closest('.tab-item');
+    if (tab) { showPage(tab.dataset.tab); return; }
+    // 菜单点击切换
+    const mi = e.target.closest('.menu-item');
+    if (mi) {
+        const txt = mi.querySelector('.menu-text');
+        if (!txt) return;
+        if (/我的 AI 卡|My AI Cards/i.test(txt.textContent || '')) { showPage('market'); return; }
+        if (/我的股东卡|Shareholder Cards/i.test(txt.textContent || '')) { showPage('market'); return; }
+        if (/我的钱包|My Wallet/i.test(txt.textContent || '')) { return; }
+    }
+});
+
+/* ==================== 市场介绍 Modal ==================== */
+const mask = document.getElementById('cardInfoModal');
+function openModal(){ if (mask) mask.classList.add('active'); }
+function closeModal(){ if (mask) mask.classList.remove('active'); }
+document.addEventListener('click', function(e){
+    const t = e.target;
+    if (t.closest && t.closest('#btnMkIntro')) { openModal(); return; }
+    if (t.closest && t.closest('#modalCloseBtn')) { closeModal(); return; }
+    if (t === mask) { closeModal(); return; }
+});
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+/* ==================== 首页：生态分红池 金黄色闪电/线条粒子 分发系统 ==================== */
+(function(){
+    const pool = document.getElementById('ecoPoolCard');
+    if (!pool) return;
+    const wrap = document.getElementById('ecoParticles');
+    const circle = document.getElementById('ecoCircle');
+    const btnPeople = document.getElementById('btnEcoPeople');
+    const btnDividend = document.getElementById('btnEcoDividend');
+
+    let tPeople, tDividend;
+    let aliveCount = 0;
+    const MAX_ALIVE = 12;
+
+    function randomInt(a, b){ return a + Math.floor(Math.random() * (b - a + 1)); }
+    function pickTarget(which) {
+        return which === 'people' ? btnPeople : btnDividend;
+    }
+    function getCenter(el) {
+        const r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height };
+    }
+
+    function flashButton(btn) {
+        if (!btn) return;
+        btn.classList.remove('receive-flash');
+        // 强制重绘
+        void btn.offsetWidth;
+        btn.classList.add('receive-flash');
+    }
+
+    function createBoltSVG() {
+        // 金黄色闪电
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        const gradId = 'bp' + Math.floor(Math.random()*1e9);
+        const defs = document.createElementNS(svgNS, 'defs');
+        const lg = document.createElementNS(svgNS, 'linearGradient');
+        lg.setAttribute('id', gradId);
+        lg.setAttribute('x1','0'); lg.setAttribute('y1','0');
+        lg.setAttribute('x2','1'); lg.setAttribute('y2','1');
+        function stop(offset, color, opacity){
+            const s = document.createElementNS(svgNS, 'stop');
+            s.setAttribute('offset', offset);
+            s.setAttribute('stop-color', color);
+            s.setAttribute('stop-opacity', opacity);
+            return s;
+        }
+        lg.appendChild(stop('0%',   '#fff4c8', '1'));
+        lg.appendChild(stop('45%',  '#fde68a', '1'));
+        lg.appendChild(stop('100%', '#d4af37', '1'));
+        defs.appendChild(lg);
+        svg.appendChild(defs);
+        const p = document.createElementNS(svgNS, 'path');
+        p.setAttribute('d', 'M13 2 L5 15 h5 l-2 7 8-13 h-5 l2-7 Z');
+        p.setAttribute('fill', `url(#${gradId})`);
+        svg.appendChild(p);
+        svg.setAttribute('width', '20');
+        svg.setAttribute('height', '20');
+        svg.setAttribute('aria-hidden', 'true');
+        return svg;
+    }
+
+    function fireParticle(which) {
+        if (aliveCount > MAX_ALIVE) return;
+        if (document.hidden) return;
+        try {
+            const poolR = pool.getBoundingClientRect();
+            const cc = getCenter(circle);
+            const target = pickTarget(which);
+            const tc = getCenter(target);
+            const mode = Math.random() < 0.5 ? 'bolt' : 'line';
+
+            // 从圆环外沿上随机一个点射出，朝向目标方向（带少量角度）
+            const CIRCLE_R = 80; // 约等于 eco-circle半径
+            const baseAngle = Math.atan2(tc.y - cc.y, tc.x - cc.x);
+            const jitter = (Math.random() - 0.5) * 0.35; // 角度轻微扰动
+            const ang = baseAngle + jitter;
+            const sx = cc.x - poolR.left + Math.cos(ang) * CIRCLE_R;
+            const sy = cc.y - poolR.top  + Math.sin(ang) * CIRCLE_R;
+
+            const ex = tc.x - poolR.left;
+            const ey = tc.y - poolR.top;
+
+            const p = document.createElement('div');
+            p.className = 'eco-particle ' + mode;
+            p.style.left = sx + 'px';
+            p.style.top  = sy + 'px';
+            if (mode === 'bolt') {
+                p.appendChild(createBoltSVG());
+            }
+            // 让线条/闪电朝目标方向旋转
+            const rot = ang * 180 / Math.PI;
+            p.style.transformOrigin = mode === 'line' ? '0% 50%' : '50% 50%';
+            p.style.transform = `rotate(${rot}deg)`;
+
+            wrap.appendChild(p);
+            aliveCount++;
+
+            // 0~70ms 渐显
+            p.style.animation = 'ecoPartIn 70ms ease forwards';
+            // 开始飞行：贝塞尔（前慢后急）
+            const steps = 12;
+            const dx = ex - sx;
+            const dy = ey - sy;
+            const curved = (Math.random() - 0.5) * 40; // 弯曲幅度
+            const totalMs = mode === 'bolt' ? randomInt(520, 680) : randomInt(560, 720);
+            let start = null;
+            function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+            function tick(ts) {
+                if (!start) start = ts;
+                const t = Math.min(1, (ts - start) / totalMs);
+                const k = easeOutCubic(t);
+                // 二次贝塞尔，控制点向垂直方向偏移
+                const mx = sx + dx/2 + (-dy) * curved * 0.003;
+                const my = sy + dy/2 + ( dx) * curved * 0.003;
+                const x = (1-k)*(1-k)*sx + 2*(1-k)*k*mx + k*k*ex;
+                const y = (1-k)*(1-k)*sy + 2*(1-k)*k*my + k*k*ey;
+                p.style.left = x + 'px';
+                p.style.top  = y + 'px';
+                if (t < 0.15) {
+                    p.style.opacity = (t / 0.15);
+                } else if (t > 0.85) {
+                    p.style.opacity = Math.max(0, (1 - t) / 0.15);
+                } else {
+                    p.style.opacity = 1;
+                }
+                if (t < 1 && p.isConnected) {
+                    requestAnimationFrame(tick);
+                } else {
+                    flashButton(target);
+                    try { if (p.parentNode) p.parentNode.removeChild(p); } catch(_){}
+                    aliveCount = Math.max(0, aliveCount - 1);
+                }
+            }
+            requestAnimationFrame(tick);
+
+            // 2秒兜底，移除泄漏节点
+            setTimeout(() => {
+                if (p && p.parentNode) {
+                    try { p.parentNode.removeChild(p); } catch(_){}
+                    aliveCount = Math.max(0, aliveCount - 1);
+                }
+            }, totalMs + 400);
+        } catch(err) {
+            aliveCount = Math.max(0, aliveCount - 1);
+        }
+    }
+
+    // 分红人数：1.4~2.1秒 低频
+    function schedulePeople() {
+        tPeople = setTimeout(() => {
+            try { fireParticle('people'); } finally { schedulePeople(); }
+        }, randomInt(1400, 2100));
+    }
+    // 分红派币：0.65~1.05秒 + 30%概率追加 → 平均≈2秒内3次
+    function scheduleDividend() {
+        tDividend = setTimeout(() => {
+            try {
+                fireParticle('dividend');
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        if (!document.hidden) fireParticle('dividend');
+                    }, randomInt(150, 340));
+                }
+            } finally { scheduleDividend(); }
+        }, randomInt(650, 1050));
+    }
+
+    function startAll() {
+        stopAll();
+        // 延迟启动，保证布局OK
+        setTimeout(() => {
+            schedulePeople();
+            scheduleDividend();
+        }, 650);
+    }
+    function stopAll() {
+        if (tPeople)   { clearTimeout(tPeople);   tPeople = null; }
+        if (tDividend) { clearTimeout(tDividend); tDividend = null; }
+    }
+    window.restartEcoParticle = function(){
+        startAll();
+    };
+    document.addEventListener('visibilitychange', function(){
+        if (document.hidden) stopAll();
+        else if (document.querySelector('.page.home-page').classList.contains('active')) startAll();
+    });
+    startAll();
+})();
+
+/* ==================== 首页：圆环节点 + 随机闪电/竖线 视觉调度 ==================== */
+(function(){
+    const nodesContainer = document.getElementById('ecoCircleNodes');
+    if (!nodesContainer) return;
+
+    // 1) 生成12个等间距节点（每30°一个）
+    function createNodes() {
+        // 先清空容器（防重复调用）
+        nodesContainer.innerHTML = '';
+        const NODE_COUNT = 12;
+        // 节点距圆心距离（像素，匹配 eco-ring-svg r=92 比例，182px容器的85px半径）
+        const RADIUS_PX = 85;
+        for (let i = 0; i < NODE_COUNT; i++) {
+            const angleDeg = i * 30;
+            const node = document.createElement('div');
+            node.className = 'eco-node';
+            // 绕圆心旋转+偏移定位（top:50% left:50% 为圆心）
+            node.style.transform = `rotate(${angleDeg}deg) translateY(-${RADIUS_PX}px)`;
+            node.innerHTML = '<div class="node-dot"></div>';
+            node.dataset.index = String(i);
+            nodesContainer.appendChild(node);
+        }
+    }
+
+    // 2) 随机节点触发特效：闪电⚡ 或 竖向能量线
+    function randomNodeFx() {
+        if (document.hidden) return;
+        const homeActive = document.querySelector('.page.home-page')?.classList.contains('active');
+        if (!homeActive) return;
+
+        const nodes = document.querySelectorAll('.eco-circle-nodes .eco-node');
+        if (!nodes.length) return;
+
+        // 随机挑 1~2 个节点（偶尔双发更有活力）
+        const burstCount = Math.random() < 0.22 ? 2 : 1;
+        const used = new Set();
+        for (let b = 0; b < burstCount; b++) {
+            let idx;
+            let tries = 0;
+            do {
+                idx = Math.floor(Math.random() * nodes.length);
+                tries++;
+            } while (used.has(idx) && tries < 6);
+            used.add(idx);
+            const node = nodes[idx];
+            if (!node) continue;
+
+            // 节点闪烁
+            const dot = node.querySelector('.node-dot');
+            if (dot) {
+                dot.classList.remove('active');
+                void dot.offsetWidth;
+                dot.classList.add('active');
+            }
+
+            // 50% 闪电 / 50% 竖线（闪电略偏多更有科技感）
+            const isBolt = Math.random() > 0.42;
+            const fx = document.createElement('div');
+            fx.className = `eco-node-fx ${isBolt ? 'bolt' : 'vbar'}`;
+            if (isBolt) {
+                fx.textContent = '⚡';
+                fx.style.fontSize = '14px';
+                fx.style.fontWeight = '900';
+                fx.style.color = '#fff4c8';
+                fx.style.lineHeight = '1';
+                fx.style.textAlign = 'center';
+            }
+            fx.style.left = '50%';
+            fx.style.top = '50%';
+            fx.style.animation = isBolt
+                ? 'nodeFxBolt 0.8s ease-out forwards'
+                : 'nodeFxVbar 1.2s ease-out forwards';
+            node.appendChild(fx);
+
+            // 动画结束清理
+            const ttl = isBolt ? 900 : 1300;
+            setTimeout(() => {
+                try { if (fx.parentNode) fx.parentNode.removeChild(fx); } catch(_){}
+            }, ttl);
+        }
+    }
+
+    let nodeFxTimer = null;
+    function startNodeFx() {
+        stopNodeFx();
+        // 首次立即来一次
+        setTimeout(randomNodeFx, 450);
+        nodeFxTimer = setInterval(randomNodeFx, 1800);
+    }
+    function stopNodeFx() {
+        if (nodeFxTimer) { clearInterval(nodeFxTimer); nodeFxTimer = null; }
+    }
+
+    // 页面可见性 & Tab切换 → 暂停/恢复
+    document.addEventListener('visibilitychange', function(){
+        if (document.hidden) {
+            stopNodeFx();
+        } else if (document.querySelector('.page.home-page')?.classList.contains('active')) {
+            startNodeFx();
+        }
+    });
+    // 监听切页
+    const origShowPage = window.showPage;
+    window.showPage = function(pageName) {
+        if (typeof origShowPage === 'function') origShowPage.apply(this, arguments);
+        if (pageName === 'home') startNodeFx();
+        else stopNodeFx();
+    };
+
+    // 启动：DOM就绪后生成节点 + 启动调度
+    const boot = function() {
+        createNodes();
+        if (document.querySelector('.page.home-page')?.classList.contains('active')) {
+            startNodeFx();
+        }
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+})();
+
+/* ==================== 初始化 ==================== */
+// 三重保障确保 i18n 文本正确应用
+(function initI18n(){
+    const go = function(){ try { applyLanguage('zh-CN'); } catch(e){} };
+    go();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', go);
+    }
+    window.addEventListener('load', function(){ setTimeout(go, 30); });
+})();
+// 保持底部安全区（iOS）
+function fixSafeArea(){
+    const app = document.getElementById('app');
+    if (!app) return;
+    const h = Math.max(window.innerHeight || 667, 667);
+    app.style.minHeight = h + 'px';
+}
+window.addEventListener('resize', fixSafeArea);
+if (document.readyState !== 'loading') fixSafeArea();
+else document.addEventListener('DOMContentLoaded', fixSafeArea);
+</script>
+</body>
+</html>
