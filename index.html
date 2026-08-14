@@ -1653,6 +1653,285 @@
         .hs-cell.ai-conv .hs-cell-price.fiat .u,
         .hs-cell.sh-conv .hs-cell-price.fiat .u { font-size: 7.6px; }
 
+        /* ========== 首页·申请详情大按钮（比 eco-btns 大一圈，居中长方形） ========== */
+        .hs-apply-btn {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            min-height: 54px;
+            padding: 10px 15px;
+            display: flex; align-items: center; gap: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(212,175,55,0.42);
+            background:
+                radial-gradient(260px 80px at 0% 0%, rgba(253,230,138,0.22), transparent 60%),
+                radial-gradient(260px 80px at 100% 100%, rgba(212,175,55,0.16), transparent 60%),
+                linear-gradient(145deg, rgba(30,24,10,0.92), rgba(18,14,32,0.95));
+            box-shadow:
+                0 0 0 1px rgba(253,230,138,0.08),
+                0 8px 22px rgba(0,0,0,0.38),
+                0 0 22px rgba(212,175,55,0.12);
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        }
+        .hs-apply-btn:active { transform: translateY(1px) scale(.992); box-shadow: 0 3px 12px rgba(0,0,0,0.35), 0 0 16px rgba(212,175,55,0.18); border-color: rgba(253,230,138,0.65); }
+        .hs-ab-shine {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 35%, rgba(253,230,138,0.22) 50%, rgba(255,255,255,0.04) 65%, transparent 100%);
+            transform: translateX(-60%) skewX(-18deg);
+            filter: blur(1px);
+            animation: hsBtnShine 6s ease-in-out infinite;
+        }
+        @keyframes hsBtnShine { 0%{transform: translateX(-60%) skewX(-18deg); opacity:0;} 10%{opacity:1;} 55%{transform: translateX(120%) skewX(-18deg); opacity:.9;} 60%{opacity:0;} 100%{transform: translateX(120%) skewX(-18deg); opacity:0;} }
+        .hs-ab-icon {
+            width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(253,230,138,0.26), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.26);
+            box-shadow: 0 0 8px rgba(253,230,138,0.15);
+            font-size: 15px;
+        }
+        .hs-ab-text { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
+        .hs-ab-t {
+            font-size: 14px; font-weight: 900; letter-spacing: 0.02em; line-height: 1.1;
+            background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.25));
+        }
+        .hs-ab-s { font-size: 10px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.14em; }
+        .hs-ab-arrow {
+            width: 22px; height: 22px; border-radius: 999px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(253,230,138,0.3), rgba(212,175,55,0.1));
+            border: 1px solid rgba(253,230,138,0.28);
+            color: var(--accent-gold-2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; line-height: 1;
+            transform: translateY(-0.5px);
+        }
+
+        /* ========== 申请详情覆盖层（90% 高，不遮挡 tab-bar） ========== */
+        .apply-overlay {
+            position: absolute; left: 0; right: 0;
+            top: 0; height: 90%;
+            z-index: 80;   /* 比 tab-bar(50) 高，比 modal-mask(100) 低；保证底部 tab 看得见 */
+            background: linear-gradient(180deg, rgba(4,8,16,0.0) 0%, rgba(4,8,16,0.56) 10%);
+            pointer-events: none;  /* 关闭时不拦截点击 */
+            opacity: 0;
+            transition: opacity .22s ease;
+        }
+        .apply-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .apply-sheet {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            height: calc(100% - 36px);
+            border-radius: 24px 24px 0 0;
+            background:
+                radial-gradient(520px 240px at 15% 0%, rgba(212,175,55,0.16), transparent 60%),
+                radial-gradient(520px 240px at 85% 0%, rgba(139,92,246,0.16), transparent 60%),
+                linear-gradient(180deg, #131a2e 0%, #0c1223 60%, #0a0f1f 100%);
+            border-top: 1px solid var(--glass-border-strong);
+            box-shadow: 0 -24px 70px rgba(0,0,0,0.55);
+            transform: translateY(14px);
+            transition: transform .26s cubic-bezier(.2,.82,.2,1);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            padding: 0 0 calc(env(safe-area-inset-bottom) + 4px);
+        }
+        .apply-overlay.active .apply-sheet { transform: translateY(0); }
+        .apply-top {
+            position: relative;
+            padding: 8px 16px 10px;
+            flex-shrink: 0;
+        }
+        .apply-grip {
+            width: 44px; height: 4px; border-radius: 999px;
+            background: rgba(148,163,184,0.35);
+            margin: 4px auto 10px;
+        }
+        .apply-x {
+            position: absolute; top: 12px; right: 14px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background .18s ease, transform .18s ease;
+        }
+        .apply-x:hover { background: rgba(255,255,255,0.12); }
+        .apply-x:active { transform: scale(.94); }
+        .apply-title {
+            margin: 2px 0 0;
+            font-size: 19px; font-weight: 900; letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 6px rgba(253,230,138,0.3));
+            line-height: 1.2;
+        }
+        .apply-sub {
+            margin: 3px 0 0;
+            font-size: 10.5px; color: var(--text-tertiary);
+            font-weight: 600; letter-spacing: 0.12em;
+        }
+        /* 汇总两小卡 */
+        .apply-stat-row {
+            padding: 6px 16px 10px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .apply-stat {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.045);
+            position: relative; overflow: hidden;
+        }
+        .apply-stat.gold {
+            background: linear-gradient(145deg, rgba(253,230,138,0.08), rgba(212,175,55,0.03));
+            border-color: rgba(253,230,138,0.18);
+        }
+        .apply-stat.purple {
+            background: linear-gradient(145deg, rgba(233,213,255,0.08), rgba(139,92,246,0.03));
+            border-color: rgba(196,181,253,0.2);
+        }
+        .as-icon {
+            width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .apply-stat.gold   .as-icon { background: linear-gradient(135deg, rgba(253,230,138,0.28), rgba(212,175,55,0.08)); color: #fff7d6; }
+        .apply-stat.purple .as-icon { background: linear-gradient(135deg, rgba(233,213,255,0.28), rgba(139,92,246,0.08)); color: #f5f3ff; }
+        .as-body { flex: 1; min-width: 0; }
+        .as-l { font-size: 9.2px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
+        .as-v { margin-top: 3.5px; display: flex; align-items: baseline; gap: 2px; line-height: 1; }
+        .as-v .n { font-size: 14px; font-weight: 900; letter-spacing: -0.01em; }
+        .as-v .u { font-size: 9px; color: var(--text-quaternary); font-weight: 700; }
+        .apply-stat.gold   .as-v .n { color: var(--accent-gold-2); }
+        .apply-stat.purple .as-v .n { color: #e9d5ff; }
+
+        /* ========== 申请详情·5列表格（金边玻璃态） ========== */
+        .apply-tbl-wrap {
+            padding: 4px 14px 0;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .apply-tbl {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+            flex-shrink: 0;
+        }
+        .apply-tbl thead th {
+            position: sticky; top: 0; z-index: 2;
+            padding: 7px 6px;
+            font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+            color: #c9b27a;
+            background: linear-gradient(180deg, rgba(212,175,55,0.10), rgba(212,175,55,0.02));
+            border-top: 1px solid rgba(253,230,138,0.22);
+            border-bottom: 1px solid rgba(253,230,138,0.18);
+            text-align: left;
+        }
+        .apply-tbl thead th:first-child {
+            border-radius: 9px 0 0 9px;
+            border-left: 1px solid rgba(253,230,138,0.22);
+            text-align: center;
+        }
+        .apply-tbl thead th:last-child {
+            border-radius: 0 9px 9px 0;
+            border-right: 1px solid rgba(253,230,138,0.22);
+            text-align: right;
+        }
+        .apply-tbl tbody {
+            display: block;  /* 允许 tbody 滚动 */
+            max-height: 100%;
+            overflow-y: auto;
+            padding-bottom: 4px;
+        }
+        .apply-tbl thead,
+        .apply-tbl tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        .apply-tbl tbody tr {
+            position: relative;
+            background: linear-gradient(145deg, rgba(255,255,255,0.022), rgba(255,255,255,0.008));
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 9px;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+        .apply-tbl tbody tr:hover { border-color: rgba(253,230,138,0.22); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
+        .apply-tbl tbody td {
+            padding: 7px 6px;
+            font-size: 10.2px;
+            line-height: 1.25;
+            color: var(--text-primary);
+            border: none;
+            word-break: break-word;
+        }
+        .apply-tbl td.col-i { width: 38px; text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
+        .apply-tbl th.col-i { width: 38px; }
+        .apply-tbl td.col-n { width: 2.2fr; }
+        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.6px; width: 2.2fr; }
+        .apply-tbl td.col-y { width: 2fr; }
+        .apply-tbl td.col-q { width: 1.4fr; text-align: right; font-weight: 900; letter-spacing: -0.01em; }
+        .apply-tbl th.col-q { text-align: right; }
+        .apply-tbl td.col-n .cn-name {
+            display: block;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.25;
+            font-size: 10.4px;
+        }
+        .apply-tbl td.col-n .cn-en {
+            display: block;
+            font-size: 8.4px;
+            color: var(--text-quaternary);
+            letter-spacing: 0.04em;
+            font-weight: 500;
+            margin-top: 1.5px;
+        }
+        /* 类型标签：AI 金卡 / 股东紫卡 */
+        .type-pill {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2.5px 6px;
+            border-radius: 999px;
+            font-size: 8.5px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            line-height: 1;
+        }
+        .type-pill.ai {
+            background: linear-gradient(135deg, rgba(253,230,138,0.2), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.3);
+            color: #fff1b8;
+        }
+        .type-pill.sh {
+            background: linear-gradient(135deg, rgba(233,213,255,0.22), rgba(139,92,246,0.08));
+            border: 1px solid rgba(196,181,253,0.34);
+            color: #ede9fe;
+        }
+        .qty-pi { color: var(--accent-gold-2); }
+        .qty-pi .q-u { font-size: 8.5px; color: var(--accent-gold-2); opacity: .8; margin-left: 1px; font-weight: 700; }
+        /* 脚注 */
+        .apply-foot {
+            flex-shrink: 0;
+            padding: 10px 16px 12px;
+            font-size: 9px; color: var(--text-quaternary);
+            text-align: center;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            margin-top: 4px;
+        }
+
         /* 响应式（更窄屏） */
         @media (max-width: 360px) {
             .ai-card-wrapper { width: 270px; height: 170px; }
@@ -1881,7 +2160,73 @@
             </div>
 
         </div>
+
+        <!-- ============= 申请详情大按钮（居中，长方形，比eco-btn大一圈） ============= -->
+        <div class="hs-apply-btn-wrap" style="margin: 10px var(--space-md) 18px; display:flex; justify-content:center;">
+            <button class="hs-apply-btn" id="btnOpenApplyDetail" type="button">
+                <span class="hs-ab-shine"></span>
+                <span class="hs-ab-icon">📄</span>
+                <span class="hs-ab-text">
+                    <span class="hs-ab-t" data-i18n="hs_apply_title">派友AI股东卡</span>
+                    <span class="hs-ab-s" data-i18n="hs_apply_sub">申请详情 · APPLY DETAIL</span>
+                </span>
+                <span class="hs-ab-arrow">›</span>
+            </button>
+        </div>
     </section>
+
+    <!-- ================= 申请详情覆盖层（90% 高度，tab-bar 常驻不覆盖） ================= -->
+    <div class="apply-overlay" id="applyOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="apply-sheet" role="document">
+            <!-- 顶部把手 + 标题 + 关闭 -->
+            <div class="apply-top">
+                <div class="apply-grip"></div>
+                <button class="apply-x" id="btnCloseApplyDetail" type="button" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <h3 class="apply-title" data-i18n="apply_title">今日详情</h3>
+                <p class="apply-sub" data-i18n="apply_sub">今日申请记录 · TODAY RECORDS</p>
+            </div>
+            <!-- 汇总信息（迷你2卡） -->
+            <div class="apply-stat-row">
+                <div class="apply-stat gold">
+                    <div class="as-icon">🤖</div>
+                    <div class="as-body">
+                        <div class="as-l" data-i18n="apply_s_ai_lbl">派友AI卡申请</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_ai_v">842</span><span class="u" data-i18n="apply_s_u">笔</span></div>
+                    </div>
+                </div>
+                <div class="apply-stat purple">
+                    <div class="as-icon">💎</div>
+                    <div class="as-body">
+                        <div class="as-l" data-i18n="apply_s_sh_lbl">派友股东卡申请</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_sh_v">442</span><span class="u" data-i18n="apply_s_u">笔</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 表头 + 数据表格（5 列：序号 / 名称 / 申请时间 / 类型 / 数量） -->
+            <div class="apply-tbl-wrap">
+                <table class="apply-tbl">
+                    <thead>
+                        <tr>
+                            <th class="col-i" data-i18n="apply_th_id">#</th>
+                            <th class="col-n" data-i18n="apply_th_name">名称</th>
+                            <th class="col-t" data-i18n="apply_th_time">申请时间</th>
+                            <th class="col-y" data-i18n="apply_th_type">类型</th>
+                            <th class="col-q" data-i18n="apply_th_qty">数量</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applyTblBody">
+                        <!-- 由 JS 注入 10 行样例数据 -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- 底部脚注 -->
+            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 1,284 条记录</div>
+        </div>
+    </div>
 
     <!-- ================= 市场页 ================= -->
     <section class="page market-page" data-page="market">
@@ -2726,6 +3071,28 @@ const I18N = {
         'hs_sh_r2_fiat': '¥ 272.86',
         'hs_sh_r2_cur':  'CNY',
 
+        // 申请详情大按钮
+        'hs_apply_title': '派友AI股东卡',
+        'hs_apply_sub':   '申请详情 · APPLY DETAIL',
+
+        // 申请详情覆盖层（今日详情 Modal）
+        'apply_title': '今日详情',
+        'apply_sub':   '今日申请记录 · TODAY RECORDS',
+        'apply_s_ai_lbl':'派友AI卡申请',
+        'apply_s_ai_v':  '842',
+        'apply_s_sh_lbl':'派友股东卡申请',
+        'apply_s_sh_v':  '442',
+        'apply_s_u':     '笔',
+        'apply_th_id':   '序号',
+        'apply_th_name': '名称',
+        'apply_th_time': '申请时间',
+        'apply_th_type': '类型',
+        'apply_th_qty':  '数量',
+        'apply_type_ai': '派友AI卡',
+        'apply_type_sh': '派友股东卡',
+        'apply_unit_pi': 'π',
+        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 1,284 条记录',
+
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
         'cg_hero_p1':       '<span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。',
@@ -2911,6 +3278,28 @@ const I18N = {
         'hs_sh_r2_fiat': '$ 38.12',
         'hs_sh_r2_cur':  'USDT',
 
+        // Big apply button
+        'hs_apply_title': 'PiFriends AI & Share Card',
+        'hs_apply_sub':   'APPLY DETAILS · 申请详情',
+
+        // Apply overlay (Today Detail Modal)
+        'apply_title': 'Today Details',
+        'apply_sub':   'TODAY APPLICATION RECORDS · 今日申请记录',
+        'apply_s_ai_lbl':'AI Card Applications',
+        'apply_s_ai_v':  '842',
+        'apply_s_sh_lbl':'Shareholder Card Applications',
+        'apply_s_sh_v':  '442',
+        'apply_s_u':     'apps',
+        'apply_th_id':   '#',
+        'apply_th_name': 'Name',
+        'apply_th_time': 'Apply Time',
+        'apply_th_type': 'Type',
+        'apply_th_qty':  'Qty',
+        'apply_type_ai': 'AI Card',
+        'apply_type_sh': 'Shareholder Card',
+        'apply_unit_pi': 'π',
+        'apply_foot':    '※ Data auto refresh every 5 min · Total 1,284 records',
+
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
         'cg_hero_p1':       '<span class="hl-red">Important:</span> Converting any crypto (including Pi) within China is <span class="hl-red">illegal</span>. This redemption must be applied via official group chat channels, where support staff submit applications to the company on your behalf.',
@@ -3058,6 +3447,7 @@ const I18N = {
 let CUR_LANG = 'zh-CN';
 function applyLanguage(lang) {
     CUR_LANG = lang in I18N ? lang : 'zh-CN';
+    window.CUR_LANG = CUR_LANG;
     const dict = I18N[CUR_LANG];
     const els = document.querySelectorAll('[data-i18n]');
     for (let i = 0; i < els.length; i++) {
@@ -3530,6 +3920,116 @@ function fixSafeArea(){
 window.addEventListener('resize', fixSafeArea);
 if (document.readyState !== 'loading') fixSafeArea();
 else document.addEventListener('DOMContentLoaded', fixSafeArea);
+
+/* ==================== 申请详情：覆盖层开关 + 5 列样例数据注入 ==================== */
+(function initApplyDetail(){
+    const overlay = document.getElementById('applyOverlay');
+    const btnOpen = document.getElementById('btnOpenApplyDetail');
+    const btnClose = document.getElementById('btnCloseApplyDetail');
+    const tbody = document.getElementById('applyTblBody');
+
+    function openApply(e){
+        if (e) e.stopPropagation();
+        if (!overlay) return;
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('apply-open');
+    }
+    function closeApply(e){
+        if (e) e.stopPropagation();
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('apply-open');
+    }
+
+    if (btnOpen) btnOpen.addEventListener('click', openApply);
+    if (btnClose) btnClose.addEventListener('click', closeApply);
+    // 点击 overlay 空白背景处（非 sheet 内部）→ 关闭
+    if (overlay) overlay.addEventListener('click', function(e){
+        if (e.target === overlay) closeApply();
+    });
+    // ESC 键关闭
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeApply();
+    });
+
+    /* ---- 5 列样例数据：序号/名称(中英双行)/申请时间/类型(AI 金 或 股东 紫)/数量 π ---- */
+    const NAME_ZH = [
+        ['王星辰','Wang Xingchen'],
+        ['李泽洋','Li Zeyang'],
+        ['张雨桐','Zhang Yutong'],
+        ['刘逸凡','Liu Yifan'],
+        ['陈诗涵','Chen Shihan'],
+        ['周浩然','Zhou Haoran'],
+        ['吴瑞雪','Wu Ruixue'],
+        ['赵佳怡','Zhao Jiayi'],
+        ['黄俊杰','Huang Junjie'],
+        ['林诗雨','Lin Shiyu'],
+        ['郑明浩','Zheng Minghao'],
+        ['孙婉清','Sun Wanqing'],
+    ];
+    // 10 行：类型 AI / SH 交替，数量 1~50 π 之间小数，时间今日随机
+    const rows = [];
+    const today = new Date();
+    const pad = (n) => String(n).padStart(2,'0');
+    const dateStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+    for (let i = 0; i < 10; i++){
+        const isAI = (i % 2 !== 0); // 1,3,5,7,9 = AI 卡；0,2,4,6,8 = 股东卡
+        const hour = 8 + Math.floor(i * 0.9) + (Math.floor(Math.random()*2));
+        const min  = 10 + Math.floor(Math.random()*48);
+        const sec  = Math.floor(Math.random()*60);
+        const qty = isAI
+            ? (1.2 + Math.random() * 4.2).toFixed(2)   // AI 卡：小
+            : (5 + Math.random() * 48).toFixed(2);     // 股东卡：大
+        rows.push({
+            id: String(i + 1).padStart(2,'0'),
+            name_zh: NAME_ZH[i][0],
+            name_en: NAME_ZH[i][1],
+            time: `${dateStr} ${pad(hour)}:${pad(min)}:${pad(sec)}`,
+            type: isAI ? 'ai' : 'sh',
+            qty: qty
+        });
+    }
+
+    function renderRows(){
+        if (!tbody) return;
+        const dict = I18N[window.CUR_LANG || 'zh-CN'] || {};
+        const tAI = dict['apply_type_ai'] || '派友AI卡';
+        const tSH = dict['apply_type_sh'] || '派友股东卡';
+        const u   = dict['apply_unit_pi'] || 'π';
+        const frag = document.createDocumentFragment();
+        rows.forEach(function(r){
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="col-i">${r.id}</td>
+                <td class="col-n">
+                    <span class="cn-name">${r.name_zh}</span>
+                    <span class="cn-en">${r.name_en.toUpperCase()}</span>
+                </td>
+                <td class="col-t">${r.time}</td>
+                <td class="col-y">
+                    <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
+                </td>
+                <td class="col-q">
+                    <span class="qty-pi"><span class="q-n">${r.qty}</span><span class="q-u"> ${u}</span></span>
+                </td>`;
+            frag.appendChild(tr);
+        });
+        tbody.innerHTML = '';
+        tbody.appendChild(frag);
+    }
+    // 初始渲染
+    renderRows();
+    // 切语言时重新渲染（类型标签、单位会变）
+    const origApplyLang = window.applyLanguage;
+    const _old = window.applyLanguage;
+    window.applyLanguage = function(lang){
+        const ret = _old.apply(this, arguments);
+        try { renderRows(); } catch(e){}
+        return ret;
+    };
+})();
 </script>
 </body>
 </html>
