@@ -992,11 +992,11 @@
             z-index: 50;
         }
         .tab-bar {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid; grid-template-columns: repeat(4, 1fr);
             background: rgba(255,255,255,0.035);
             border: 1px solid var(--glass-border);
             border-radius: 18px;
-            padding: 8px 6px;
+            padding: 8px 5px;
             position: relative;
         }
         .tab-item {
@@ -1104,6 +1104,196 @@
             border: 1px dashed rgba(253,230,138,0.25);
             font-size: 12px; color: var(--text-tertiary); line-height: 1.6;
         }
+
+        /* ========== 对话页：兑换区域（加密合规声明 + 群聊通道 + 4步流程） ========== */
+        .cg-hero {
+            margin: 0 var(--space-md) 10px;
+            padding: 14px 14px 12px;
+            border-radius: 16px;
+            background:
+                linear-gradient(145deg, rgba(30,22,46,0.92) 0%, rgba(14,20,36,0.96) 55%, rgba(36,22,20,0.96) 100%);
+            border: 1px solid rgba(139,92,246,0.25);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,175,55,0.08) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        .cg-hero::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(233,213,255,0.6) 0%, rgba(212,175,55,0.25) 30%, rgba(233,213,255,0.55) 65%, rgba(212,175,55,0.25) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .cg-hero-title {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 17px; font-weight: 900; letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #fde68a 0%, #e9d5ff 50%, #fde68a 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(196,181,253,0.28));
+        }
+        .cg-hero-title .emoji { -webkit-text-fill-color: initial; }
+        .cg-hero-sub {
+            position: relative; z-index: 1;
+            margin-top: 5px;
+            font-size: 11.5px; line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .cg-hero-sub p { margin: 0; }
+        .cg-hero-sub p + p { margin-top: 6px; }
+        .cg-hero-sub .hl-gold { color: var(--accent-gold-2); font-weight: 700; }
+        .cg-hero-sub .hl-red  { color: #f87171; font-weight: 700; }
+
+        /* 群聊入口卡片组 */
+        .cg-channels-title {
+            margin: 12px var(--space-md) 6px;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 800; letter-spacing: 0.03em;
+            color: var(--text-primary);
+        }
+        .cg-channels-title::before {
+            content: ''; width: 3px; height: 14px; border-radius: 2px;
+            background: linear-gradient(180deg, var(--accent-gold-2), var(--accent-purple-2));
+        }
+        .cg-channels-grid {
+            margin: 0 var(--space-md) 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+        }
+        .cg-channel-card {
+            position: relative;
+            border-radius: 13px;
+            padding: 10px 10px;
+            background: linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 100%);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; gap: 9px;
+            transition: transform 0.18s ease, box-shadow 0.22s ease, border-color 0.18s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .cg-channel-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(212,175,55,0.3);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+        }
+        .cg-channel-card .cg-icon {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; font-weight: 900;
+            flex-shrink: 0;
+        }
+        .cg-channel-card.mail .cg-icon {
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            color: #eff6ff;
+            box-shadow: 0 0 0 1px rgba(96,165,250,0.4);
+        }
+        .cg-channel-card.tg .cg-icon {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #ecfeff;
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+        }
+        .cg-channel-card.qq .cg-icon {
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            color: #eef2ff;
+            box-shadow: 0 0 0 1px rgba(167,139,250,0.4);
+        }
+        .cg-channel-card.tk .cg-icon {
+            background: linear-gradient(135deg, #fde68a, #f59e0b);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.4);
+        }
+        .cg-channel-card .cg-info { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1.5px; }
+        .cg-channel-card .cg-name {
+            font-size: 12px; font-weight: 800; color: var(--text-primary);
+        }
+        .cg-channel-card .cg-val {
+            font-size: 10px; color: var(--text-tertiary);
+            font-family: 'SF Mono','Menlo',monospace;
+            letter-spacing: -0.01em;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* 4步流程 */
+        .cg-steps-title {
+            margin: 16px var(--space-md) 8px;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 800; letter-spacing: 0.03em;
+            color: var(--text-primary);
+        }
+        .cg-steps-title::before {
+            content: ''; width: 3px; height: 14px; border-radius: 2px;
+            background: linear-gradient(180deg, var(--accent-gold-2), #10b981);
+        }
+        .cg-steps {
+            margin: 0 var(--space-md) 2px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 4px 12px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .cg-step {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            gap: 10px;
+            padding: 12px 0;
+            position: relative;
+            align-items: flex-start;
+        }
+        .cg-step + .cg-step {
+            border-top: 1px dashed rgba(255,255,255,0.06);
+        }
+        .cg-step-num {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 900;
+            background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
+            color: #3b2c06;
+            box-shadow: 0 3px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+            position: relative; z-index: 1;
+            flex-shrink: 0;
+        }
+        .cg-step + .cg-step::before {
+            content: ''; position: absolute;
+            left: 15px; top: -4px;
+            width: 2px; height: 10px;
+            background: linear-gradient(180deg, rgba(212,175,55,0.4), rgba(212,175,55,0.1));
+            z-index: 0;
+        }
+        .cg-step-title {
+            font-size: 12.5px; font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+        .cg-step-title .accent { color: var(--accent-gold-2); }
+        .cg-step-desc {
+            font-size: 11px; line-height: 1.55;
+            color: var(--text-tertiary);
+        }
+        .cg-step-desc .strong { color: var(--text-secondary); font-weight: 700; }
+        .cg-step-timing {
+            margin-top: 5px;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 7px; border-radius: 999px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.22);
+            color: #6ee7b7;
+            font-size: 9.5px; font-weight: 700;
+        }
+        .cg-step-timing .star { color: #fde68a; }
+
+        /* 免责声明页脚提示 */
+        .cg-foot-tip {
+            margin: 14px var(--space-md) 20px;
+            padding: 9px 12px;
+            border-radius: 11px;
+            border: 1px dashed rgba(248,113,113,0.3);
+            background: rgba(248,113,113,0.05);
+            font-size: 10.5px; line-height: 1.6;
+            color: #fca5a5;
+        }
+        .cg-foot-tip b { color: #f87171; font-weight: 800; }
 
         /* 响应式（更窄屏） */
         @media (max-width: 360px) {
@@ -1803,6 +1993,126 @@
         </div>
     </section>
 
+    <!-- ================= 对话页 · 兑换区域 ================= -->
+    <section class="page chat-page" data-page="chat">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang4">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <!-- 1. 兑换主标题 & 合规声明 Hero -->
+        <div class="cg-hero">
+            <div class="cg-hero-title">
+                <span class="emoji">💱</span>
+                <span data-i18n="cg_hero_title">兑换区域</span>
+            </div>
+            <div class="cg-hero-sub">
+                <p data-i18n="cg_hero_p1">
+                    <span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。
+                </p>
+                <p data-i18n="cg_hero_p2">
+                    <span class="hl-gold">您只需准备：</span>本人的收款账户、收款姓名、以及派币密语，即可向客服申请兑换；公司审核通过后将<span class="hl-gold">直接打款</span>，您不承担任何变现风险。
+                </p>
+                <p data-i18n="cg_hero_p3">
+                    请按照下方 <span class="hl-gold">4 步流程</span> 完成申请，全程通过群内官方客服对接，任何私下交易切勿相信。
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. 对话/联系通道：邮箱 + 电报 + QQ + Teletalk（用户指定 4 个群） -->
+        <div class="cg-channels-title"><span data-i18n="cg_channels_title">📮 联系与群聊通道（任选其一）</span></div>
+        <div class="cg-channels-grid">
+            <!-- 邮箱 -->
+            <div class="cg-channel-card mail">
+                <div class="cg-icon">✉️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_mail_name">官方邮箱</div>
+                    <div class="cg-val">pibot@pi-support.vip</div>
+                </div>
+            </div>
+            <!-- 电报群 -->
+            <div class="cg-channel-card tg">
+                <div class="cg-icon">✈️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_tg_name">Telegram 群</div>
+                    <div class="cg-val">@pi_network_cn</div>
+                </div>
+            </div>
+            <!-- QQ群 -->
+            <div class="cg-channel-card qq">
+                <div class="cg-icon">Q</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_qq_name">QQ 官方群</div>
+                    <div class="cg-val">8652 794 31</div>
+                </div>
+            </div>
+            <!-- Teletalk（按用户原文保留） -->
+            <div class="cg-channel-card tk">
+                <div class="cg-icon">🗨️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_tk_name">Teletalk 群</div>
+                    <div class="cg-val">group:pi_friends_chat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 4 步流程表 -->
+        <div class="cg-steps-title"><span data-i18n="cg_steps_title">🧾 兑换申请 · 4 步流程</span></div>
+        <div class="cg-steps">
+            <div class="cg-step">
+                <div class="cg-step-num">1</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s1_title">找到下列任意一个<span class="accent">官方群聊</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s1_desc">
+                        选择上方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。
+                    </div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">2</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s2_title"><span class="accent">申请加入</span>并查看群公告</span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s2_desc">
+                        入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。
+                    </div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">3</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s3_title">提交<span class="accent">账号 · 收款方式 · 密语</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s3_desc">
+                        向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。
+                    </div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">4</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s4_title">提交申请，<span class="accent">坐等到账</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s4_desc">
+                        客服汇总后统一向公司提交，审批通过后直接打款到您的 <span class="strong">支付宝 / 微信 / 银行卡</span>，您无需承担任何变现风险。
+                    </div>
+                    <div class="cg-step-timing">
+                        <span class="star">⭐</span>
+                        <span data-i18n="cg_s4_timing">快则 24h · 慢则 72h 到账</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 页脚红色虚线免责提示 -->
+        <div class="cg-foot-tip">
+            <b data-i18n="cg_foot_warn">⚠️ 再次提示：</b>
+            <span data-i18n="cg_foot_txt">本页面仅展示流程说明，不提供任何线上直接变现功能；请务必通过上方官方群内客服对接，任何要求您直接转币或先支付手续费的均为诈骗。</span>
+        </div>
+    </section>
+
     <!-- ================= 底部Tab ================= -->
     <footer class="app-footer">
         <div class="tab-bar">
@@ -1826,6 +2136,14 @@
                     <circle cx="17" cy="5.5" r="0.9"/>
                 </svg>
                 <span data-i18n="tab_market">市场</span>
+            </div>
+            <div class="tab-item" data-tab="chat">
+                <!-- 对话气泡 线条（两个对话气泡） -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 5.5h13a2 2 0 0 1 2 2v5.2a2 2 0 0 1-2 2h-3.8l-3.2 2.8v-2.8H4a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/>
+                    <path d="M9.3 19.2h8.2a2 2 0 0 0 2-2v-4"/>
+                </svg>
+                <span data-i18n="tab_chat">对话</span>
             </div>
             <div class="tab-item" data-tab="my">
                 <!-- 人物轮廓 线条 -->
@@ -1885,7 +2203,31 @@ const I18N = {
         // 底部Tab
         'tab_home':   '首页',
         'tab_market': '市场',
+        'tab_chat':   '对话',
         'tab_my':     '我的',
+
+        // 对话页 · 兑换区域
+        'cg_hero_title':    '兑换区域',
+        'cg_hero_p1':       '<span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。',
+        'cg_hero_p2':       '<span class="hl-gold">您只需准备：</span>本人的收款账户、收款姓名、以及派币密语，即可向客服申请兑换；公司审核通过后将<span class="hl-gold">直接打款</span>，您不承担任何变现风险。',
+        'cg_hero_p3':       '请按照下方 <span class="hl-gold">4 步流程</span> 完成申请，全程通过群内官方客服对接，任何私下交易切勿相信。',
+        'cg_channels_title': '📮 联系与群聊通道（任选其一）',
+        'cg_c_mail_name':    '官方邮箱',
+        'cg_c_tg_name':      'Telegram 群',
+        'cg_c_qq_name':      'QQ 官方群',
+        'cg_c_tk_name':      'Teletalk 群',
+        'cg_steps_title':    '🧾 兑换申请 · 4 步流程',
+        'cg_s1_title':       '找到下列任意一个<span class="accent">官方群聊</span>',
+        'cg_s1_desc':        '选择上方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。',
+        'cg_s2_title':       '<span class="accent">申请加入</span>并查看群公告',
+        'cg_s2_desc':        '入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。',
+        'cg_s3_title':       '提交<span class="accent">账号 · 收款方式 · 密语</span>',
+        'cg_s3_desc':        '向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。',
+        'cg_s4_title':       '提交申请，<span class="accent">坐等到账</span>',
+        'cg_s4_desc':        '客服汇总后统一向公司提交，审批通过后直接打款到您的 <span class="strong">支付宝 / 微信 / 银行卡</span>，您无需承担任何变现风险。',
+        'cg_s4_timing':      '快则 24h · 慢则 72h 到账',
+        'cg_foot_warn':      '⚠️ 再次提示：',
+        'cg_foot_txt':       '本页面仅展示流程说明，不提供任何线上直接变现功能；请务必通过上方官方群内客服对接，任何要求您直接转币或先支付手续费的均为诈骗。',
 
         // 首页AI股东卡
         'ai_card_title':        '派友AI股东卡',
@@ -2015,7 +2357,31 @@ const I18N = {
         // Tabs
         'tab_home':   'Home',
         'tab_market': 'Market',
+        'tab_chat':   'Chat',
         'tab_my':     'Me',
+
+        // Chat page · Redemption Area
+        'cg_hero_title':    'Redemption Zone',
+        'cg_hero_p1':       '<span class="hl-red">Important:</span> Converting any crypto (including Pi) within China is <span class="hl-red">illegal</span>. This redemption must be applied via official group chat channels, where support staff submit applications to the company on your behalf.',
+        'cg_hero_p2':       '<span class="hl-gold">All you need to prepare:</span> your receiving account, payee name, and Pi passphrase. Submit to support; after approval the company will <span class="hl-gold">send funds directly</span> — you bear zero cash-out risk.',
+        'cg_hero_p3':       'Please follow the <span class="hl-gold">4-Step process</span> below. All operations must go through verified customer support in the groups. Do NOT trust any private deals.',
+        'cg_channels_title': '📮 Contact & Group Channels (Pick Any)',
+        'cg_c_mail_name':    'Official Mail',
+        'cg_c_tg_name':      'Telegram Group',
+        'cg_c_qq_name':      'QQ Official Group',
+        'cg_c_tk_name':      'Teletalk Group',
+        'cg_steps_title':    '🧾 Redemption · 4-Step Process',
+        'cg_s1_title':       'Join any <span class="accent">official group chat</span>',
+        'cg_s1_desc':        'Pick one channel above: <span class="strong">Email / Telegram / QQ / Teletalk</span>, join the group or send an email.',
+        'cg_s2_title':       '<span class="accent">Apply to join</span> and read pinned rules',
+        'cg_s2_desc':        'After joining, <span class="strong">read the pinned announcement first</span>. All redemptions must follow the rules and reach out to verified customer support.',
+        'cg_s3_title':       'Submit <span class="accent">Account · Payee · Passphrase</span>',
+        'cg_s3_desc':        'Provide support with: ① your <span class="strong">Pi account nickname</span>; ② Payee method — <span class="strong">Bank / Alipay / WeChat</span> — plus real name; ③ your <span class="strong">redeem passphrase</span> for identity verification.',
+        'cg_s4_title':       'Submit & <span class="accent">wait for payout</span>',
+        'cg_s4_desc':        'Support submits your application to the company. Approved funds are sent directly to your <span class="strong">Alipay / WeChat / Bank</span>. No cash-out risk on your side.',
+        'cg_s4_timing':      'Fast 24h · Slow 72h to receive',
+        'cg_foot_warn':      '⚠️ Reminder:',
+        'cg_foot_txt':       'This page only illustrates the process. No online cash-out function is provided here. Always use verified CS in the channels above. Anyone asking you to transfer Pi first or pay an upfront fee is a scammer.',
 
         // Home AI Shareholder Card
         'ai_card_title':        'PiFriends AI Shareholder Card',
@@ -2145,7 +2511,8 @@ function applyLanguage(lang) {
         const key = el.getAttribute('data-i18n');
         if (!(key in dict)) continue;
         let v = dict[key];
-        if (v.indexOf('\\n') > -1) {
+        const hasHTML = (v.indexOf('\\n') > -1) || v.indexOf('</') > -1;
+        if (hasHTML) {
             el.innerHTML = v.split('\\n').join('<br/>');
         } else {
             el.textContent = v;
@@ -2153,14 +2520,14 @@ function applyLanguage(lang) {
     }
     // 语言按钮标志
     const flag = CUR_LANG === 'zh-CN' ? '🇨🇳' : '🇬🇧';
-    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3').forEach(b => {
+    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3, #btnToggleLang4').forEach(b => {
         if (b) b.innerHTML = `${flag} <span data-i18n="btn_lang">${dict['btn_lang']}</span>`;
     });
 }
 document.addEventListener('click', function(e){
     const t = e.target;
     if (!t) return;
-    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3') {
+    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3' || t.id === 'btnToggleLang4') {
         const next = CUR_LANG === 'zh-CN' ? 'en' : 'zh-CN';
         applyLanguage(next);
     }
