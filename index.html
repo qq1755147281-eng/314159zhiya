@@ -2586,12 +2586,12 @@
                             <div class="s" data-i18n="hs_sh_sub">Shareholder Card</div>
                         </div>
                     </div>
-                    <!-- 第 1 行 · 第 2 列：今日申请人数 -->
+                    <!-- 第 1 行 · 第 2 列：今日派友股东卡参与生态数量 -->
                     <div class="hs-cell" role="cell">
-                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日申请人数</span></div>
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日派友股东卡参与生态数量</span></div>
                         <div class="hs-cell-value">
                             <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">1,284</span>
-                            <span class="u" data-i18n="hs_u_people">人</span>
+                            <span class="u" data-i18n="hs_u_count">个</span>
                         </div>
                     </div>
                     <!-- 第 1 行 · 第 3 列：股东卡分红派币 -->
@@ -3542,7 +3542,7 @@ const I18N = {
         'hs_sh_badge':   '股东 · 今日',
         'hs_sh_title':   '派友股东卡',
         'hs_sh_sub':     'SHAREHOLDER',
-        'hs_sh_r1c2_lbl':'今日申请人数',
+        'hs_sh_r1c2_lbl':'今日派友股东卡参与生态数量',
         'hs_sh_r1c2_v':  '1,284',
         'hs_sh_r1c3_lbl':'今日分红派币（π）',
         'hs_sh_r1c3_v':  '286.52',
@@ -3776,7 +3776,7 @@ const I18N = {
         'hs_sh_badge':   'SHARE · TODAY',
         'hs_sh_title':   'PiFriends Share Card',
         'hs_sh_sub':     'HOLDER',
-        'hs_sh_r1c2_lbl':'Apply Users Today',
+        'hs_sh_r1c2_lbl':'Shareholder Eco Participation',
         'hs_sh_r1c2_v':  '1,284',
         'hs_sh_r1c3_lbl':'Dividend Pi (π)',
         'hs_sh_r1c3_v':  '286.52',
@@ -4855,107 +4855,96 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     }
     function fmtFiat(n, dp, symbol){ return symbol + ' ' + fmtFixed(n, dp); }
 
-    /* ========== 2. 基准时间 + 9 项每秒速率 ==========
-     * 所有「平均速率」都按之前你给定的随机分布数学期望计算：
+    /* ========== 2. 基准时间 + 9 项每秒速率（最新一轮要求版）==========
      *
-     * 生态（基于 ECO_ANCHOR_MS = 2026-08-15 00:30:00 为 0 起点，一直累积，永不重置）：
-     *  ecoTotal   : 每秒 rint(1,5) → 期望 3 / s
-     *  ecoPeople  : 3h = {+2, rand 1~5, -rand 1~5} → 期望 = 2 + 3 - 3 = +2 / 3h = 2/(3600*3) / s
-     *              另外要求 clamp 50~1000，初始 BASE=58
-     *  ecoDivi    : 0.25 概率 [0.01,0.2] + 0.75 概率 [0.2,3] → 期望 ≈ 0.25*0.1005 + 0.75*1.6 ≈ 1.225
+     * 生态（基于 ECO_ANCHOR_MS = 2026-08-15 00:30:00，永不重置）—— 速率不变：
+     *  ecoTotal  : 每秒 rint(1,5) → 3 / s
+     *  ecoPeople : 每 3 小时阶段 → 净 +2 / 3h = 2 / (3600×3) / s；clamp 50~1000
+     *  ecoDivi   : 0.25×0.1005 + 0.75×1.6 ≈ 1.225 / s
      *
-     * AI卡今日（基于 TODAY_00:00 起点，每天重置 → todayElapsed）：
-     *  aiEco : 概率分布 5%×15 + 15%×7.5 + 50%×4 + 28%×1.5 ≈ 4.07
-     *  aiHour: 每 (1+3)/2=2s 抛一次 (0.1+0.2)/2=0.15 → 0.15/2=0.075 /s
-     *  aiPi  : rint(1,5)/s → 期望 3 / s
+     * AI卡今日（每日 00:00 重置）—— 本轮用户新规格：
+     *  aiEco ：每天 00:00 从 1 开始，每 10 秒 rint(1,5) 累积 → 均值 3/10 = 0.3 /s
+     *  aiHour：每天 00:00 从 0 开始，每 5 秒 rfloat(0.1, 0.5) → 均值 0.3/5 = 0.06 /s
+     *  aiPi  ：保持原每秒 rint(1,5) → 3 / s（不变）
      *
-     * 股东卡今日（同样基于 TODAY_00:00 起点）：
-     *  shApp    : 每 5min 合计 rand1~5 = 期望 3 / 300s = 0.01/s；另每分钟 8% 概率 +rand1~6 = 期望 (3.5 * 0.08) / 60 ≈ 0.00467/s → 合计 ≈ 0.01467
-     *  shPiHead : ≈ /min +0.01 → 0.01/60 ≈ 0.0001667 /s
-     *  shPiBig  : ≈ /min 概率加权 = 0.55*0.01 + 0.3*0.02 + 0.15*0.05 = 0.0175 / 60 ≈ 0.0002917 /s
+     * 股东卡今日（每日 00:00 重置）—— 本轮用户新规格：
+     *  shApp：每天 00:00 起点 = 随机 rint(1,90)「1 到 90 个随机」；每 1 小时 rint(1,5) → 均值 3 / 3600 = 0.0008333 /s
+     *  shPi ：两处 π 合并为一个变量，右上 sh_v_pi_head 和下方大 sh_v_pi_big 读同一个值；
+     *         速度沿用原 shPiBig 分布（每分钟 ~0.0175） → 0.0175 / 60 ≈ 0.0002917 /s
+     *         换算人民币也用这同一个 shPi，保证两处完全一致。
      */
     const ECO_ANCHOR_MS = (function(){
-        // 2026-08-15 00:30:00 本地时间（不依赖时区 UTC，按中国浏览器本地 00:30）
         const d = new Date(); d.setFullYear(2026); d.setMonth(7); d.setDate(15);
         d.setHours(0, 30, 0, 0); return d.getTime();
     })();
 
     const BASE = {
         ecoTotal: 1200, ecoPeople: 58, ecoDivi: 286.52,
-        aiEco: 1, aiHour: 1.0, aiPi: 0,
-        shApp: 1, shPiHead: 0.01, shPiBig: 0.01,
+        aiEco: 1, aiHour: 0, aiPi: 0,           // aiHour 按你要求从 0 起步（不再是 1.0）
+        shApp: 1, shPi: 0.01,                   // shApp 每日随机起点；shPi 两处统一为一个
     };
     const PER_SEC = {
         ecoTotal: 3.0,
-        ecoPeople: 2 / (3600 * 3), // +2 每 3 小时
+        ecoPeople: 2 / (3600 * 3),
         ecoDivi: 1.22505,
-        aiEco: 4.07,
-        aiHour: 0.075,
+        aiEco: 3 / 10,       // 0.3  每 10s rint(1,5) 均值 = 3
+        aiHour: 0.3 / 5,     // 0.06 每 5s rfloat(0.1,0.5) 均值 = 0.3
         aiPi: 3.0,
-        shApp: 0.01467,
-        shPiHead: 0.0001667,
-        shPiBig: 0.0002917,
+        shApp: 3 / 3600,     // 每 1h rint(1,5) 均值 = 3
+        shPi: 0.0175 / 60,   // ≈ 0.0002917
     };
-    const PEOPLE_STAGE_MS = 60 * 60 * 1000; // 1 小时
+    const PEOPLE_STAGE_MS = 60 * 60 * 1000;
     const PEOPLE_MIN = 50, PEOPLE_MAX = 1000;
 
-    /* ========== 3. 状态对象（初始化由 computeInitialStateFromAnchor 负责） ========== */
+    /* ========== 3. 状态对象 ========== */
     const S = {
-        ecoTotal: BASE.ecoTotal,
-        ecoPeople: BASE.ecoPeople,
-        ecoPeopleStage: 0, // 0=+2 / 1=+1~5 / 2=-1~5
-        ecoDivi: BASE.ecoDivi,
+        ecoTotal: BASE.ecoTotal, ecoPeople: BASE.ecoPeople, ecoPeopleStage: 0, ecoDivi: BASE.ecoDivi,
 
         aiEcoStart: BASE.aiEco, aiHourStart: BASE.aiHour, aiPiStart: BASE.aiPi,
         aiEco: BASE.aiEco, aiHour: BASE.aiHour, aiPi: BASE.aiPi,
 
-        shAppStart: BASE.shApp, shPiHeadStart: BASE.shPiHead, shPiBigStart: BASE.shPiBig,
-        shApp: BASE.shApp, shPiHead: BASE.shPiHead, shPiBig: BASE.shPiBig,
+        shAppStart: BASE.shApp, shPiStart: BASE.shPi,
+        shApp: BASE.shApp, shPi: BASE.shPi,
 
         lastDayKey: dayKey(nowDate()),
-        appBucketQueue: [],
-        appBucketTimer: null,
     };
 
-    /* ========== 4. computeInitialStateFromAnchor() —— 打开页面 / F5 / 跨零点 都调用这个，
-     *              用当前真实时间与 ANCHOR 差，算到「当前应该的累积值」============ */
+    /* ========== 4. computeInitialStateFromAnchor() —— 打开页面 / F5 / 跨零点 都调用 ========== */
     function computeInitialStateFromAnchor(){
         const nMs = nowMs();
-        /* -------- (a) 生态 3 项：以 2026-08-15 00:30 为基准，永不重置 -------- */
-        let ecoElapsedSec = Math.max(0, (nMs - ECO_ANCHOR_MS) / 1000);
+        /* (a) 生态 3 项：以 2026-08-15 00:30 为基准，永不重置 */
+        const ecoElapsedSec = Math.max(0, (nMs - ECO_ANCHOR_MS) / 1000);
         S.ecoTotal   = BASE.ecoTotal + Math.floor(ecoElapsedSec * PER_SEC.ecoTotal);
         S.ecoDivi    = BASE.ecoDivi    + ecoElapsedSec * PER_SEC.ecoDivi;
-        // 人数：每 3 小时做一轮 {+2 → +rand1_5 → -rand1_5}，期望每轮净 +2
-        // 这里我们直接推进到对应 stage 并执行完整整数轮，避免「人数打开页面时是 58，第二天还是 58」
         const totalStage = Math.max(0, Math.floor(ecoElapsedSec * 1000 / PEOPLE_STAGE_MS));
         S.ecoPeople = BASE.ecoPeople;
-        S.ecoPeopleStage = 0;
-        const stagesDoneFromBaseline = totalStage;
-        for (let k = 0; k < stagesDoneFromBaseline; k++){
-            // 还原真实 stage 行为（避免直接期望，保证「随机阶段」打开时跟你定的规则一致）
-            if ((k % 3) === 0) S.ecoPeople = clamp(S.ecoPeople + 2, PEOPLE_MIN, PEOPLE_MAX);
-            else if ((k % 3) === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1,5), PEOPLE_MIN, PEOPLE_MAX);
-            else S.ecoPeople = clamp(S.ecoPeople - rint(1,5), PEOPLE_MIN, PEOPLE_MAX);
+        for (let k = 0; k < totalStage; k++){
+            if      ((k % 3) === 0) S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
+            else if ((k % 3) === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+            else                   S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
         }
-        S.ecoPeopleStage = stagesDoneFromBaseline % 3;
+        S.ecoPeopleStage = totalStage % 3;
 
-        /* -------- (b) AI / 股东 6 项：以当天 00:00:00 为基准，跨零点自然回到 0 起点 -------- */
+        /* (b) AI / 股东今日字段：以当天 00:00:00 为基准 */
         const today0 = startOfDayMs(nMs);
-        let todayElapsedSec = Math.max(0, (nMs - today0) / 1000);
+        const todayElapsedSec = Math.max(0, (nMs - today0) / 1000);
         S.lastDayKey = dayKey(nowDate());
-        S.aiEco  = Math.floor(S.aiEcoStart  + todayElapsedSec * PER_SEC.aiEco);
-        S.aiHour = S.aiHourStart + todayElapsedSec * PER_SEC.aiHour;
-        S.aiPi   = S.aiPiStart   + Math.floor(todayElapsedSec * PER_SEC.aiPi);
-        S.shApp  = Math.floor(S.shAppStart  + todayElapsedSec * PER_SEC.shApp);
-        S.shPiHead = S.shPiHeadStart + todayElapsedSec * PER_SEC.shPiHead;
-        S.shPiBig  = S.shPiBigStart  + todayElapsedSec * PER_SEC.shPiBig;
 
-        /* 申请人数 bucket 基于 nowMs 重新播种（从当前时刻往后排 5~10 分钟 burst） */
-        S.appBucketQueue = [];
-        seedAppBucket();
+        S.aiEcoStart  = 1;   // 用户明确：浏览生态每天零点从「1」开始增加
+        S.aiHourStart = 0;   // 用户明确：浏览时长每天零点从「0」开始增加
+        S.aiPiStart   = 0;
+        S.aiEco  = Math.max(1, S.aiEcoStart  + Math.floor(todayElapsedSec * PER_SEC.aiEco));
+        S.aiHour = Math.max(0, S.aiHourStart + todayElapsedSec * PER_SEC.aiHour);
+        S.aiPi   = Math.max(0, S.aiPiStart   + Math.floor(todayElapsedSec * PER_SEC.aiPi));
+
+        // 股东参与生态数量：每天 00:00 随机起点 rint(1,90)「1 到 90 个随机」
+        S.shAppStart = rint(1, 90);
+        S.shPiStart  = BASE.shPi;
+        S.shApp = Math.max(1, S.shAppStart + Math.floor(todayElapsedSec * PER_SEC.shApp));
+        S.shPi  = Math.max(BASE.shPi, S.shPiStart + todayElapsedSec * PER_SEC.shPi);
     }
 
-    /* ========== 5. renderAll ========== */
+    /* ========== 5. renderAll —— 关键：两处股东 π 都读 S.shPi 同一个值，换算人民币也一致 ========== */
     function renderAll(){
         const lang = window.CUR_LANG || 'zh-CN';
         setHtml('eco_v_total', fmtInt(S.ecoTotal));
@@ -4970,32 +4959,26 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_cur', aiFiat.cur);
 
         setHtml('sh_v_app', fmtInt(S.shApp));
-        setHtml('sh_v_pi_head', fmtAutoFloat(S.shPiHead));
-        setHtml('sh_v_pi_big', fmtAutoFloat(S.shPiBig));
-        const shFiat = piToFiat(S.shPiBig, 'share', lang);
+        // 股东卡两处 π 统一显示同一个 shPi（上格 & 下方大跨列 ↓ 两个 DOM 用同一个值）
+        const piStr = fmtAutoFloat(S.shPi);
+        setHtml('sh_v_pi_head', piStr);
+        setHtml('sh_v_pi_big',  piStr);
+        // 人民币/USDT 换算也基于同一个 shPi，两处数字看起来完全一致
+        const shFiat = piToFiat(S.shPi, 'share', lang);
         setHtml('sh_v_fiat', fmtFiat(shFiat.value, shFiat.dp, shFiat.symbol));
         setHtml('sh_v_cur', shFiat.cur);
     }
 
-    /* ========== 6. dailyResetIfCrossed —— 当跨零点时基于新的 00:00:00 重新 computeInitialStateFromAnchor 即可 ========== */
+    /* ========== 6. dailyResetIfCrossed ========== */
     function dailyResetIfCrossed(){
         const k = dayKey(nowDate());
         if (k === S.lastDayKey) return;
-        computeInitialStateFromAnchor(); // lastDayKey 在里面会被刷新为新的 dayKey
+        computeInitialStateFromAnchor();
         renderAll();
     }
 
-    /* ========== 7. 真实 ticker：在「computeInitialStateFromAnchor 累积进度」之上，继续每秒抛随机增量 ==========
-     * → 这样哪怕 F5，由于再次 computeInitialStateFromAnchor，已经把离开那段时间补回来了；
-     *   ticker 继续每秒 +rand1~5 就会让数值始终保持在「真实时间应该到达的位置 + 当前 1s 抖动」；
-     *   永远不会出现「刷新一下数字回到起点」的错觉。 */
-    // ① 派币分红总值
-    const tmrEcoTotal = setInterval(function(){
-        S.ecoTotal += rint(1, 5);
-        setHtml('eco_v_total', fmtInt(S.ecoTotal));
-    }, 1000);
-
-    // ② 分红人数：每小时推进一个 stage（真实 1h 一个；同时兼容 debugPeopleStage 立即推进）
+    /* ========== 7. 生态 3 项 ticker（同原版，不变） ========== */
+    const tmrEcoTotal = setInterval(function(){ S.ecoTotal += rint(1, 5); setHtml('eco_v_total', fmtInt(S.ecoTotal)); }, 1000);
     function runPeopleStageOnce(){
         if (S.ecoPeopleStage === 0)      S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
         else if (S.ecoPeopleStage === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
@@ -5005,33 +4988,23 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     }
     const tmrEcoPeople = setInterval(runPeopleStageOnce, PEOPLE_STAGE_MS);
     window.__debugPeopleStage = runPeopleStageOnce;
-
-    // ③ 分红派币
     const tmrEcoDivi = setInterval(function(){
         S.ecoDivi += (Math.random() < 0.25 ? rfloat(0.01, 0.2) : rfloat(0.2, 3.0));
         setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
     }, 1000);
 
-    /* ========== 8. AI 卡 3 项 tick ========== */
-    function tickAiEco(){
-        const r = Math.random();
-        if      (r < 0.05) S.aiEco += rint(10, 20);
-        else if (r < 0.20) S.aiEco += rint(5, 10);
-        else if (r < 0.70) S.aiEco += rint(3, 5);
-        else if (r < 0.98) S.aiEco += rint(1, 2);
-        setHtml('ai_v_eco', fmtInt(S.aiEco));
-    }
-    const tmrAiEco = setInterval(tickAiEco, 1000);
+    /* ========== 8. AI 卡 3 项 ticker（新规格） ==========
+     * aiEco ：每 10 秒 +rint(1,5)（不再是每秒爆发）
+     * aiHour：每 5 秒 +rfloat(0.1,0.5)（不再是 1~3s +0.1/0.2，且起点=0）
+     * aiPi  ：每秒 rint(1,5) 维持不变 */
+    function tickAiEco(){ S.aiEco += rint(1, 5); setHtml('ai_v_eco', fmtInt(S.aiEco)); }
+    const tmrAiEco = setInterval(tickAiEco, 10 * 1000); // 每 10s 一次
+    // 一打开就立刻给一次 aiEco +1~5 视觉反馈，不必等 10 秒
+    setTimeout(tickAiEco, 800);
 
-    function tickAiHour(){
-        S.aiHour += (Math.random() < 0.5 ? 0.1 : 0.2);
-        setHtml('ai_v_hour', fmtFixed(S.aiHour, 1));
-    }
-    function scheduleAiHour(){
-        const next = 1000 + Math.floor(Math.random() * 2000);
-        setTimeout(function(){ tickAiHour(); scheduleAiHour(); }, next);
-    }
-    scheduleAiHour();
+    function tickAiHour(){ S.aiHour += rfloat(0.1, 0.5); setHtml('ai_v_hour', fmtFixed(S.aiHour, 1)); }
+    const tmrAiHour = setInterval(tickAiHour, 5 * 1000); // 每 5s 一次
+    setTimeout(tickAiHour, 600); // 打开很快就跳一下，不会一直停在 0.0
 
     const tmrAiPi = setInterval(function(){
         S.aiPi += rint(1, 5);
@@ -5042,94 +5015,56 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_cur', f.cur);
     }, 1000);
 
-    /* ========== 9. 股东卡 3 项 tick ========== */
-    const APP_BUCKET_WINDOW_MS = 5 * 60 * 1000;
-    function seedAppBucket(){
-        const now = nowMs();
-        function addOneBucket(delayOffset){
-            const total = rint(1, 5);
-            const pieces = 2 + Math.floor(Math.random() * 5);
-            for (let i = 0; i < pieces; i++){
-                const share = (i === pieces - 1) ? total : Math.floor(total / pieces);
-                const offset = Math.floor((APP_BUCKET_WINDOW_MS / pieces) * i + rfloat(0, APP_BUCKET_WINDOW_MS / pieces - 100));
-                S.appBucketQueue.push({ fireAt: now + delayOffset + offset + 2000, inc: Math.max(1, share) });
-            }
-        }
-        addOneBucket(0);
-        addOneBucket(APP_BUCKET_WINDOW_MS);
-        S.appBucketQueue.sort(function(a,b){ return a.fireAt - b.fireAt; });
-    }
-    let lastMinuteBurstKey = '';
-    const tmrShApp = setInterval(function(){
-        const n = nowMs();
-        while (S.appBucketQueue.length && S.appBucketQueue[0].fireAt <= n){
-            const item = S.appBucketQueue.shift();
-            S.shApp += item.inc;
-        }
-        const mk = Math.floor(n / 60000);
-        if (String(mk) !== lastMinuteBurstKey){
-            lastMinuteBurstKey = String(mk);
-            if (Math.random() < 0.08) S.shApp += rint(1, 6);
-        }
-        if (S.appBucketQueue.length === 0) seedAppBucket();
+    /* ========== 9. 股东卡 2 项 ticker（新规格） ==========
+     * shApp：每 1 小时 rint(1,5)「一个或五个随机增加」
+     * shPi ：沿用原 shPiBig 的每分钟三档概率 0.01/0.02/0.05（更快更爽）；
+     *        同一个 shPi 同步更新 sh_v_pi_head & sh_v_pi_big & ≈￥ 三处 DOM → 两处 π+人民币完全一致。 */
+    function tickShAppHourly(){
+        S.shApp += rint(1, 5);
         setHtml('sh_v_app', fmtInt(S.shApp));
-    }, 1000);
-    window.__debugAppBucket = function(){ S.shApp += rint(1, 5); setHtml('sh_v_app', fmtInt(S.shApp)); };
+    }
+    const tmrShApp = setInterval(tickShAppHourly, 60 * 60 * 1000); // 1 小时一次
+    // 调试接口：立刻 +1~5（原来的 __debugAppBucket 保留语义）
+    window.__debugAppBucket = tickShAppHourly;
 
-    let shHeadAccum = 0;
-    const tmrShPiHead = setInterval(function(){
-        let inc = 0.00016 + Math.random() * 0.0002;
-        if (Math.random() < 0.02) inc += 0.01;
-        shHeadAccum += inc;
-        if (shHeadAccum >= 0.0001) {
-            S.shPiHead += shHeadAccum;
-            shHeadAccum = 0;
-            setHtml('sh_v_pi_head', fmtAutoFloat(S.shPiHead));
-        }
-    }, 1000);
-
-    function tickShPiBig(){
+    function tickShPi(){
         const r = Math.random();
-        if (r < 0.55) S.shPiBig += 0.01;
-        else if (r < 0.85) S.shPiBig += 0.02;
-        else S.shPiBig += 0.05;
-        setHtml('sh_v_pi_big', fmtAutoFloat(S.shPiBig));
+        if (r < 0.55)      S.shPi += 0.01;
+        else if (r < 0.85) S.shPi += 0.02;
+        else               S.shPi += 0.05;
+        // 两处 π 同值，再同步 ≈￥
+        const piStr = fmtAutoFloat(S.shPi);
+        setHtml('sh_v_pi_head', piStr);
+        setHtml('sh_v_pi_big',  piStr);
         const lang = window.CUR_LANG || 'zh-CN';
-        const f = piToFiat(S.shPiBig, 'share', lang);
+        const f = piToFiat(S.shPi, 'share', lang);
         setHtml('sh_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
         setHtml('sh_v_cur', f.cur);
     }
-    function scheduleShPiBig(){
+    function scheduleShPi(){
         const next = (Math.random() < 0.15 ? 25000 + Math.random() * 10000 : 50000 + Math.random() * 20000);
-        setTimeout(function(){ tickShPiBig(); scheduleShPiBig(); }, next);
+        setTimeout(function(){ tickShPi(); scheduleShPi(); }, next);
     }
-    setTimeout(function(){ tickShPiBig(); scheduleShPiBig(); }, 30 * 1000);
+    setTimeout(function(){ tickShPi(); scheduleShPi(); }, 30 * 1000);
 
     /* ========== 10. 全局 30s 日切检查 + visibility/focus 补偿 ========== */
     const tmrDayKey = setInterval(function(){ dailyResetIfCrossed(); }, 30 * 1000);
     document.addEventListener('visibilitychange', function(){
-        if (!document.hidden) {
-            /* 回到前台：立刻基于 ANCHOR + today 00:00 再追一次补时（防止 tab 休眠时 interval 不准） */
-            computeInitialStateFromAnchor();
-            dailyResetIfCrossed();
-            renderAll();
-        }
+        if (!document.hidden) { computeInitialStateFromAnchor(); dailyResetIfCrossed(); renderAll(); }
     });
     window.addEventListener('focus', function(){
-        computeInitialStateFromAnchor();
-        dailyResetIfCrossed();
-        renderAll();
+        computeInitialStateFromAnchor(); dailyResetIfCrossed(); renderAll();
     });
 
-    /* ========== 11. localStorage 持久化双保险（F5 / 关闭浏览器后再开 依然继续累加，不回退） ========== */
-    const LS_KEY = 'pi_home_live_v1';
+    /* ========== 11. localStorage 持久化双保险（升级 v=2；字段合并 shPi） ========== */
+    const LS_KEY = 'pi_home_live_v2';
     function saveLive(){
         try{
             const payload = {
-                v: 1, savedAt: nowMs(),
+                v: 2, savedAt: nowMs(),
                 eco: { t: S.ecoTotal, p: S.ecoPeople, d: S.ecoDivi, s: S.ecoPeopleStage },
                 ai:  { e: S.aiEco,  h: S.aiHour,  pi: S.aiPi },
-                sh:  { a: S.shApp,  ph: S.shPiHead, pb: S.shPiBig },
+                sh:  { a: S.shApp,  pi: S.shPi },
                 dk:  S.lastDayKey,
             };
             localStorage.setItem(LS_KEY, JSON.stringify(payload));
@@ -5140,32 +5075,38 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             const raw = localStorage.getItem(LS_KEY);
             if (!raw) return false;
             const P = JSON.parse(raw);
-            if (!P || P.v !== 1 || !P.savedAt) return false;
-            // 如果保存那天跟今天不一样 → 今日字段按今天 00:00 重算（日切）
+            if (!P || !P.v || !P.savedAt) return false;
             const saveDay = dayKey(new Date(P.savedAt));
             const today = dayKey(nowDate());
             const deltaSec = Math.max(0, (nowMs() - P.savedAt) / 1000);
-            // 生态 3 项：永远只加不减
-            S.ecoTotal   = Math.max(S.ecoTotal,   P.eco.t + Math.floor(deltaSec * PER_SEC.ecoTotal));
-            S.ecoDivi    = Math.max(S.ecoDivi,    P.eco.d + deltaSec * PER_SEC.ecoDivi);
-            // 人数：简单 + net delta（期望 / 每 3h +2），并 clamp
+
+            S.ecoTotal = Math.max(S.ecoTotal, P.eco.t + Math.floor(deltaSec * PER_SEC.ecoTotal));
+            S.ecoDivi  = Math.max(S.ecoDivi,  P.eco.d + deltaSec * PER_SEC.ecoDivi);
             const addPeopleNet = Math.floor(deltaSec * PER_SEC.ecoPeople);
             S.ecoPeople = clamp(Math.max(S.ecoPeople, P.eco.p + addPeopleNet), PEOPLE_MIN, PEOPLE_MAX);
-            S.ecoPeopleStage = P.eco.s;
-            // AI / 股东：如果跨日了 → 直接以 anchor 今天为准（computeInitialStateFromAnchor 会重算）
+            S.ecoPeopleStage = (typeof P.eco.s === 'number') ? P.eco.s : S.ecoPeopleStage;
+
             if (saveDay === today) {
-                S.aiEco    = Math.max(S.aiEco,    P.ai.e + Math.floor(deltaSec * PER_SEC.aiEco));
-                S.aiHour   = Math.max(S.aiHour,   P.ai.h + deltaSec * PER_SEC.aiHour);
-                S.aiPi     = Math.max(S.aiPi,     P.ai.pi + Math.floor(deltaSec * PER_SEC.aiPi));
-                S.shApp    = Math.max(S.shApp,    P.sh.a + Math.floor(deltaSec * PER_SEC.shApp));
-                S.shPiHead = Math.max(S.shPiHead, P.sh.ph + deltaSec * PER_SEC.shPiHead);
-                S.shPiBig  = Math.max(S.shPiBig,  P.sh.pb + deltaSec * PER_SEC.shPiBig);
+                // AI
+                S.aiEco  = Math.max(S.aiEco,  (P.ai && P.ai.e  != null ? P.ai.e  : 0) + Math.floor(deltaSec * PER_SEC.aiEco));
+                S.aiHour = Math.max(S.aiHour, (P.ai && P.ai.h  != null ? P.ai.h  : 0) + deltaSec * PER_SEC.aiHour);
+                S.aiPi   = Math.max(S.aiPi,   (P.ai && P.ai.pi != null ? P.ai.pi : 0) + Math.floor(deltaSec * PER_SEC.aiPi));
+                // 股东
+                S.shApp  = Math.max(S.shApp,  (P.sh && P.sh.a  != null ? P.sh.a  : 0) + Math.floor(deltaSec * PER_SEC.shApp));
+                let savedPi = (P.sh && P.sh.pi != null) ? P.sh.pi : null;
+                // 兼容 v1 老结构 ph/pb：取较大者（保证不回退）
+                if (savedPi == null && P.sh && (P.sh.ph != null || P.sh.pb != null)) {
+                    const old1 = P.sh.ph || 0; const old2 = P.sh.pb || 0;
+                    savedPi = Math.max(old1, old2);
+                }
+                if (savedPi != null) {
+                    S.shPi = Math.max(S.shPi, savedPi + deltaSec * PER_SEC.shPi);
+                }
             }
             S.lastDayKey = today;
             return true;
         }catch(e){ return false; }
     }
-    // 每 3s 落盘一次（减少写入频率，又足够接近实时）
     setInterval(saveLive, 3000);
 
     /* ========== 12. 生态大圆环左侧「状态矩阵」：3 行竖列绿点 + 日期/时间实时跳动 ========== */
@@ -5219,7 +5160,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 
     /* 页面销毁清理 */
     function _cleanup(){
-        [tmrEcoTotal, tmrEcoPeople, tmrEcoDivi, tmrAiEco, tmrAiPi, tmrShApp, tmrShPiHead, tmrDayKey]
+        [tmrEcoTotal, tmrEcoPeople, tmrEcoDivi, tmrAiEco, tmrAiHour, tmrAiPi, tmrShApp, tmrDayKey]
             .forEach(function(t){ if (t) clearInterval(t); });
         if (ETC.tmr) clearInterval(ETC.tmr);
         saveLive();
@@ -5234,11 +5175,6 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         renderAll();
         etcRefresh();
     };
-    /**
-     * 调试：把「当前时间」拨到任意时刻，然后重新追一遍 ANCHOR 累积值。
-     *   例：拨到 2026-08-16 01:23:00 →
-     *   window.__debugSimulateTime(2026, 7, 16, 1, 23, 0);
-     */
     window.__debugSimulateTime = function(y, mo /* 0-based */, d, h, mi, s, ms){
         const nd = new Date(); nd.setFullYear(y); nd.setMonth(mo); nd.setDate(d);
         nd.setHours(h, mi, s || 0, ms || 0);
@@ -5252,7 +5188,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 
     /* ================= 启动：追 ANCHOR 累积 → 追 localStorage 累积（取较大者）→ 首屏 render → ticker 继续 ========== */
     computeInitialStateFromAnchor();
-    restoreLive(); // localStorage 若更接近实时则再追一次（双重保险）
+    restoreLive();
     const bootRender = function(){ renderAll(); saveLive(); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootRender);
     else bootRender();
