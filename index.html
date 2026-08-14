@@ -99,15 +99,37 @@
             padding: 42px var(--space-md) 12px;
             display: flex; align-items: center; justify-content: space-between;
             position: relative; z-index: 5;
+            gap: 10px;
         }
+        /* 问候语：一行高级感布局 —— 左「您好」淡灰小字 + 右「派友 ☀️」渐变大字，中间无缝 */
         .greeting {
-            display: flex; flex-direction: column; gap: 2px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 8px;
+            min-width: 0;
         }
-        .greeting .hi { font-size: 13px; color: var(--text-tertiary); }
-        .greeting .name { font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.01em; }
-        .top-right-actions { display: flex; align-items: center; gap: 10px; }
+        .greeting .hi {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+        }
+        .greeting .name {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #fde68a 60%, var(--accent-gold-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(253,230,138,0.35));
+            white-space: nowrap;
+        }
+        .top-right-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .btn-pill {
-            height: 34px; padding: 0 14px; border-radius: 999px;
+            height: 32px; padding: 0 12px; border-radius: 999px;
             display: inline-flex; align-items: center; gap: 6px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
@@ -247,17 +269,165 @@
         .ai-card-holder-name { font-size: 11px; color: rgba(253,230,138,0.85); font-weight: 700; letter-spacing: 0.06em; }
 
         /* ========== 生态分红池标题行 ========== */
+        /* 左边状态卡现在是 106px；要求标题精确落在「大圆球派币分红总值」的正上方
+         * 实测：大圆 pool.centerX = 300.5，原来标题 padLeft=68.6 → 偏左 23.7px；
+         * 所以再加 ≈27px 向右，让标题中心完美重合大圆环中心（即派币分红总值上方） */
         .eco-title-row {
-            margin: 4px var(--space-md) 0px;          /* 整体上移 */
+            margin: 4px var(--space-md) 0px;
             display: flex; justify-content: center; align-items: center;
+            padding-left: calc(106px * 0.85 + 22px);
         }
         .eco-title-row h3 {
-            font-size: 13px; font-weight: 700; color: var(--text-primary);
-            letter-spacing: 0.12em;
+            font-size: 13.5px; font-weight: 900; color: var(--text-primary);
+            letter-spacing: 0.22em;
+            background: linear-gradient(120deg, #fde68a 0%, #fff1b5 40%, #ffffff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 4px rgba(212,175,55,0.55));
         }
 
         /* ========== 生态分红池：大圆圈（分级进度+节点） + 两个金黄按钮 ========== */
-        .eco-card-wrapper { margin: 0 var(--space-md) 0; }
+        /* 整体包装：左 时间/状态 三行卡 + 右 生态分红池卡（水平并排，9:16 竖屏适配） */
+        .eco-card-wrapper {
+            margin: 0 var(--space-md) 0;
+            display: grid;
+            grid-template-columns: 106px 1fr;
+            column-gap: 8px;
+            align-items: stretch;
+        }
+        /* 左侧：状态矩阵卡（3 行竖排：每行一个发光绿点 + 右侧标题 + 副两行）
+         * 要求：间距拉开，剩下两个（第 2、第 3 行）整体再往下移动一些 */
+        .eco-time-card {
+            position: relative; z-index: 2;
+            background: linear-gradient(145deg, rgba(26,34,54,0.94) 0%, rgba(17,24,39,0.96) 100%);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border-strong);
+            border-radius: 14px;
+            padding: 10px 7px 12px 7px;
+            display: flex; flex-direction: column; gap: 11px;  /* 全局 3 行间距从 7 → 11 拉开 */
+            box-shadow: 0 9px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(212,175,55,0.05),
+                        inset 0 1px 0 rgba(255,255,255,0.04);
+            overflow: hidden;
+        }
+        .eco-time-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.7) 50%, transparent 100%);
+            opacity: 0.45;
+        }
+        .eco-time-card::after {
+            content: ''; position: absolute; inset: 0;
+            background:
+                linear-gradient(90deg, rgba(74,222,128,0.055) 0%, transparent 40%),
+                linear-gradient(180deg, rgba(250,204,21,0.06) 0%, transparent 35%);
+            pointer-events: none;
+        }
+        /* 每一行：左点 + 右侧 3 段文字（主标题 + 副 a + 副 b） */
+        .etc-row {
+            display: grid;
+            grid-template-columns: 14px 1fr;
+            column-gap: 6px;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        /* 要求：第 2、第 3 行相对第 1 行整体再下移拉开间距，
+         * row2 再加 5px 顶部；row3 再加 8px 顶部；视觉上「更靠下」 */
+        .etc-row[data-etc="2"] { margin-top: 5px; }
+        .etc-row[data-etc="3"] { margin-top: 9px; }
+        .etc-dot-wrap {
+            grid-column: 1;
+            padding-top: 2px;
+            display: flex; justify-content: center; align-items: flex-start;
+        }
+        .etc-text {
+            grid-column: 2;
+            display: flex; flex-direction: column; gap: 2px;
+            min-width: 0;
+        }
+        /* 主标题：一律翠绿发光 + 加粗渐变 */
+        .etc-title {
+            font-size: 9.6px; font-weight: 900;
+            line-height: 1.25;
+            letter-spacing: 0.01em;
+            white-space: normal;
+            word-break: break-all;
+            color: #bbf7d0;
+            background: linear-gradient(135deg, #dcfce7 0%, #86efac 45%, #4ade80 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 4px rgba(74,222,128,0.35));
+        }
+        /* 副行（两行拆 a/b）：全部统一翠绿发光，字体绿色家族，高大上 */
+        .etc-sub {
+            font-size: 7.8px; font-weight: 700;
+            line-height: 1.3;
+            white-space: normal;
+            word-break: break-all;
+            letter-spacing: 0.01em;
+            color: #86efac;
+            text-shadow: 0 0 4px rgba(74,222,128,0.45),
+                         0 0 8px rgba(34,197,94,0.28);
+        }
+        .etc-sub.etc-sub-a { font-size: 8px; font-weight: 800; color: #a7f3d0; }
+        .etc-sub.etc-sub-b { font-size: 8.6px; font-weight: 800; color: #4ade80; }
+        /* 时间行：保留等宽，且发光更强（仍然是绿色家族，不是灰蓝） */
+        .etc-sub.etc-time-big {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            letter-spacing: 0.1em;
+            font-size: 10px;
+            color: #4ade80;
+            text-shadow: 0 0 5px rgba(74,222,128,0.55),
+                         0 0 10px rgba(34,197,94,0.38),
+                         0 0 16px rgba(22,163,74,0.22);
+        }
+        /* 兼容旧类 etc-sub-line（如果其他地方还在引用） */
+        .etc-sub-line {
+            font-size: 7.8px; font-weight: 700;
+            line-height: 1.3;
+            color: #86efac;
+            text-shadow: 0 0 4px rgba(74,222,128,0.45),
+                         0 0 8px rgba(34,197,94,0.28);
+        }
+        /* 3 种不同颜色的点（整体保持绿色家族，层次略微区分） */
+        .etc-dot {
+            width: 9px; height: 9px; border-radius: 999px;
+            display: inline-block; flex-shrink: 0;
+            transition: background .35s ease, box-shadow .35s ease, transform .35s ease;
+        }
+        .etc-dot.v-1 { /* 主时间同步：翠绿 */
+            background: radial-gradient(circle at 30% 30%, #dcfce7 0%, #4ade80 45%, #16a34a 100%);
+            box-shadow: 0 0 0 1px rgba(74,222,128,0.6), 0 0 7px 0.9px rgba(74,222,128,0.75), 0 0 16px 3px rgba(34,197,94,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotGreenPulse 1.6s ease-in-out infinite;
+        }
+        .etc-dot.v-2 { /* AI 卡集群：嫩绿黄 */
+            background: radial-gradient(circle at 30% 30%, #ecfccb 0%, #a3e635 42%, #65a30d 100%);
+            box-shadow: 0 0 0 1px rgba(163,230,53,0.6), 0 0 7px 0.9px rgba(163,230,53,0.75), 0 0 16px 3px rgba(101,163,13,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotLimePulse 1.85s ease-in-out infinite;
+        }
+        .etc-dot.v-3 { /* 股东分红：青绿冷调 */
+            background: radial-gradient(circle at 30% 30%, #cffafe 0%, #22d3ee 42%, #0891b2 100%);
+            box-shadow: 0 0 0 1px rgba(34,211,238,0.6), 0 0 7px 0.9px rgba(34,211,238,0.75), 0 0 16px 3px rgba(8,145,178,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotTealPulse 2.1s ease-in-out infinite;
+        }
+        @keyframes etcDotGreenPulse { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.2); filter:brightness(1.25);} }
+        @keyframes etcDotLimePulse  { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.23); filter:brightness(1.3);} }
+        @keyframes etcDotTealPulse  { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.2); filter:brightness(1.3);} }
+        /* 未同步态：全部 3 个点变黄闪烁（时间识别启动 1 秒内） */
+        .eco-time-card.sync-pending .etc-dot {
+            background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #facc15 45%, #ca8a04 100%) !important;
+            box-shadow: 0 0 0 1px rgba(250,204,21,0.65), 0 0 8px 1px rgba(250,204,21,0.7), 0 0 18px 3.5px rgba(234,179,8,0.45), inset 0 1px 0 rgba(255,255,255,0.95) !important;
+            animation: etcDotYellowPulse 1.25s ease-in-out infinite !important;
+        }
+        @keyframes etcDotYellowPulse { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.22); filter:brightness(1.2);} }
+        /* 大屏适配（稍微放大点） */
+        @media (min-width: 421px) {
+            .eco-card-wrapper { column-gap: 10px; }
+            .eco-time-card { padding: 11px 8px 12px; }
+            .etc-title { font-size: 10px; }
+            .etc-sub-line { font-size: 8.2px; }
+        }
         .eco-pool-card {
             position: relative;
             background: linear-gradient(145deg, rgba(26,34,54,0.92) 0%, rgba(17,24,39,0.96) 100%);
@@ -970,11 +1140,11 @@
             z-index: 50;
         }
         .tab-bar {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid; grid-template-columns: repeat(4, 1fr);
             background: rgba(255,255,255,0.035);
             border: 1px solid var(--glass-border);
             border-radius: 18px;
-            padding: 8px 6px;
+            padding: 8px 5px;
             position: relative;
         }
         .tab-item {
@@ -1083,6 +1253,1106 @@
             font-size: 12px; color: var(--text-tertiary); line-height: 1.6;
         }
 
+        /* ========== 对话页：兑换区域（加密合规声明 + 群聊通道 + 4步流程） ========== */
+        .cg-hero {
+            margin: 0 var(--space-md) 10px;
+            padding: 14px 14px 12px;
+            border-radius: 16px;
+            background:
+                linear-gradient(145deg, rgba(30,22,46,0.92) 0%, rgba(14,20,36,0.96) 55%, rgba(36,22,20,0.96) 100%);
+            border: 1px solid rgba(139,92,246,0.25);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,175,55,0.08) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        .cg-hero::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(233,213,255,0.6) 0%, rgba(212,175,55,0.25) 30%, rgba(233,213,255,0.55) 65%, rgba(212,175,55,0.25) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .cg-hero-title {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 17px; font-weight: 900; letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #fde68a 0%, #e9d5ff 50%, #fde68a 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(196,181,253,0.28));
+        }
+        .cg-hero-title .emoji { -webkit-text-fill-color: initial; }
+        .cg-hero-sub {
+            position: relative; z-index: 1;
+            margin-top: 5px;
+            font-size: 11.5px; line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .cg-hero-sub p { margin: 0; }
+        .cg-hero-sub p + p { margin-top: 6px; }
+        .cg-hero-sub .hl-gold { color: var(--accent-gold-2); font-weight: 700; }
+        .cg-hero-sub .hl-red  { color: #f87171; font-weight: 700; }
+
+        /* 群聊入口卡片组 */
+        .cg-channels-title {
+            margin: 12px var(--space-md) 6px;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 800; letter-spacing: 0.03em;
+            color: var(--text-primary);
+        }
+        .cg-channels-title::before {
+            content: ''; width: 3px; height: 14px; border-radius: 2px;
+            background: linear-gradient(180deg, var(--accent-gold-2), var(--accent-purple-2));
+        }
+        .cg-channels-grid {
+            margin: 0 var(--space-md) 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+        }
+        .cg-channel-card {
+            position: relative;
+            border-radius: 13px;
+            padding: 10px 10px;
+            background: linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.96) 100%);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; gap: 9px;
+            transition: transform 0.18s ease, box-shadow 0.22s ease, border-color 0.18s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .cg-channel-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(212,175,55,0.3);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+        }
+        .cg-channel-card .cg-icon {
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; font-weight: 900;
+            flex-shrink: 0;
+        }
+        .cg-channel-card.mail .cg-icon {
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            color: #eff6ff;
+            box-shadow: 0 0 0 1px rgba(96,165,250,0.4);
+        }
+        .cg-channel-card.tg .cg-icon {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #ecfeff;
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+        }
+        .cg-channel-card.qq .cg-icon {
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            color: #eef2ff;
+            box-shadow: 0 0 0 1px rgba(167,139,250,0.4);
+        }
+        .cg-channel-card.tk .cg-icon {
+            background: linear-gradient(135deg, #fde68a, #f59e0b);
+            color: #3b2c06;
+            box-shadow: 0 0 0 1px rgba(253,230,138,0.4);
+        }
+        .cg-channel-card .cg-info { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1.5px; }
+        .cg-channel-card .cg-name {
+            font-size: 12px; font-weight: 800; color: var(--text-primary);
+        }
+        .cg-channel-card .cg-val {
+            font-size: 10px; color: var(--text-tertiary);
+            font-family: 'SF Mono','Menlo',monospace;
+            letter-spacing: -0.01em;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* 4步流程 */
+        .cg-steps-title {
+            margin: 16px var(--space-md) 8px;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 800; letter-spacing: 0.03em;
+            color: var(--text-primary);
+        }
+        .cg-steps-title::before {
+            content: ''; width: 3px; height: 14px; border-radius: 2px;
+            background: linear-gradient(180deg, var(--accent-gold-2), #10b981);
+        }
+        .cg-steps {
+            margin: 0 var(--space-md) 2px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 4px 12px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .cg-step {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            gap: 10px;
+            padding: 12px 0;
+            position: relative;
+            align-items: flex-start;
+        }
+        .cg-step + .cg-step {
+            border-top: 1px dashed rgba(255,255,255,0.06);
+        }
+        .cg-step-num {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 900;
+            background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
+            color: #3b2c06;
+            box-shadow: 0 3px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+            position: relative; z-index: 1;
+            flex-shrink: 0;
+        }
+        .cg-step + .cg-step::before {
+            content: ''; position: absolute;
+            left: 15px; top: -4px;
+            width: 2px; height: 10px;
+            background: linear-gradient(180deg, rgba(212,175,55,0.4), rgba(212,175,55,0.1));
+            z-index: 0;
+        }
+        .cg-step-title {
+            font-size: 12.5px; font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+        .cg-step-title .accent { color: var(--accent-gold-2); }
+        .cg-step-desc {
+            font-size: 11px; line-height: 1.55;
+            color: var(--text-tertiary);
+        }
+        .cg-step-desc .strong { color: var(--text-secondary); font-weight: 700; }
+        .cg-step-timing {
+            margin-top: 5px;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 7px; border-radius: 999px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.22);
+            color: #6ee7b7;
+            font-size: 9.5px; font-weight: 700;
+        }
+        .cg-step-timing .star { color: #fde68a; }
+
+        /* ========== 兑换页 · 高级化升级元素 ========== */
+        /* Hero 扫光 + OFFICIAL 右上角徽章 */
+        .cg-hero-shine {
+            position: absolute; top: -80%; left: -60%; z-index: 1;
+            width: 60%; height: 220%;
+            transform: rotate(22deg);
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 40%, rgba(253,230,138,0.14) 52%, rgba(255,255,255,0.05) 64%, transparent 100%);
+            animation: heroShineSweep 7.5s ease-in-out infinite;
+            pointer-events: none;
+            filter: blur(4px);
+        }
+        @keyframes heroShineSweep {
+            0%   { left: -70%; opacity: 0; }
+            10%  { opacity: 1; }
+            50%  { left: 120%; opacity: 0.9; }
+            55%  { opacity: 0; }
+            100% { left: 120%; opacity: 0; }
+        }
+        .cg-hero-badge {
+            position: absolute; top: 9px; right: 9px; z-index: 2;
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.12), rgba(139,92,246,0.14));
+            border: 1px solid rgba(253,230,138,0.28);
+            box-shadow: 0 0 12px rgba(253,230,138,0.12), 0 1px 0 rgba(255,255,255,0.06) inset;
+        }
+        .cg-hero-badge span {
+            font-size: 9px; font-weight: 900; letter-spacing: 0.18em;
+            background: linear-gradient(90deg, #fde68a, #e9d5ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        /* 步骤彩色小标签（金/紫/绿/默认） */
+        .cg-step-tag {
+            margin-top: 6px;
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 3px 7px;
+            border-radius: 999px;
+            background: rgba(148,163,184,0.08);
+            border: 1px solid rgba(148,163,184,0.16);
+            color: #cbd5e1;
+            font-size: 9.5px; font-weight: 700;
+        }
+        .cg-step-tag.gold {
+            background: rgba(253,230,138,0.08);
+            border-color: rgba(253,230,138,0.22);
+            color: #fde68a;
+        }
+        .cg-step-tag.purple {
+            background: rgba(196,181,253,0.08);
+            border-color: rgba(196,181,253,0.22);
+            color: #e9d5ff;
+        }
+        .cg-step-tag.green {
+            background: rgba(16,185,129,0.08);
+            border-color: rgba(16,185,129,0.22);
+            color: #6ee7b7;
+        }
+
+        /* 群聊卡高级化：描边+扫光+金点光+hover 放大与金边 */
+        .cg-channel-card {
+            border: 1px solid rgba(255,255,255,0.06);
+            background:
+                radial-gradient(120% 90% at 10% 0%, rgba(253,230,138,0.07), transparent 55%),
+                linear-gradient(145deg, rgba(22,28,48,0.96) 0%, rgba(14,20,36,0.98) 100%);
+            box-shadow:
+                0 6px 16px rgba(0,0,0,0.35),
+                inset 0 0 0 1px rgba(253,230,138,0.04);
+            transition: transform 0.22s cubic-bezier(.2,.8,.2,1), box-shadow 0.24s ease, border-color 0.22s ease;
+        }
+        .cg-channel-card::before {
+            content: '';
+            position: absolute; inset: 0; padding: 1px; border-radius: 13px;
+            background: linear-gradient(140deg, rgba(253,230,138,0.38) 0%, rgba(212,175,55,0.08) 22%, rgba(255,255,255,0) 45%, rgba(212,175,55,0.06) 75%, rgba(196,181,253,0.3) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .cg-channel-card:hover {
+            transform: translateY(-2px) scale(1.015);
+            border-color: rgba(253,230,138,0.45);
+            box-shadow:
+                0 12px 26px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(253,230,138,0.3),
+                0 0 22px rgba(253,230,138,0.1);
+        }
+        .cg-channel-card:active { transform: scale(0.985); }
+        /* 扫光 */
+        .cg-card-shine {
+            position: absolute; top: -90%; left: -90%; z-index: 1;
+            width: 50%; height: 260%;
+            transform: rotate(20deg);
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.03) 35%, rgba(253,230,138,0.12) 50%, rgba(255,255,255,0.03) 65%, transparent 100%);
+            pointer-events: none;
+            filter: blur(2px);
+        }
+        .cg-channel-card:hover .cg-card-shine {
+            animation: cardShineSweep 0.9s ease forwards;
+        }
+        @keyframes cardShineSweep {
+            0%   { left: -90%; opacity: 0; }
+            30%  { opacity: 1; }
+            100% { left: 140%; opacity: 0.6; }
+        }
+
+        /* 小复制按钮（4 个卡片的右上角内右侧） */
+        .cg-copy-btn {
+            flex-shrink: 0;
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent-gold-2);
+            background: linear-gradient(145deg, rgba(253,230,138,0.12), rgba(212,175,55,0.06));
+            border: 1px solid rgba(253,230,138,0.26);
+            box-shadow: 0 0 0 0 rgba(253,230,138,0.0);
+            cursor: pointer;
+            position: relative; z-index: 3;
+            transition: transform 0.16s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+        }
+        .cg-copy-btn:hover {
+            background: linear-gradient(145deg, rgba(253,230,138,0.22), rgba(212,175,55,0.12));
+            border-color: rgba(253,230,138,0.5);
+            color: #fff7d6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(253,230,138,0.2);
+        }
+        .cg-copy-btn:active { transform: scale(0.92); }
+        .cg-copy-btn.copied {
+            color: #6ee7b7;
+            background: linear-gradient(145deg, rgba(16,185,129,0.18), rgba(16,185,129,0.08));
+            border-color: rgba(16,185,129,0.45);
+            box-shadow: 0 0 14px rgba(16,185,129,0.22);
+        }
+
+        /* 复制成功 Toast（全局居中显示） */
+        .cg-toast {
+            position: fixed; left: 50%; top: 42%;
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 80;
+            transition: opacity 0.22s ease, transform 0.26s cubic-bezier(.2,1.3,.4,1);
+        }
+        .cg-toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .cg-toast-inner {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 16px;
+            border-radius: 14px;
+            background:
+                linear-gradient(140deg, rgba(22,28,48,0.96) 0%, rgba(14,20,36,0.98) 100%);
+            border: 1px solid rgba(253,230,138,0.3);
+            box-shadow:
+                0 14px 36px rgba(0,0,0,0.6),
+                0 0 22px rgba(253,230,138,0.14),
+                0 0 0 1px rgba(255,255,255,0.04) inset;
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+        }
+        .cg-toast-inner .check {
+            width: 20px; height: 20px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 900; color: #052e24;
+            background: linear-gradient(135deg, #6ee7b7, #10b981);
+            box-shadow: 0 0 10px rgba(16,185,129,0.35);
+        }
+        .cg-toast-inner .txt {
+            font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+            color: #fde68a;
+        }
+
+        /* 免责声明页脚提示 */
+        .cg-foot-tip {
+            margin: 14px var(--space-md) 20px;
+            padding: 9px 12px;
+            border-radius: 11px;
+            border: 1px dashed rgba(248,113,113,0.3);
+            background: rgba(248,113,113,0.05);
+            font-size: 10.5px; line-height: 1.6;
+            color: #fca5a5;
+        }
+        .cg-foot-tip b { color: #f87171; font-weight: 800; }
+
+        /* ========== 首页 · 生态分红池下方：两张迷你高级数据表格（超薄·紧凑版） ========== */
+        /* 整体外包裹：宽度与 eco-card-wrapper 完全一致；上下 margin 与 两表间距收窄 */
+        .hs-tables-wrap {
+            margin: 6px var(--space-md) 1px;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        /* 单张表格：玻璃态 + 金边/紫边描边 + 超薄 padding */
+        .hs-table {
+            position: relative;
+            border-radius: 11px;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.97) 100%);
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.3),
+                inset 0 0 0 1px rgba(255,255,255,0.02);
+            overflow: hidden;
+            padding: 5px 7px 5.5px;
+        }
+        /* 渐变描边：金 / 紫 两套 */
+        .hs-table::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 11px;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .hs-table.gold::before {
+            background: linear-gradient(135deg, rgba(253,230,138,0.5) 0%, rgba(212,175,55,0.12) 35%, rgba(253,230,138,0.08) 65%, rgba(212,175,55,0.38) 100%);
+        }
+        .hs-table.purple::before {
+            background: linear-gradient(135deg, rgba(233,213,255,0.5) 0%, rgba(139,92,246,0.12) 35%, rgba(196,181,253,0.08) 65%, rgba(139,92,246,0.42) 100%);
+        }
+        /* 顶部极细扫光条（更快、更细，高级感） */
+        .hs-table::after {
+            content: ''; position: absolute; top: 0; left: -60%; z-index: 1;
+            width: 48%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.035) 40%, rgba(253,230,138,0.1) 50%, rgba(255,255,255,0.035) 60%, transparent 100%);
+            transform: skewX(-18deg);
+            filter: blur(1px);
+            pointer-events: none;
+        }
+        .hs-table.gold::after   { animation: hsShineGold 6.2s ease-in-out infinite; }
+        .hs-table.purple::after { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.035) 40%, rgba(233,213,255,0.12) 50%, rgba(255,255,255,0.035) 60%, transparent 100%); }
+        .hs-table.purple::after { animation: hsShinePurple 6.8s ease-in-out infinite; }
+        @keyframes hsShineGold   { 0%{left:-60%;opacity:0;} 12%{opacity:1;} 55%{left:110%;opacity:.9;} 60%{opacity:0;} 100%{left:110%;opacity:0;} }
+        @keyframes hsShinePurple { 0%{left:-60%;opacity:0;} 12%{opacity:1;} 55%{left:110%;opacity:.9;} 60%{opacity:0;} 100%{left:110%;opacity:0;} }
+
+        /* 右上角徽章（超薄） */
+        .hs-tab-badge {
+            position: absolute; top: 4px; right: 6px; z-index: 2;
+            display: inline-flex; align-items: center; gap: 2px;
+            padding: 1.5px 6px; border-radius: 999px;
+            font-size: 7.8px; font-weight: 900; letter-spacing: 0.14em;
+            line-height: 1;
+        }
+        .hs-table.gold .hs-tab-badge {
+            background: linear-gradient(135deg, rgba(253,230,138,0.14), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.28);
+            color: var(--accent-gold-2);
+            box-shadow: 0 0 8px rgba(253,230,138,0.1);
+        }
+        .hs-table.purple .hs-tab-badge {
+            background: linear-gradient(135deg, rgba(233,213,255,0.14), rgba(139,92,246,0.08));
+            border: 1px solid rgba(196,181,253,0.3);
+            color: #e9d5ff;
+            box-shadow: 0 0 8px rgba(196,181,253,0.12);
+        }
+
+        /* 两行 × 三列 Grid（更窄） */
+        .hs-grid {
+            position: relative; z-index: 2;
+            display: grid;
+            grid-template-columns: 1.02fr 1fr 1fr;
+            column-gap: 5px;
+            row-gap: 3px;
+            margin-top: 1px;
+        }
+        /* 第一列：合并 2 行 → 超薄卡片名块 */
+        .hs-card-title {
+            grid-row: 1 / span 2;
+            grid-column: 1;
+            display: flex; align-items: center; gap: 4.5px;
+            padding: 3.5px 5px;
+            border-radius: 8.5px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .hs-table.gold   .hs-card-title { background: linear-gradient(145deg, rgba(253,230,138,0.07), rgba(212,175,55,0.03)); border-color: rgba(253,230,138,0.14); }
+        .hs-table.purple .hs-card-title { background: linear-gradient(145deg, rgba(233,213,255,0.08), rgba(139,92,246,0.03)); border-color: rgba(196,181,253,0.16); }
+        .hs-card-emoji {
+            width: 21px; height: 21px; border-radius: 6.5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11.5px;
+            flex-shrink: 0;
+        }
+        .hs-table.gold   .hs-card-emoji { background: linear-gradient(135deg, rgba(253,230,138,0.22), rgba(212,175,55,0.08)); color: #fff7d6; box-shadow: 0 0 0 1px rgba(253,230,138,0.22); }
+        .hs-table.purple .hs-card-emoji { background: linear-gradient(135deg, rgba(233,213,255,0.22), rgba(139,92,246,0.08)); color: #f5f3ff; box-shadow: 0 0 0 1px rgba(196,181,253,0.24); }
+        .hs-card-name {
+            display: flex; flex-direction: column; gap: 1px; min-width: 0;
+        }
+        .hs-card-name .t {
+            font-size: 10.2px; font-weight: 900; letter-spacing: 0.01em; line-height: 1.05;
+        }
+        .hs-table.gold   .hs-card-name .t { color: #fff7d6; background: linear-gradient(90deg,#fff4c8,var(--accent-gold-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hs-table.purple .hs-card-name .t { color: #f5f3ff; background: linear-gradient(90deg,#ede9fe,#e9d5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hs-card-name .s { font-size: 7.8px; color: var(--text-quaternary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
+
+        /* 数据单元格（超薄） */
+        .hs-cell {
+            display: flex; flex-direction: column; gap: 1px;
+            padding: 3.5px 5px;
+            border-radius: 7px;
+            background: rgba(255,255,255,0.018);
+            border: 1px solid rgba(255,255,255,0.035);
+            min-width: 0;
+        }
+        .hs-cell-label {
+            display: flex; align-items: center; gap: 3px;
+            font-size: 8px; color: var(--text-tertiary);
+            font-weight: 700; letter-spacing: 0.02em;
+            line-height: 1;
+        }
+        .hs-cell-label .dot {
+            width: 3px; height: 3px; border-radius: 999px;
+            flex-shrink: 0;
+        }
+        .hs-table.gold   .hs-cell-label .dot { background: linear-gradient(180deg,#fde68a,#d4af37); box-shadow: 0 0 2.5px rgba(253,230,138,0.6); }
+        .hs-table.purple .hs-cell-label .dot { background: linear-gradient(180deg,#e9d5ff,#8b5cf6); box-shadow: 0 0 2.5px rgba(233,213,255,0.5); }
+        .hs-cell-value {
+            display: flex; align-items: baseline; gap: 1.5px;
+            line-height: 1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            margin-top: 1.5px;
+        }
+        .hs-cell-value .n {
+            font-size: 12px; font-weight: 900; letter-spacing: -0.01em;
+        }
+        .hs-cell-value .u {
+            font-size: 8.5px; font-weight: 700; color: var(--text-quaternary);
+        }
+        .hs-table.gold   .hs-cell-value .n { color: var(--accent-gold-2); }
+        .hs-table.purple .hs-cell-value .n { color: #e9d5ff; }
+
+        /* 股东卡 Row2 跨 2 列（美元≈人民币，超薄） */
+        .hs-cell.colspan-2 {
+            grid-column: 2 / span 2;
+            padding: 3px 5px;
+            flex-direction: row;
+            align-items: center; justify-content: space-between;
+            gap: 5px;
+            margin-top: 0;
+        }
+        .hs-cell.colspan-2 .hs-cell-label { margin-right: auto; }
+        .hs-cell-price {
+            display: flex; align-items: baseline; gap: 2.5px; min-width: 0;
+        }
+        .hs-cell-price.usd .n { color: #93c5fd; }
+        .hs-cell-price.cny .n { color: var(--accent-gold-2); }
+        .hs-cell-price .arrow { color: var(--text-quaternary); font-weight: 800; font-size: 8.5px; line-height: 1; }
+
+        /* 换算价样式：π 金色、人民币 CNY 金色、美元 USDT 蓝色（更有辨识度） */
+        .hs-cell-price.pi .n { color: var(--accent-gold-2); font-weight: 900; }
+        .hs-cell-price.pi .u { color: var(--accent-gold-2); opacity: .8; font-weight: 800; }
+        .hs-cell-price.fiat .n.n-cny { color: var(--accent-gold-2); }
+        .hs-cell-price.fiat .n.n-usdt { color: #60a5fa; }
+        .hs-cell-price.fiat .u { font-weight: 800; letter-spacing: 0.04em; }
+        .hs-cell-price.fiat.fiat-cny .u { color: var(--accent-gold-2); opacity: .85; }
+        .hs-cell-price.fiat.fiat-usdt .u { color: #60a5fa; opacity: .9; }
+
+        /* 换算行（ai-conv / sh-conv）统一：label → π → ≈ → fiat，紧凑对齐 */
+        .hs-cell.ai-conv .hs-cell-price,
+        .hs-cell.sh-conv .hs-cell-price {
+            display: inline-flex;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .hs-cell.ai-conv .hs-cell-price.pi .n,
+        .hs-cell.sh-conv .hs-cell-price.pi .n { font-size: 10.6px; }
+        .hs-cell.ai-conv .hs-cell-price.pi .u,
+        .hs-cell.sh-conv .hs-cell-price.pi .u { font-size: 8px; margin-left: 1.5px; }
+        .hs-cell.ai-conv .hs-cell-price.fiat .n,
+        .hs-cell.sh-conv .hs-cell-price.fiat .n { font-size: 11px; font-weight: 900; }
+        .hs-cell.ai-conv .hs-cell-price.fiat .u,
+        .hs-cell.sh-conv .hs-cell-price.fiat .u { font-size: 7.6px; }
+
+        /* ========== 首页·申请详情大按钮（比 eco-btns 大一圈，居中长方形） ========== */
+        .hs-apply-btn {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            min-height: 54px;
+            padding: 10px 15px;
+            display: flex; align-items: center; gap: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(212,175,55,0.42);
+            background:
+                radial-gradient(260px 80px at 0% 0%, rgba(253,230,138,0.22), transparent 60%),
+                radial-gradient(260px 80px at 100% 100%, rgba(212,175,55,0.16), transparent 60%),
+                linear-gradient(145deg, rgba(30,24,10,0.92), rgba(18,14,32,0.95));
+            box-shadow:
+                0 0 0 1px rgba(253,230,138,0.08),
+                0 8px 22px rgba(0,0,0,0.38),
+                0 0 22px rgba(212,175,55,0.12);
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+        }
+        .hs-apply-btn:active { transform: translateY(1px) scale(.992); box-shadow: 0 3px 12px rgba(0,0,0,0.35), 0 0 16px rgba(212,175,55,0.18); border-color: rgba(253,230,138,0.65); }
+        .hs-ab-shine {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 35%, rgba(253,230,138,0.22) 50%, rgba(255,255,255,0.04) 65%, transparent 100%);
+            transform: translateX(-60%) skewX(-18deg);
+            filter: blur(1px);
+            animation: hsBtnShine 6s ease-in-out infinite;
+        }
+        @keyframes hsBtnShine { 0%{transform: translateX(-60%) skewX(-18deg); opacity:0;} 10%{opacity:1;} 55%{transform: translateX(120%) skewX(-18deg); opacity:.9;} 60%{opacity:0;} 100%{transform: translateX(120%) skewX(-18deg); opacity:0;} }
+        .hs-ab-icon {
+            width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, rgba(253,230,138,0.26), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.26);
+            box-shadow: 0 0 8px rgba(253,230,138,0.15);
+            font-size: 15px;
+        }
+        .hs-ab-text { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
+        .hs-ab-t {
+            font-size: 14px; font-weight: 900; letter-spacing: 0.02em; line-height: 1.1;
+            background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.25));
+        }
+        .hs-ab-s { font-size: 10px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.14em; }
+        .hs-ab-arrow {
+            width: 22px; height: 22px; border-radius: 999px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(253,230,138,0.3), rgba(212,175,55,0.1));
+            border: 1px solid rgba(253,230,138,0.28);
+            color: var(--accent-gold-2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; line-height: 1;
+            transform: translateY(-0.5px);
+        }
+
+        /* ========== 申请详情覆盖层（90% 高，不遮挡 tab-bar） ========== */
+        .apply-overlay {
+            position: absolute; left: 0; right: 0;
+            top: 0; height: 90%;
+            z-index: 80;   /* 比 tab-bar(50) 高，比 modal-mask(100) 低；保证底部 tab 看得见 */
+            background: linear-gradient(180deg, rgba(4,8,16,0.0) 0%, rgba(4,8,16,0.56) 10%);
+            pointer-events: none;  /* 关闭时不拦截点击 */
+            opacity: 0;
+            transition: opacity .22s ease;
+        }
+        .apply-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .apply-sheet {
+            position: absolute; left: 0; right: 0; bottom: 0;
+            height: calc(100% - 36px);
+            border-radius: 24px 24px 0 0;
+            background:
+                radial-gradient(520px 240px at 15% 0%, rgba(212,175,55,0.16), transparent 60%),
+                radial-gradient(520px 240px at 85% 0%, rgba(139,92,246,0.16), transparent 60%),
+                linear-gradient(180deg, #131a2e 0%, #0c1223 60%, #0a0f1f 100%);
+            border-top: 1px solid var(--glass-border-strong);
+            box-shadow: 0 -24px 70px rgba(0,0,0,0.55);
+            transform: translateY(14px);
+            transition: transform .26s cubic-bezier(.2,.82,.2,1);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            padding: 0 0 calc(env(safe-area-inset-bottom) + 4px);
+        }
+        .apply-overlay.active .apply-sheet { transform: translateY(0); }
+        .apply-top {
+            position: relative;
+            padding: 8px 16px 10px;
+            flex-shrink: 0;
+        }
+        .apply-grip {
+            width: 44px; height: 4px; border-radius: 999px;
+            background: rgba(148,163,184,0.35);
+            margin: 4px auto 10px;
+        }
+        .apply-x {
+            position: absolute; top: 12px; right: 14px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background .18s ease, transform .18s ease;
+        }
+        .apply-x:hover { background: rgba(255,255,255,0.12); }
+        .apply-x:active { transform: scale(.94); }
+        .apply-title {
+            margin: 2px 0 0;
+            font-size: 19px; font-weight: 900; letter-spacing: 0.02em;
+            background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            filter: drop-shadow(0 0 6px rgba(253,230,138,0.3));
+            line-height: 1.2;
+        }
+        .apply-sub {
+            margin: 3px 0 0;
+            font-size: 10.5px; color: var(--text-tertiary);
+            font-weight: 600; letter-spacing: 0.12em;
+        }
+        /* 汇总两小卡 */
+        .apply-stat-row {
+            padding: 6px 16px 10px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .apply-stat {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px;
+            border-radius: 11px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.045);
+            position: relative; overflow: hidden;
+        }
+        .apply-stat.gold {
+            background: linear-gradient(145deg, rgba(253,230,138,0.08), rgba(212,175,55,0.03));
+            border-color: rgba(253,230,138,0.18);
+        }
+        .apply-stat.purple {
+            background: linear-gradient(145deg, rgba(233,213,255,0.08), rgba(139,92,246,0.03));
+            border-color: rgba(196,181,253,0.2);
+        }
+        .as-icon {
+            width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .apply-stat.gold   .as-icon { background: linear-gradient(135deg, rgba(253,230,138,0.28), rgba(212,175,55,0.08)); color: #fff7d6; }
+        .apply-stat.purple .as-icon { background: linear-gradient(135deg, rgba(233,213,255,0.28), rgba(139,92,246,0.08)); color: #f5f3ff; }
+        .as-body { flex: 1; min-width: 0; }
+        .as-l { font-size: 9.2px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
+        .as-v { margin-top: 3.5px; display: flex; align-items: baseline; gap: 2px; line-height: 1; }
+        .as-v .n { font-size: 14px; font-weight: 900; letter-spacing: -0.01em; }
+        .as-v .u { font-size: 9px; color: var(--text-quaternary); font-weight: 700; }
+        .apply-stat.gold   .as-v .n { color: var(--accent-gold-2); }
+        .apply-stat.purple .as-v .n { color: #e9d5ff; }
+
+        /* ========== 申请详情·6列表格（金边玻璃态）：序号 / 名称 / 时间 / 类型 / 张数 / 分红派币 ========== */
+        .apply-tbl-wrap {
+            padding: 4px 14px 0;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .apply-tbl {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+            flex-shrink: 0;
+            table-layout: fixed;
+        }
+        .apply-tbl thead th {
+            position: sticky; top: 0; z-index: 2;
+            padding: 7px 5px;
+            font-size: 8.6px; font-weight: 800; letter-spacing: 0.04em;
+            color: #c9b27a;
+            background: linear-gradient(180deg, rgba(212,175,55,0.10), rgba(212,175,55,0.02));
+            border-top: 1px solid rgba(253,230,138,0.22);
+            border-bottom: 1px solid rgba(253,230,138,0.18);
+            text-align: left;
+        }
+        .apply-tbl thead th:first-child {
+            border-radius: 9px 0 0 9px;
+            border-left: 1px solid rgba(253,230,138,0.22);
+            text-align: center;
+        }
+        .apply-tbl thead th:last-child {
+            border-radius: 0 9px 9px 0;
+            border-right: 1px solid rgba(253,230,138,0.22);
+            text-align: right;
+        }
+        /* 6 列宽度分配 */
+        .apply-tbl.tbl-6col th.col-i { width: 9%; }
+        .apply-tbl.tbl-6col th.col-n { width: 24%; }
+        .apply-tbl.tbl-6col th.col-t { width: 20%; }
+        .apply-tbl.tbl-6col th.col-y { width: 20%; }
+        .apply-tbl.tbl-6col th.col-q { width: 13%; }
+        .apply-tbl.tbl-6col th.col-d { width: 14%; }
+
+        .apply-tbl tbody {
+            display: block;  /* 允许 tbody 滚动 */
+            max-height: 100%;
+            overflow-y: auto;
+            padding-bottom: 4px;
+        }
+        .apply-tbl thead,
+        .apply-tbl tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        .apply-tbl tbody tr {
+            position: relative;
+            background: linear-gradient(145deg, rgba(255,255,255,0.022), rgba(255,255,255,0.008));
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 9px;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+        .apply-tbl tbody tr:hover { border-color: rgba(253,230,138,0.22); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
+        .apply-tbl tbody td {
+            padding: 7px 5px;
+            font-size: 10px;
+            line-height: 1.25;
+            color: var(--text-primary);
+            border: none;
+            word-break: break-word;
+            vertical-align: middle;
+        }
+        .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
+        .apply-tbl td.col-n { font-weight: 800; color: var(--text-primary); line-height: 1.2; padding-left: 6px; }
+        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.2px; }
+        .apply-tbl td.col-y { /* type pill 容器 */ }
+        .apply-tbl td.col-q { text-align: right; font-weight: 900; letter-spacing: -0.01em; }
+        .apply-tbl th.col-q { text-align: right; }
+        .apply-tbl td.col-d { text-align: right; font-weight: 900; letter-spacing: -0.01em; color: var(--accent-gold-2); }
+        .apply-tbl th.col-d { text-align: right; }
+
+        /* 类型标签：AI 金卡 / 股东紫卡 · 严格单行不换行，超长截断 */
+        .type-pill {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 2px;
+            padding: 2px 5.5px;
+            border-radius: 999px;
+            font-size: 7.8px;
+            font-weight: 800;
+            letter-spacing: 0;
+            line-height: 1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+        .type-pill.ai {
+            background: linear-gradient(135deg, rgba(253,230,138,0.2), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.3);
+            color: #fff1b8;
+        }
+        .type-pill.sh {
+            background: linear-gradient(135deg, rgba(233,213,255,0.22), rgba(139,92,246,0.08));
+            border: 1px solid rgba(196,181,253,0.34);
+            color: #ede9fe;
+        }
+        .type-pill.pending {
+            background: linear-gradient(135deg, rgba(148,163,184,0.2), rgba(100,116,139,0.08));
+            border: 1px solid rgba(148,163,184,0.35);
+            color: #cbd5e1;
+        }
+        /* 待审核行：整体灰雾 + 降低不透明度 + 小锁纹 */
+        .apply-tbl tbody tr.row-pending {
+            background: linear-gradient(145deg, rgba(100,116,139,0.06), rgba(30,41,59,0.02));
+            border-color: rgba(148,163,184,0.18);
+            opacity: .8;
+        }
+        .apply-tbl tbody tr.row-pending:hover {
+            border-color: rgba(148,163,184,0.32);
+            background: linear-gradient(145deg, rgba(148,163,184,0.10), rgba(30,41,59,0.03));
+        }
+        .apply-tbl tbody tr.row-pending td { color: var(--text-tertiary); }
+        .apply-tbl tbody tr.row-pending td.col-i { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-n { font-weight: 700; color: rgba(203,213,225,0.92); letter-spacing: 0.04em; }
+        .apply-tbl tbody tr.row-pending td.col-t { color: rgba(148,163,184,0.7); }
+        .apply-tbl tbody tr.row-pending td.col-q .qty-card { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-q .qty-card .q-u { color: rgba(148,163,184,0.65); }
+        .apply-tbl tbody tr.row-pending td.col-d { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-d .divi-pi { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-d .divi-pi .d-u { color: rgba(148,163,184,0.65); }
+        /* 持有张数：紫色强调 */
+        .qty-card { color: #e9d5ff; }
+        .qty-card .q-u { font-size: 8.2px; color: #e9d5ff; opacity: .85; margin-left: 1.5px; font-weight: 700; }
+        /* 分红派币：金色强调 */
+        .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 1.5px; }
+        .divi-pi .d-u { font-size: 8.2px; color: var(--accent-gold-2); opacity: .85; margin-left: 1.5px; font-weight: 700; }
+
+        /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
+        .apply-pager {
+            flex-shrink: 0;
+            padding: 12px 18px 10px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        /* 左右两按钮 */
+        .apg-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.055);
+            background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+            color: var(--text-secondary);
+            font-size: 9.6px; font-weight: 700; letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
+            white-space: nowrap;
+        }
+        .apg-btn:hover { border-color: rgba(253,230,138,0.22); color: var(--text-primary); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
+        .apg-btn:active { transform: translateY(0.5px) scale(.98); }
+        .apg-btn:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+        .apg-prev { justify-self: start; flex-direction: row; }
+        .apg-next { justify-self: end;   flex-direction: row; }
+        /* 旧 apg-ic 尺寸/背景被下方「圆形发光版」完全覆盖重写，此处仅占位无需删除 */
+        .apg-btn.apg-prev .apg-ic-l { margin-right: 4px; }
+        .apg-btn.apg-next .apg-ic-r { margin-left: 4px; }
+
+        /* ====== 圆形图标重做：上一页（蓝色多层光芒） / 下一页（紫色多层光芒） ====== */
+        .apg-ic {
+            width: 28px; height: 28px; border-radius: 999px;
+            position: relative;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: #ffffff; /* SVG 箭头强制白色 */
+            flex-shrink: 0;
+            transition: transform .22s ease, filter .22s ease;
+        }
+        .apg-btn:active .apg-ic { transform: scale(.92); }
+        .apg-ic svg { color: #ffffff !important; stroke: #ffffff !important; display: block; }
+        .apg-ic path { stroke: #ffffff !important; }
+
+        /* 上一页图标：蓝色多层光芒渐变 + 柔光 shadow + 高光 */
+        .apg-prev .apg-ic-l {
+            background:
+                radial-gradient(circle at 30% 28%, rgba(255,255,255,0.95) 0%, rgba(191,219,254,0.4) 25%, rgba(96,165,250,0.2) 55%, rgba(37,99,235,0.1) 100%),
+                radial-gradient(circle at 70% 80%, rgba(96,165,250,0.45), rgba(37,99,235,0.15) 60%, transparent 100%);
+            box-shadow:
+                0 0 0 1px rgba(96,165,250,0.55),
+                0 0 10px 1.5px rgba(96,165,250,0.55),
+                0 0 26px 4.5px rgba(59,130,246,0.48),
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -5px 9px rgba(37,99,235,0.55);
+            animation: apgBlueGlow 2.8s ease-in-out infinite;
+        }
+        .apg-prev .apg-ic-l::before {
+            /* 内部高光斜扫（蓝色专属） */
+            content: '';
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 40%, rgba(191,219,254,0.2) 55%, transparent 100%);
+            transform: translateX(-40%) rotate(-8deg);
+            filter: blur(0.3px);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: apgIconShine 5.2s ease-in-out infinite;
+        }
+        /* 下一页图标：紫色多层光芒渐变 + 柔光 shadow + 高光 */
+        .apg-next .apg-ic-r {
+            background:
+                radial-gradient(circle at 30% 28%, rgba(255,255,255,0.95) 0%, rgba(233,213,255,0.42) 25%, rgba(167,139,250,0.22) 55%, rgba(124,58,237,0.1) 100%),
+                radial-gradient(circle at 70% 80%, rgba(167,139,250,0.48), rgba(124,58,237,0.16) 60%, transparent 100%);
+            box-shadow:
+                0 0 0 1px rgba(167,139,250,0.55),
+                0 0 10px 1.5px rgba(196,181,253,0.55),
+                0 0 26px 4.5px rgba(139,92,246,0.48),
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -5px 9px rgba(124,58,237,0.55);
+            animation: apgPurpleGlow 3.1s ease-in-out infinite;
+        }
+        .apg-next .apg-ic-r::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 40%, rgba(233,213,255,0.2) 55%, transparent 100%);
+            transform: translateX(-40%) rotate(-8deg);
+            filter: blur(0.3px);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: apgIconShine 5.8s ease-in-out infinite;
+        }
+        /* 蓝色脉冲发光 */
+        @keyframes apgBlueGlow {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(96,165,250,0.55),
+                    0 0 10px 1.5px rgba(96,165,250,0.55),
+                    0 0 26px 4.5px rgba(59,130,246,0.48),
+                    inset 0 1px 0 rgba(255,255,255,0.9),
+                    inset 0 -5px 9px rgba(37,99,235,0.55);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(96,165,250,0.75),
+                    0 0 14px 2px rgba(96,165,250,0.75),
+                    0 0 34px 6.5px rgba(59,130,246,0.62),
+                    inset 0 1px 0 rgba(255,255,255,0.95),
+                    inset 0 -5px 9px rgba(37,99,235,0.55);
+            }
+        }
+        /* 紫色脉冲发光 */
+        @keyframes apgPurpleGlow {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(167,139,250,0.55),
+                    0 0 10px 1.5px rgba(196,181,253,0.55),
+                    0 0 26px 4.5px rgba(139,92,246,0.48),
+                    inset 0 1px 0 rgba(255,255,255,0.9),
+                    inset 0 -5px 9px rgba(124,58,237,0.55);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(167,139,250,0.75),
+                    0 0 14px 2px rgba(196,181,253,0.75),
+                    0 0 34px 6.5px rgba(139,92,246,0.62),
+                    inset 0 1px 0 rgba(255,255,255,0.95),
+                    inset 0 -5px 9px rgba(124,58,237,0.55);
+            }
+        }
+        /* 两个图标内部共用的高光扫光循环 */
+        @keyframes apgIconShine {
+            0%   { transform: translateX(-40%) rotate(-8deg); opacity: 0.7; }
+            45%  { transform: translateX(50%)  rotate(-8deg); opacity: 1; }
+            50%  { opacity: 0; }
+            100% { transform: translateX(50%)  rotate(-8deg); opacity: 0; }
+        }
+        /* disabled 时，发光图标褪色变灰（不刺眼） */
+        .apg-btn:disabled .apg-ic {
+            filter: grayscale(.85) opacity(.7);
+            animation: none;
+        }
+
+        /* 中：黄色发光悬浮球 */
+        .apg-ball {
+            position: relative;
+            width: 64px; height: 64px;
+            border-radius: 999px;
+            justify-self: center;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            /* 多层金光 + 悬浮动画 */
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255,250,210,0.95) 0%, rgba(253,230,138,0.45) 28%, rgba(212,175,55,0.18) 60%, rgba(212,175,55,0.04) 100%);
+            box-shadow:
+                0 0 0 1px rgba(253,230,138,0.35),
+                0 0 18px 2px rgba(253,230,138,0.45),
+                0 0 42px 6px rgba(212,175,55,0.38),
+                0 8px 22px rgba(0,0,0,0.42),
+                inset 0 1px 0 rgba(255,255,255,0.85),
+                inset 0 -8px 12px rgba(212,175,55,0.45);
+            animation: apgBallFloat 3.2s ease-in-out infinite, apgBallPulse 2.4s ease-in-out infinite;
+        }
+        /* 外扫光环 */
+        .apg-ball-ring {
+            position: absolute; inset: -7px;
+            border-radius: 999px;
+            border: 1px dashed rgba(253,230,138,0.32);
+            animation: apgRingSpin 9s linear infinite;
+            pointer-events: none;
+        }
+        /* 内部高光扫光 */
+        .apg-ball-shine {
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.55) 38%, rgba(255,255,255,0.05) 52%, transparent 100%);
+            transform: translateX(-55%) rotate(-10deg);
+            filter: blur(0.3px);
+            pointer-events: none;
+            animation: apgBallShine 5.4s ease-in-out infinite;
+        }
+        /* 内部页码文字 1/10 */
+        .apg-ball-page {
+            position: relative; z-index: 2;
+            display: flex; align-items: baseline; gap: 1.5px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+        .apg-ball-page .apg-cur {
+            font-size: 17px; font-weight: 900; letter-spacing: -0.02em;
+            color: #3a2708;
+            text-shadow: 0 1px 0 rgba(255,250,210,0.6);
+        }
+        .apg-ball-page .apg-sep {
+            font-size: 10px; font-weight: 800; color: #5a430d; opacity: .75;
+        }
+        .apg-ball-page .apg-tot {
+            font-size: 11px; font-weight: 900; color: #5a430d; opacity: .9;
+            letter-spacing: 0;
+        }
+        /* 小字提示「当前页」 */
+        .apg-ball-tip {
+            position: relative; z-index: 2;
+            margin-top: 3px;
+            font-size: 7.6px; font-weight: 700; letter-spacing: 0.1em;
+            color: #4d390a;
+            opacity: .85;
+        }
+        /* 悬浮动画：轻微上下浮动 */
+        @keyframes apgBallFloat {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(-3px); }
+        }
+        /* 发光脉冲：外层金光忽强忽弱 */
+        @keyframes apgBallPulse {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(253,230,138,0.35),
+                    0 0 18px 2px rgba(253,230,138,0.45),
+                    0 0 42px 6px rgba(212,175,55,0.38),
+                    0 8px 22px rgba(0,0,0,0.42),
+                    inset 0 1px 0 rgba(255,255,255,0.85),
+                    inset 0 -8px 12px rgba(212,175,55,0.45);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(253,230,138,0.5),
+                    0 0 24px 3px rgba(253,230,138,0.6),
+                    0 0 54px 9px rgba(212,175,55,0.52),
+                    0 8px 22px rgba(0,0,0,0.42),
+                    inset 0 1px 0 rgba(255,255,255,0.92),
+                    inset 0 -8px 12px rgba(212,175,55,0.45);
+            }
+        }
+        /* 旋转外环（虚线） */
+        @keyframes apgRingSpin { from{transform: rotate(0);} to{transform: rotate(360deg);} }
+        /* 内部高光扫光左右移动 */
+        @keyframes apgBallShine {
+            0%   { transform: translateX(-55%) rotate(-10deg); opacity: 0.7; }
+            45%  { transform: translateX(55%)  rotate(-10deg); opacity: 1; }
+            50%  { opacity: 0; }
+            100% { transform: translateX(55%)  rotate(-10deg); opacity: 0; }
+        }
+
+        /* 脚注 */
+        .apply-foot {
+            flex-shrink: 0;
+            padding: 8px 16px 12px;
+            font-size: 8.8px; color: var(--text-quaternary);
+            text-align: center;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            margin-top: 2px;
+        }
+
         /* 响应式（更窄屏） */
         @media (max-width: 360px) {
             .ai-card-wrapper { width: 270px; height: 170px; }
@@ -1093,6 +2363,8 @@
         @media (max-width: 330px) {
             .ai-card-wrapper { width: 252px; height: 158px; }
             .eco-circle { width: 140px; height: 140px; }
+            .hs-card-name .s { display: none; }
+            .hs-cell-value .n { font-size: 12px; }
         }
     </style>
 </head>
@@ -1106,7 +2378,6 @@
                 <span class="name" data-i18n="greeting_name">派友 ☀️</span>
             </div>
             <div class="top-right-actions">
-                <button class="btn-pill" data-i18n="btn_login">🔐 Pi账号登录</button>
                 <button class="btn-pill" id="btnToggleLang">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
             </div>
         </div>
@@ -1161,8 +2432,46 @@
             <h3 data-i18n="eco_pool_title">生态分红池</h3>
         </div>
 
-        <!-- 生态分红池卡片 -->
+        <!-- 生态分红池卡片：左=状态矩阵（3 行竖列绿点），右=生态分红池 -->
         <div class="eco-card-wrapper">
+            <!-- ① 左侧：状态矩阵卡（3 行，每行左=发光绿点，右=主标题 + 副行两行小字） -->
+            <div class="eco-time-card sync-pending" id="ecoTimeCard">
+                <!-- 第 1 行：全网时间同步（主绿点 + 日期行 / 时间行） -->
+                <div class="etc-row" data-etc="1">
+                    <div class="etc-dot-wrap">
+                        <span class="etc-dot v-1" id="etcDot1"></span>
+                    </div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r1_title">全网时间</span>
+                        <span class="etc-sub etc-sub-a" data-i18n="etc_r1_sub_a" id="etc_r1_sub_a">日期识别中…</span>
+                        <span class="etc-sub etc-sub-b etc-time-big" data-i18n="etc_r1_sub_b" id="etc_r1_sub_b">——:——:——</span>
+                    </div>
+                </div>
+                <!-- 第 2 行：派友AI卡手机集群（副两行：全网生态浏览 / 已启动） -->
+                <div class="etc-row" data-etc="2">
+                    <div class="etc-dot-wrap">
+                        <span class="etc-dot v-2" id="etcDot2"></span>
+                    </div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r2_title">派友AI卡 · 手机集群</span>
+                        <span class="etc-sub etc-sub-a" data-i18n="etc_r2_sub_a">全网生态浏览</span>
+                        <span class="etc-sub etc-sub-b" data-i18n="etc_r2_sub_b">已启动</span>
+                    </div>
+                </div>
+                <!-- 第 3 行：派友股东AI卡（副两行：股东已经参与 / 已启动） -->
+                <div class="etc-row" data-etc="3">
+                    <div class="etc-dot-wrap">
+                        <span class="etc-dot v-3" id="etcDot3"></span>
+                    </div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r3_title">派友股东AI卡</span>
+                        <span class="etc-sub etc-sub-a" data-i18n="etc_r3_sub_a">股东已经参与</span>
+                        <span class="etc-sub etc-sub-b" data-i18n="etc_r3_sub_b">已启动</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ② 右侧：生态分红池（原 eco-pool-card 保持原有结构不变） -->
             <div class="eco-pool-card" id="ecoPoolCard">
                 <div class="eco-particles" id="ecoParticles"></div>
 
@@ -1193,7 +2502,7 @@
 
                         <div class="eco-circle-label" data-i18n="eco_pool_label">派币分红总值</div>
                         <div class="eco-circle-amount">
-                            <strong data-i18n="eco_total_v">1,200</strong><span class="unit">π</span>
+                            <strong data-i18n="eco_total_v" id="eco_v_total">1,200</strong><span class="unit">π</span>
                         </div>
                     </div>
                 </div>
@@ -1203,21 +2512,207 @@
                     <div class="eco-btn" id="btnEcoPeople">
                         <div class="eco-btn-icon team">👥</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_people_v">58</div>
+                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">58</div>
                             <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
                         </div>
                     </div>
                     <div class="eco-btn" id="btnEcoDividend">
                         <div class="eco-btn-icon reward">🎁</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_divi_v">286.52</div>
+                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">286.52</div>
                             <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- =============== 两张迷你数据表格（生态分红池下方·紧凑宽度） =============== -->
+        <div class="hs-tables-wrap">
+
+            <!-- 表格 1：派友 AI 卡（金色主题，两行三列） -->
+            <div class="hs-table gold" role="table" aria-label="派友AI卡今日数据">
+                <div class="hs-tab-badge" data-i18n="hs_ai_badge">AI · TODAY</div>
+                <div class="hs-grid">
+                    <!-- 左列：卡片名（横跨 2 行） -->
+                    <div class="hs-card-title" role="rowheader" rowspan="2">
+                        <div class="hs-card-emoji">🤖</div>
+                        <div class="hs-card-name">
+                            <div class="t" data-i18n="hs_ai_title">派友AI卡</div>
+                            <div class="s" data-i18n="hs_ai_sub">AI Power Card</div>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 2 列：今日浏览生态 个数 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c2_lbl">今日浏览生态</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_ai_r1c2_v" id="ai_v_eco">12,846</span>
+                            <span class="u" data-i18n="hs_u_count">个</span>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 3 列：浏览时长 小时 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c3_lbl">浏览时长</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_ai_r1c3_v" id="ai_v_hour">19.6</span>
+                            <span class="u" data-i18n="hs_u_hour">小时</span>
+                        </div>
+                    </div>
+                    <!-- 第 2 行 · 跨 2 列：π 数量 + ≈ CNY/USDT（根据语言动态切换） -->
+                    <div class="hs-cell colspan-2 ai-conv" role="cell">
+                        <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_ai_r2c_lbl">今日获取派币</span></div>
+                        <div class="hs-cell-price pi" style="align-items:center;">
+                            <span class="n" data-i18n="hs_ai_r2c_v" id="ai_v_pi">86.52</span>
+                            <span class="u">π</span>
+                        </div>
+                        <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
+                        <div class="hs-cell-price fiat" style="align-items:center;">
+                            <span class="n" data-i18n-dyn="hs_ai_r2c_fiat" id="ai_v_fiat">¥ 618.20</span>
+                            <span class="u" data-i18n-dyn="hs_ai_r2c_cur" id="ai_v_cur">CNY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表格 2：派友 股东卡（紫色主题，两行三列） -->
+            <div class="hs-table purple" role="table" aria-label="派友股东卡今日数据">
+                <div class="hs-tab-badge" data-i18n="hs_sh_badge">SHARE · TODAY</div>
+                <div class="hs-grid">
+                    <!-- 左列：卡片名（横跨 2 行） -->
+                    <div class="hs-card-title" role="rowheader" rowspan="2">
+                        <div class="hs-card-emoji">💎</div>
+                        <div class="hs-card-name">
+                            <div class="t" data-i18n="hs_sh_title">派友股东卡</div>
+                            <div class="s" data-i18n="hs_sh_sub">Shareholder Card</div>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 2 列：今日派友股东卡参与生态数量 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日派友股东卡参与生态数量</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">1,284</span>
+                            <span class="u" data-i18n="hs_u_count">个</span>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 3 列：股东卡分红派币 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c3_lbl">今日分红派币</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_sh_r1c3_v" id="sh_v_pi_head">286.52</span>
+                            <span class="u">π</span>
+                        </div>
+                    </div>
+                    <!-- 第 2 行 · 跨 2 列：今日分红派币 π 数量 + ≈ CNY/USDT（按语言动态切换） -->
+                    <div class="hs-cell colspan-2 sh-conv" role="cell">
+                        <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_sh_r2_lbl">今日分红派币</span></div>
+                        <div class="hs-cell-price pi" style="align-items:center;">
+                            <span class="n" data-i18n="hs_sh_r1c3_v" id="sh_v_pi_big">286.52</span>
+                            <span class="u">π</span>
+                        </div>
+                        <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
+                        <div class="hs-cell-price fiat" style="align-items:center;">
+                            <span class="n" data-i18n-dyn="hs_sh_r2_fiat" id="sh_v_fiat">¥ 2,046.17</span>
+                            <span class="u" data-i18n-dyn="hs_sh_r2_cur" id="sh_v_cur">CNY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============= 申请详情大按钮（居中，长方形，比eco-btn大一圈） ============= -->
+        <div class="hs-apply-btn-wrap" style="margin: 10px var(--space-md) 18px; display:flex; justify-content:center;">
+            <button class="hs-apply-btn" id="btnOpenApplyDetail" type="button">
+                <span class="hs-ab-shine"></span>
+                <span class="hs-ab-icon">📄</span>
+                <span class="hs-ab-text">
+                    <span class="hs-ab-t" data-i18n="hs_apply_title">派友AI股东卡</span>
+                    <span class="hs-ab-s" data-i18n="hs_apply_sub">申请详情 · APPLY DETAIL</span>
+                </span>
+                <span class="hs-ab-arrow">›</span>
+            </button>
+        </div>
     </section>
+
+    <!-- ================= 申请详情覆盖层（90% 高度，tab-bar 常驻不覆盖） ================= -->
+    <div class="apply-overlay" id="applyOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="apply-sheet" role="document">
+            <!-- 顶部把手 + 标题 + 关闭 -->
+            <div class="apply-top">
+                <div class="apply-grip"></div>
+                <button class="apply-x" id="btnCloseApplyDetail" type="button" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <h3 class="apply-title" data-i18n="apply_title">派友AI股东卡持有记录</h3>
+            </div>
+            <!-- 汇总信息（迷你2卡）：持有张数统计 -->
+            <div class="apply-stat-row">
+                <div class="apply-stat gold">
+                    <div class="as-icon">🤖</div>
+                    <div class="as-body">
+                        <div class="as-l" data-i18n="apply_s_ai_lbl">派友AI卡持有</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_ai_v">842</span><span class="u" data-i18n="apply_s_u">张</span></div>
+                    </div>
+                </div>
+                <div class="apply-stat purple">
+                    <div class="as-icon">💎</div>
+                    <div class="as-body">
+                        <div class="as-l" data-i18n="apply_s_sh_lbl">派友股东卡持有</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_sh_v">442</span><span class="u" data-i18n="apply_s_u">张</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 表头 + 数据表格（6 列：序号 / 名称 / 持有时间 / 类型 / 持有张数 / 派币分红 π） -->
+            <div class="apply-tbl-wrap">
+                <table class="apply-tbl tbl-6col">
+                    <thead>
+                        <tr>
+                            <th class="col-i" data-i18n="apply_th_id">#</th>
+                            <th class="col-n" data-i18n="apply_th_name">名称</th>
+                            <th class="col-t" data-i18n="apply_th_time">持有时间</th>
+                            <th class="col-y" data-i18n="apply_th_type">类型</th>
+                            <th class="col-q" data-i18n="apply_th_qty">持有张数</th>
+                            <th class="col-d" data-i18n="apply_th_divi">派币分红</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applyTblBody">
+                        <!-- 由 JS 注入 10 行样例数据 -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== -->
+            <div class="apply-pager" role="navigation" aria-label="分页">
+                <!-- 左：上一页 -->
+                <button class="apg-btn apg-prev" id="apgPrev" type="button" aria-label="上一页">
+                    <span class="apg-ic apg-ic-l" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    </span>
+                    <span class="apg-txt" data-i18n="pager_prev">上一页</span>
+                </button>
+
+                <!-- 中：黄色发光悬浮球（当前页 / 总页数） -->
+                <div class="apg-ball" id="apgBall">
+                    <span class="apg-ball-shine"></span>
+                    <span class="apg-ball-ring"></span>
+                    <span class="apg-ball-page"><span class="apg-cur" id="apgCur">1</span><span class="apg-sep">/</span><span class="apg-tot" id="apgTot">10</span></span>
+                    <span class="apg-ball-tip" data-i18n="pager_tip">当前页</span>
+                </div>
+
+                <!-- 右：下一页 -->
+                <button class="apg-btn apg-next" id="apgNext" type="button" aria-label="下一页">
+                    <span class="apg-txt" data-i18n="pager_next">下一页</span>
+                    <span class="apg-ic apg-ic-r" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    </span>
+                </button>
+            </div>
+
+            <!-- 底部脚注 -->
+            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 100 条持有记录</div>
+        </div>
+    </div>
 
     <!-- ================= 市场页 ================= -->
     <section class="page market-page" data-page="market">
@@ -1782,6 +3277,165 @@
         </div>
     </section>
 
+    <!-- ================= 对话页 · 兑换区域 ================= -->
+    <section class="page chat-page" data-page="chat">
+        <div class="top-bar">
+            <div class="greeting">
+                <span class="hi"   data-i18n="greeting_hi">您好</span>
+                <span class="name" data-i18n="greeting_name">派友 ☀️</span>
+            </div>
+            <div class="top-right-actions">
+                <button class="btn-pill" id="btnToggleLang4">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
+            </div>
+        </div>
+
+        <!-- 1. 兑换主标题 & 合规声明 Hero（高级版：金边 + 扫光 + 等级徽章） -->
+        <div class="cg-hero">
+            <div class="cg-hero-shine"></div>
+            <div class="cg-hero-badge"><span>🛡️ OFFICIAL</span></div>
+            <div class="cg-hero-title">
+                <span class="emoji">💱</span>
+                <span data-i18n="cg_hero_title">兑换区域</span>
+            </div>
+            <div class="cg-hero-sub">
+                <p data-i18n="cg_hero_p1">
+                    <span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。
+                </p>
+                <p data-i18n="cg_hero_p2">
+                    <span class="hl-gold">您只需准备：</span>本人的收款账户、收款姓名、以及派币密语，即可向客服申请兑换；公司审核通过后将<span class="hl-gold">直接打款</span>，您不承担任何变现风险。
+                </p>
+                <p data-i18n="cg_hero_p3">
+                    请按照下方 <span class="hl-gold">4 步流程</span> 完成申请，全程通过群内官方客服对接，任何私下交易切勿相信。
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. 4 步流程表（先展示流程，再展示通道；流程高级化） -->
+        <div class="cg-steps-title"><span data-i18n="cg_steps_title">🧾 兑换申请 · 4 步流程</span></div>
+        <div class="cg-steps">
+            <div class="cg-step">
+                <div class="cg-step-num">1</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s1_title">找到下列任意一个<span class="accent">官方群聊</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s1_desc_v2">
+                        选择下方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。
+                    </div>
+                    <div class="cg-step-tag"><span>🔽 向下滑动找到群聊</span></div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">2</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s2_title"><span class="accent">申请加入</span>并查看群公告</span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s2_desc">
+                        入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。
+                    </div>
+                    <div class="cg-step-tag gold"><span>📢 先读公告 · 防诈骗</span></div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">3</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s3_title">提交<span class="accent">账号 · 收款方式 · 密语</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s3_desc">
+                        向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。
+                    </div>
+                    <div class="cg-step-tag purple"><span>🔐 端对端加密提交</span></div>
+                </div>
+            </div>
+            <div class="cg-step">
+                <div class="cg-step-num">4</div>
+                <div>
+                    <div class="cg-step-title"><span data-i18n="cg_s4_title">提交申请，<span class="accent">坐等到账</span></span></div>
+                    <div class="cg-step-desc" data-i18n="cg_s4_desc">
+                        客服汇总后统一向公司提交，审批通过后直接打款到您的 <span class="strong">支付宝 / 微信 / 银行卡</span>，您无需承担任何变现风险。
+                    </div>
+                    <div class="cg-step-timing">
+                        <span class="star">⭐</span>
+                        <span data-i18n="cg_s4_timing">快则 24h · 慢则 72h 到账</span>
+                    </div>
+                    <div class="cg-step-tag green"><span>✅ 零风险 · 直接到账</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 联系/群聊通道（放到流程下方；4个卡各加一个小复制按钮） -->
+        <div class="cg-channels-title"><span data-i18n="cg_channels_title">📮 联系与群聊通道（任选其一 · 可复制）</span></div>
+        <div class="cg-channels-grid">
+            <!-- 邮箱 -->
+            <div class="cg-channel-card mail" data-copy="pibot@pi-support.vip">
+                <div class="cg-card-shine"></div>
+                <div class="cg-icon">✉️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_mail_name">官方邮箱</div>
+                    <div class="cg-val">pibot@pi-support.vip</div>
+                </div>
+                <button class="cg-copy-btn" type="button" aria-label="复制">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                </button>
+            </div>
+            <!-- 电报群 -->
+            <div class="cg-channel-card tg" data-copy="@pi_network_cn">
+                <div class="cg-card-shine"></div>
+                <div class="cg-icon">✈️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_tg_name">Telegram 群</div>
+                    <div class="cg-val">@pi_network_cn</div>
+                </div>
+                <button class="cg-copy-btn" type="button" aria-label="复制">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                </button>
+            </div>
+            <!-- QQ群 -->
+            <div class="cg-channel-card qq" data-copy="865279431">
+                <div class="cg-card-shine"></div>
+                <div class="cg-icon">Q</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_qq_name">QQ 官方群</div>
+                    <div class="cg-val">8652 794 31</div>
+                </div>
+                <button class="cg-copy-btn" type="button" aria-label="复制">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                </button>
+            </div>
+            <!-- Teletalk（按用户原文保留） -->
+            <div class="cg-channel-card tk" data-copy="group:pi_friends_chat">
+                <div class="cg-card-shine"></div>
+                <div class="cg-icon">🗨️</div>
+                <div class="cg-info">
+                    <div class="cg-name" data-i18n="cg_c_tk_name">Teletalk 群</div>
+                    <div class="cg-val">group:pi_friends_chat</div>
+                </div>
+                <button class="cg-copy-btn" type="button" aria-label="复制">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. 页脚红色虚线免责提示 -->
+        <div class="cg-foot-tip">
+            <b data-i18n="cg_foot_warn">⚠️ 再次提示：</b>
+            <span data-i18n="cg_foot_txt_v2">本页面仅展示流程说明，不提供任何线上直接变现功能；请务必通过下方官方群内客服对接，任何要求您直接转币或先支付手续费的均为诈骗。</span>
+        </div>
+
+        <!-- 复制成功 Toast -->
+        <div class="cg-toast" id="cgCopyToast" role="status" aria-live="polite">
+            <div class="cg-toast-inner"><span class="check">✓</span> <span class="txt" data-i18n="cg_toast_copied">已复制到剪贴板</span></div>
+        </div>
+    </section>
+
     <!-- ================= 底部Tab ================= -->
     <footer class="app-footer">
         <div class="tab-bar">
@@ -1805,6 +3459,14 @@
                     <circle cx="17" cy="5.5" r="0.9"/>
                 </svg>
                 <span data-i18n="tab_market">市场</span>
+            </div>
+            <div class="tab-item" data-tab="chat">
+                <!-- 对话气泡 线条（两个对话气泡） -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 5.5h13a2 2 0 0 1 2 2v5.2a2 2 0 0 1-2 2h-3.8l-3.2 2.8v-2.8H4a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"/>
+                    <path d="M9.3 19.2h8.2a2 2 0 0 0 2-2v-4"/>
+                </svg>
+                <span data-i18n="tab_chat">兑换</span>
             </div>
             <div class="tab-item" data-tab="my">
                 <!-- 人物轮廓 线条 -->
@@ -1864,7 +3526,111 @@ const I18N = {
         // 底部Tab
         'tab_home':   '首页',
         'tab_market': '市场',
+        'tab_chat':   '兑换',
         'tab_my':     '我的',
+
+        // 首页·下方两张迷你表格（AI卡=金色 / 股东卡=紫色）
+        'hs_ai_badge':   'AI · 今日',
+        'hs_ai_title':   '派友AI卡',
+        'hs_ai_sub':     'AI 算力卡',
+        'hs_ai_r1c2_lbl':'今日浏览生态',
+        'hs_ai_r1c2_v':  '12,846',
+        'hs_ai_r1c3_lbl':'浏览时长',
+        'hs_ai_r1c3_v':  '19.6',
+        'hs_ai_r2c_lbl': '今日获取派币',
+        'hs_ai_r2c_v':   '86.52',
+        'hs_sh_badge':   '股东 · 今日',
+        'hs_sh_title':   '派友股东卡',
+        'hs_sh_sub':     'SHAREHOLDER',
+        'hs_sh_r1c2_lbl':'今日派友股东卡参与生态数量',
+        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c3_lbl':'今日分红派币（π）',
+        'hs_sh_r1c3_v':  '286.52',
+        'hs_sh_r2_lbl':  '今日分红派币',
+        'hs_u_count':    '个',
+        'hs_u_hour':     '小时',
+        'hs_u_people':   '人',
+        'hs_arrow_eq':   '≈',
+        // 表格动态换算值（zh-CN：人民币 / en：USDT）
+        //  - AI 卡：1 π = ￥ 0.60（6 毛）
+        //  - 股东卡：1 π = ￥ 2,000,000
+        // 起步 86.52 π AI → 51.91 ￥；起步 0.01 π 股东大 π → 20,000 ￥
+        'hs_ai_r2c_fiat':'¥ 51.91',
+        'hs_ai_r2c_cur': 'CNY',
+        'hs_sh_r2_fiat': '¥ 20,000',
+        'hs_sh_r2_cur':  'CNY',
+
+        // 申请详情大按钮
+        'hs_apply_title': '派友AI股东卡',
+        'hs_apply_sub':   '申请详情 · APPLY DETAIL',
+
+        // 申请详情覆盖层（派友AI股东卡持有记录）
+        'apply_title': '派友AI股东卡持有记录',
+        'apply_s_ai_lbl':'派友AI卡持有',
+        'apply_s_ai_v':  '842',
+        'apply_s_sh_lbl':'派友股东卡持有',
+        'apply_s_sh_v':  '442',
+        'apply_s_u':     '张',
+        'apply_th_id':   '序号',
+        'apply_th_name': '名称',
+        'apply_th_time': '持有时间',
+        'apply_th_type': '类型',
+        'apply_th_qty':  '持有张数',
+        'apply_th_divi': '派币分红',
+        'apply_type_ai': '派友AI卡·二级',
+        'apply_type_sh': '派友股东卡·二级',
+        'apply_unit_card':'张',
+        'apply_unit_pi': 'π',
+        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 100 条持有记录',
+        'pager_prev':    '上一页',
+        'pager_next':    '下一页',
+        'pager_tip':     '当前页',
+        // 第 11~100 名：待审核占位
+        'apply_pending_name': '待审核',
+        'apply_pending_type': '待审核',
+        'apply_pending_date': '— — —',
+        'apply_pending_qty':  '—',
+        'apply_pending_divi': '—',
+
+        // 生态大圆环左侧「时间识别卡」
+        'etc_syncing': '全网时间 · 识别中',
+        'etc_synced':  '全网时间 · 已同步',
+        // 状态矩阵 3 行（左竖排 3 绿点）—— 主标题 + 副行两行拆分版
+        'etc_r1_title': '全网时间',
+        'etc_r1_sub_a': '日期同步中…', // 实际由 JS 实时填中文日期
+        'etc_r1_sub_b': '——:——:——',  // 实际由 JS 实时填 HH:MM:SS
+        'etc_r2_title': '派友AI卡 · 手机集群',
+        'etc_r2_sub_a': '全网生态浏览',
+        'etc_r2_sub_b': '已启动',
+        'etc_r3_title': '派友股东AI卡',
+        'etc_r3_sub_a': '股东已经参与',
+        'etc_r3_sub_b': '已启动',
+
+        // 对话页 · 兑换区域
+        'cg_hero_title':    '兑换区域',
+        'cg_hero_p1':       '<span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。',
+        'cg_hero_p2':       '<span class="hl-gold">您只需准备：</span>本人的收款账户、收款姓名、以及派币密语，即可向客服申请兑换；公司审核通过后将<span class="hl-gold">直接打款</span>，您不承担任何变现风险。',
+        'cg_hero_p3':       '请按照下方 <span class="hl-gold">4 步流程</span> 完成申请，全程通过群内官方客服对接，任何私下交易切勿相信。',
+        'cg_channels_title': '📮 联系与群聊通道（任选其一 · 可复制）',
+        'cg_c_mail_name':    '官方邮箱',
+        'cg_c_tg_name':      'Telegram 群',
+        'cg_c_qq_name':      'QQ 官方群',
+        'cg_c_tk_name':      'Teletalk 群',
+        'cg_steps_title':    '🧾 兑换申请 · 4 步流程',
+        'cg_s1_title':       '找到下列任意一个<span class="accent">官方群聊</span>',
+        'cg_s1_desc':        '选择上方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。',
+        'cg_s1_desc_v2':     '选择下方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。',
+        'cg_s2_title':       '<span class="accent">申请加入</span>并查看群公告',
+        'cg_s2_desc':        '入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。',
+        'cg_s3_title':       '提交<span class="accent">账号 · 收款方式 · 密语</span>',
+        'cg_s3_desc':        '向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。',
+        'cg_s4_title':       '提交申请，<span class="accent">坐等到账</span>',
+        'cg_s4_desc':        '客服汇总后统一向公司提交，审批通过后直接打款到您的 <span class="strong">支付宝 / 微信 / 银行卡</span>，您无需承担任何变现风险。',
+        'cg_s4_timing':      '快则 24h · 慢则 72h 到账',
+        'cg_foot_warn':      '⚠️ 再次提示：',
+        'cg_foot_txt':       '本页面仅展示流程说明，不提供任何线上直接变现功能；请务必通过上方官方群内客服对接，任何要求您直接转币或先支付手续费的均为诈骗。',
+        'cg_foot_txt_v2':    '本页面仅展示流程说明，不提供任何线上直接变现功能；请务必通过下方官方群内客服对接，任何要求您直接转币或先支付手续费的均为诈骗。',
+        'cg_toast_copied':   '已复制到剪贴板',
 
         // 首页AI股东卡
         'ai_card_title':        '派友AI股东卡',
@@ -1994,7 +3760,110 @@ const I18N = {
         // Tabs
         'tab_home':   'Home',
         'tab_market': 'Market',
+        'tab_chat':   'Redeem',
         'tab_my':     'Me',
+
+        // Home · mini tables (AI = Gold / Shareholder = Purple)
+        'hs_ai_badge':   'AI · TODAY',
+        'hs_ai_title':   'PiFriends AI Card',
+        'hs_ai_sub':     'AI POWER',
+        'hs_ai_r1c2_lbl':'Today Eco Browse',
+        'hs_ai_r1c2_v':  '12,846',
+        'hs_ai_r1c3_lbl':'Browse Time',
+        'hs_ai_r1c3_v':  '19.6',
+        'hs_ai_r2c_lbl': 'Pi Earned Today',
+        'hs_ai_r2c_v':   '86.52',
+        'hs_sh_badge':   'SHARE · TODAY',
+        'hs_sh_title':   'PiFriends Share Card',
+        'hs_sh_sub':     'HOLDER',
+        'hs_sh_r1c2_lbl':'Shareholder Eco Participation',
+        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c3_lbl':'Dividend Pi (π)',
+        'hs_sh_r1c3_v':  '286.52',
+        'hs_sh_r2_lbl':  'Dividend Pi Today',
+        'hs_u_count':    '',
+        'hs_u_hour':     'hrs',
+        'hs_u_people':   'u',
+        'hs_arrow_eq':   '≈',
+        // Dynamic table conversion (en: USDT dollars, 1 USDT ≈ ¥7.15)
+        // - AI:  1 π = ¥ 0.60 → $ 0.60/7.15 = $0.084 → 86.52 π ≈ $7.27
+        // - SH:  1 π = ¥ 2,000,000 → $ 2,000,000/7.15 ≈ $279,720 → 0.01 π ≈ $2,797
+        'hs_ai_r2c_fiat':'$ 7.27',
+        'hs_ai_r2c_cur': 'USDT',
+        'hs_sh_r2_fiat': '$ 2,797',
+        'hs_sh_r2_cur':  'USDT',
+
+        // Big apply button
+        'hs_apply_title': 'PiFriends AI & Share Card',
+        'hs_apply_sub':   'APPLY DETAILS · 申请详情',
+
+        // Apply overlay (Holdings Record Modal)
+        'apply_title': 'PiFriends Holdings Record',
+        'apply_s_ai_lbl':'AI Cards Held',
+        'apply_s_ai_v':  '842',
+        'apply_s_sh_lbl':'Shareholder Cards Held',
+        'apply_s_sh_v':  '442',
+        'apply_s_u':     'pcs',
+        'apply_th_id':   '#',
+        'apply_th_name': 'Name',
+        'apply_th_time': 'Held Since',
+        'apply_th_type': 'Type',
+        'apply_th_qty':  'Qty',
+        'apply_th_divi': 'Dividend (π)',
+        'apply_type_ai': 'AI Card · Lv.2',
+        'apply_type_sh': 'Shareholder Card · Lv.2',
+        'apply_unit_card':'pcs',
+        'apply_unit_pi': 'π',
+        'apply_foot':    '※ Data auto refresh every 5 min · 100 holdings records',
+        'pager_prev':    'Prev',
+        'pager_next':    'Next',
+        'pager_tip':     'Page',
+        // Placeholder for 11~100 pending review
+        'apply_pending_name': 'Pending',
+        'apply_pending_type': 'Pending',
+        'apply_pending_date': '— — —',
+        'apply_pending_qty':  '—',
+        'apply_pending_divi': '—',
+
+        // Eco Time Card (left of the big circle)
+        'etc_syncing': 'NET TIME · SYNCING',
+        'etc_synced':  'NET TIME · SYNCED',
+        // Status matrix (3 vertical green-dot rows) - Title + 2 Sub lines
+        'etc_r1_title': 'Net Clock',
+        'etc_r1_sub_a': 'Syncing date…',
+        'etc_r1_sub_b': '--:--:--',
+        'etc_r2_title': 'AI Card · Mobile Fleet',
+        'etc_r2_sub_a': 'Global Eco Browse',
+        'etc_r2_sub_b': 'LIVE',
+        'etc_r3_title': 'Shareholder AI',
+        'etc_r3_sub_a': 'Shareholder Joined',
+        'etc_r3_sub_b': 'LIVE',
+
+        // Chat page · Redemption Area
+        'cg_hero_title':    'Redemption Zone',
+        'cg_hero_p1':       '<span class="hl-red">Important:</span> Converting any crypto (including Pi) within China is <span class="hl-red">illegal</span>. This redemption must be applied via official group chat channels, where support staff submit applications to the company on your behalf.',
+        'cg_hero_p2':       '<span class="hl-gold">All you need to prepare:</span> your receiving account, payee name, and Pi passphrase. Submit to support; after approval the company will <span class="hl-gold">send funds directly</span> — you bear zero cash-out risk.',
+        'cg_hero_p3':       'Please follow the <span class="hl-gold">4-Step process</span> below. All operations must go through verified customer support in the groups. Do NOT trust any private deals.',
+        'cg_channels_title': '📮 Contact & Group Channels (Pick Any · Tap to Copy)',
+        'cg_c_mail_name':    'Official Mail',
+        'cg_c_tg_name':      'Telegram Group',
+        'cg_c_qq_name':      'QQ Official Group',
+        'cg_c_tk_name':      'Teletalk Group',
+        'cg_steps_title':    '🧾 Redemption · 4-Step Process',
+        'cg_s1_title':       'Join any <span class="accent">official group chat</span>',
+        'cg_s1_desc':        'Pick one channel above: <span class="strong">Email / Telegram / QQ / Teletalk</span>, join the group or send an email.',
+        'cg_s1_desc_v2':     'Pick one channel below: <span class="strong">Email / Telegram / QQ / Teletalk</span>, join the group or send an email.',
+        'cg_s2_title':       '<span class="accent">Apply to join</span> and read pinned rules',
+        'cg_s2_desc':        'After joining, <span class="strong">read the pinned announcement first</span>. All redemptions must follow the rules and reach out to verified customer support.',
+        'cg_s3_title':       'Submit <span class="accent">Account · Payee · Passphrase</span>',
+        'cg_s3_desc':        'Provide support with: ① your <span class="strong">Pi account nickname</span>; ② Payee method — <span class="strong">Bank / Alipay / WeChat</span> — plus real name; ③ your <span class="strong">redeem passphrase</span> for identity verification.',
+        'cg_s4_title':       'Submit & <span class="accent">wait for payout</span>',
+        'cg_s4_desc':        'Support submits your application to the company. Approved funds are sent directly to your <span class="strong">Alipay / WeChat / Bank</span>. No cash-out risk on your side.',
+        'cg_s4_timing':      'Fast 24h · Slow 72h to receive',
+        'cg_foot_warn':      '⚠️ Reminder:',
+        'cg_foot_txt':       'This page only illustrates the process. No online cash-out function is provided here. Always use verified CS in the channels above. Anyone asking you to transfer Pi first or pay an upfront fee is a scammer.',
+        'cg_foot_txt_v2':    'This page only illustrates the process. No online cash-out function is provided here. Always use verified CS in the channels below. Anyone asking you to transfer Pi first or pay an upfront fee is a scammer.',
+        'cg_toast_copied':   'Copied to clipboard',
 
         // Home AI Shareholder Card
         'ai_card_title':        'PiFriends AI Shareholder Card',
@@ -2117,6 +3986,7 @@ const I18N = {
 let CUR_LANG = 'zh-CN';
 function applyLanguage(lang) {
     CUR_LANG = lang in I18N ? lang : 'zh-CN';
+    window.CUR_LANG = CUR_LANG;
     const dict = I18N[CUR_LANG];
     const els = document.querySelectorAll('[data-i18n]');
     for (let i = 0; i < els.length; i++) {
@@ -2124,22 +3994,46 @@ function applyLanguage(lang) {
         const key = el.getAttribute('data-i18n');
         if (!(key in dict)) continue;
         let v = dict[key];
-        if (v.indexOf('\\n') > -1) {
+        const hasHTML = (v.indexOf('\\n') > -1) || v.indexOf('</') > -1;
+        if (hasHTML) {
             el.innerHTML = v.split('\\n').join('<br/>');
         } else {
             el.textContent = v;
         }
     }
+    // data-i18n-dyn：动态换算值（例如 π→CNY / π→USDT，语言切换时变货币）
+    const dEls = document.querySelectorAll('[data-i18n-dyn]');
+    for (let i = 0; i < dEls.length; i++) {
+        const el = dEls[i];
+        const key = el.getAttribute('data-i18n-dyn');
+        if (!(key in dict)) continue;
+        el.textContent = dict[key];
+        // 货币颜色主题：CNY 金色 / USDT 蓝色
+        const curKey = key.replace(/_fiat$/, '_cur');
+        const cur = dict[curKey] || '';
+        if (/fiat|cur/.test(key)) {
+            const parent = el.closest('.hs-cell-price.fiat');
+            if (parent) {
+                parent.classList.toggle('fiat-cny', cur === 'CNY');
+                parent.classList.toggle('fiat-usdt', cur === 'USDT');
+            }
+            // n 元素单独上色：CNY = gold / USDT = blue
+            if (key.endsWith('_fiat')) {
+                el.classList.toggle('n-cny', cur === 'CNY');
+                el.classList.toggle('n-usdt', cur === 'USDT');
+            }
+        }
+    }
     // 语言按钮标志
     const flag = CUR_LANG === 'zh-CN' ? '🇨🇳' : '🇬🇧';
-    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3').forEach(b => {
+    document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3, #btnToggleLang4').forEach(b => {
         if (b) b.innerHTML = `${flag} <span data-i18n="btn_lang">${dict['btn_lang']}</span>`;
     });
 }
 document.addEventListener('click', function(e){
     const t = e.target;
     if (!t) return;
-    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3') {
+    if (t.id === 'btnToggleLang' || t.id === 'btnToggleLang2' || t.id === 'btnToggleLang3' || t.id === 'btnToggleLang4') {
         const next = CUR_LANG === 'zh-CN' ? 'en' : 'zh-CN';
         applyLanguage(next);
     }
@@ -2179,6 +4073,56 @@ document.addEventListener('click', function(e){
     if (t === mask) { closeModal(); return; }
 });
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+/* ==================== 兑换页：群聊/邮箱 一键复制（卡片点击 / 复制按钮点击通用） ==================== */
+(function(){
+    let toastTimer = null;
+    function showToast() {
+        const toast = document.getElementById('cgCopyToast');
+        if (!toast) return;
+        toast.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 1400);
+    }
+    async function copyText(text, btnEl) {
+        if (!text) return;
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.setAttribute('readonly','readonly');
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+            }
+            if (btnEl) {
+                btnEl.classList.add('copied');
+                setTimeout(function(){ btnEl.classList.remove('copied'); }, 900);
+            }
+            showToast();
+        } catch (err) { /* 静默失败（剪贴板权限拒绝） */ }
+    }
+    document.addEventListener('click', function(e){
+        const t = e.target;
+        if (!t || !t.closest) return;
+        // 优先复制按钮
+        const copyBtn = t.closest('.cg-copy-btn');
+        if (copyBtn) {
+            const card = copyBtn.closest('.cg-channel-card');
+            if (!card) return;
+            copyText(String(card.dataset.copy || '').trim(), copyBtn);
+            e.preventDefault();
+            return;
+        }
+        // 其次整个卡片点击也可复制（但避免误触：要求不是滚动拖动，这里直接 click 即可）
+        const chCard = t.closest('.cg-channel-card');
+        if (chCard) {
+            // 找到本卡对应的复制按钮来做高亮
+            const btn = chCard.querySelector('.cg-copy-btn');
+            copyText(String(chCard.dataset.copy || '').trim(), btn || null);
+            return;
+        }
+    });
+})();
 
 /* ==================== 首页：生态分红池 金黄色闪电/线条粒子 分发系统 ==================== */
 (function(){
@@ -2515,6 +4459,740 @@ function fixSafeArea(){
 window.addEventListener('resize', fixSafeArea);
 if (document.readyState !== 'loading') fixSafeArea();
 else document.addEventListener('DOMContentLoaded', fixSafeArea);
+
+/* ==================== 申请详情：覆盖层开关 + 5 列样例数据注入 ==================== */
+(function initApplyDetail(){
+    const overlay = document.getElementById('applyOverlay');
+    const btnOpen = document.getElementById('btnOpenApplyDetail');
+    const btnClose = document.getElementById('btnCloseApplyDetail');
+    const tbody = document.getElementById('applyTblBody');
+
+    function openApply(e){
+        if (e) e.stopPropagation();
+        if (!overlay) return;
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('apply-open');
+    }
+    function closeApply(e){
+        if (e) e.stopPropagation();
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('apply-open');
+    }
+
+    if (btnOpen) btnOpen.addEventListener('click', openApply);
+    if (btnClose) btnClose.addEventListener('click', closeApply);
+    // 点击 overlay 空白背景处（非 sheet 内部）→ 关闭
+    if (overlay) overlay.addEventListener('click', function(e){
+        if (e.target === overlay) closeApply();
+    });
+    // ESC 键关闭
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeApply();
+    });
+
+    /* ---- 6 列持有记录：100 条 = 10 页 × 10 行；分页器上一页 / 黄色发光球 / 下一页 ---- */
+    const NAME_POOL = [
+        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵','周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨',
+        '徐梓涵','宋浩宇','孙婉清','朱雨泽','何思成','高梓涵','郑明浩','梁文博','谢欣怡','韩宇轩',
+        '许子墨','冯钰琪','邓嘉怡','曹浩然','彭奕辰','曾雅诗','萧泽楷','田沐晨','董一诺','潘宇辰',
+        '袁嘉懿','蒋舒涵','蔡沐阳','余星辰','杜雨桐','魏子涵','程瑞霖','丁亦轩','沈慕晴','范子豪',
+        '傅锦程','安诗雅','乐逸飞','颜清越','龙紫嫣','易展鹏','尚靖琪','温新宇','柳亦宸','黎瑾瑜',
+        '史皓天','陶雪莹','姜皓轩','费思源','蓝若曦','屠思远','齐若兰','康皓宸','伍雅琴','余子墨',
+        '卜安然','耿云舟','关雅婷','苗雨泽','靳雨辰','穆泽楷','聂嘉树','褚清妍','柴书瑶','翟思齐',
+        '庞嘉瑞','阴依诺','郁俊熙','薄雅宁','宿云舒','白梓萱','怀瑾瑜','蒲青瑶','索思雅','冉明煦',
+        '郦浩宇','雍雨桐','璩瑞泽','桂逸帆','濮星宇','牛睿思','寿佳怡','通睿渊','边冠霖','扈慕凝'
+    ];
+    const PAGE_SIZE = 10;
+    const TOTAL = 100;
+    const TOTAL_PAGES = Math.ceil(TOTAL / PAGE_SIZE);
+    let currentPage = 1; // 1-based
+    // 用户指定 01~10 的今日分红派币（序号 1 基索引 1..10，这里存 0 基 [0..9]）
+    // 口播：01=0.001 / 02=1 / 03=0.002 / 04=1 / 05=0.0002 / 06=2 / 07=0.001 / 08=3 / 09=0.001 / 10=1
+    const TOP10_TODAY_DIVI = [
+        0.001,  // 01
+        1.0,    // 02
+        0.002,  // 03
+        1.0,    // 04
+        0.0002, // 05
+        2.0,    // 06
+        0.001,  // 07
+        3.0,    // 08
+        0.001,  // 09
+        1.0     // 10
+    ];
+    // 生成 100 条随机持有记录
+    const rows = [];
+    const today = new Date();
+    const pad = (n) => String(n).padStart(2,'0');
+    // D0 基准：页面加载的「今天」作为偏移原点（必须在 today 定义之后）
+    // D0 (今天) = TOP10_TODAY_DIVI[i]；D+N (N 天后) = target + dailyGain * N；D-N 同理
+    const initToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    // 简易伪随机（可重复）：给每页固定 seed 感的稳定数据
+    function rnd(seed){
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+    for (let i = 0; i < TOTAL; i++){
+        // 前 10 名（01~10）：保留真实信息
+        const isTop10 = (i < 10);
+        const isAI = (i % 2 !== 0);
+        const seed = (i + 7) * 13.37;
+        if (isTop10){
+            const daysAgo = Math.floor(rnd(seed) * 90);
+            const d = new Date(today.getTime() - daysAgo * 86400000);
+            const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+            let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
+            // 日增幅（保持原规则：AI 每张每天 +3.0 π，股东 每张每月 +0.1 π => 每天 +0.1/30 π）
+            const dailyGainPerCard = isAI ? 3.0 : (0.1 / 30);
+            const dailyGain = parseFloat((dailyGainPerCard * cards).toFixed(6));
+            // 今日（today）必须显示的目标分红：严格按 TOP10_TODAY_DIVI[i]
+            const diviTodayTarget = TOP10_TODAY_DIVI[i] || 0;
+            // 持有起始日 到 今日 的自然日差 = 已经累计涨了几天
+            const _holdMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const MS = 86400000;
+            const holdDaysUntilToday = Math.max(0, Math.round((todayMidnight.getTime() - _holdMidnight.getTime()) / MS));
+            // 反推出购入起点基准 diviBase = 今日目标值 - （日增 × 持有到今天的天数）
+            // 这样 computeDivi(r, today) = diviBase + dailyGain * holdDaysUntilToday === diviTodayTarget
+            // 明天以后则在 target 基础上继续每日 +dailyGain
+            let diviBase = diviTodayTarget - dailyGain * holdDaysUntilToday;
+            if (diviBase < 0) diviBase = 0; // 兜底不产生负数基准
+            diviBase = parseFloat(diviBase.toFixed(6));
+            // 基准 perCard 仅调试用途（不再影响渲染值）
+            const basePerCard = cards > 0 ? parseFloat((diviBase / cards).toFixed(6)) : 0;
+            const name = NAME_POOL[i % NAME_POOL.length];
+            rows.push({
+                id: String(i + 1).padStart(2,'0'),
+                idx: i,
+                pending: false,
+                name: name,
+                date: dateStr,
+                _holdDate: _holdMidnight,
+                type: isAI ? 'ai' : 'sh',
+                cards: cards,
+                basePerCard: basePerCard,
+                diviTodayTarget: diviTodayTarget,
+                diviBase: diviBase,
+                dailyGain: dailyGain,
+                divi: null
+            });
+        } else {
+            // 第 11~100 名（idx 10~99）：全部「待审核」占位
+            rows.push({
+                id: String(i + 1).padStart(2,'0'),
+                idx: i,
+                pending: true,
+                name: null,
+                date: null,
+                type: null,
+                cards: null,
+                divi: null
+            });
+        }
+    }
+
+    /**
+     * 核心：计算某条记录「截至 nowDate」时的累计派币分红
+     * 规则（top10 新逻辑，以今天为 D0 锚）：
+     *   - D0 (今天) → TOP10_TODAY_DIVI 指定的固定值
+     *   - D+1 (明天) → target + 1 × dailyGain
+     *   - D+N → target + N × dailyGain
+     *   日增幅本身保持：AI卡 每张每天 +3.0 π；股东卡 每张每月 +0.1 π（每天 0.1/30 π）
+     * 非 top10 (pending) → 0（UI 显示「—」占位，不影响此函数）
+     */
+    function computeDivi(r, nowDate){
+        if (!r || r.pending) return 0;
+        const MS = 86400000;
+        const nowMid = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+        const offsetDays = Math.round((nowMid.getTime() - initToday.getTime()) / MS);
+        const target = (typeof r.diviTodayTarget === 'number') ? r.diviTodayTarget : (r.diviBase || 0);
+        return target + (r.dailyGain || 0) * offsetDays;
+    }
+    // 对外（便于测试/手动触发）
+    window.__applyComputeDivi = computeDivi;
+    window.__applyRows = rows;
+
+    // ---------- 分页控件元素 ----------
+    const btnPrev = document.getElementById('apgPrev');
+    const btnNext = document.getElementById('apgNext');
+    const elCur   = document.getElementById('apgCur');
+    const elTot   = document.getElementById('apgTot');
+
+    function updatePagerUI(){
+        if (elCur) elCur.textContent = String(currentPage);
+        if (elTot) elTot.textContent = String(TOTAL_PAGES);
+        if (btnPrev) btnPrev.disabled = (currentPage <= 1);
+        if (btnNext) btnNext.disabled = (currentPage >= TOTAL_PAGES);
+        // 悬浮球翻页时的"弹跳"视觉反馈
+        const ball = document.getElementById('apgBall');
+        if (ball){
+            ball.style.animation = 'none';
+            ball.offsetHeight; // reflow
+            ball.style.animation = '';
+        }
+    }
+
+    function goToPage(n){
+        const p = Math.max(1, Math.min(TOTAL_PAGES, n|0));
+        if (p === currentPage){ updatePagerUI(); return; }
+        currentPage = p;
+        renderRows();
+        updatePagerUI();
+        // 翻页时让 tbody 滚回顶部
+        try {
+            const tb = tbody?.parentElement?.parentElement?.querySelector('tbody');
+            if (tb) tb.scrollTop = 0;
+        } catch(e){}
+    }
+
+    function renderRows(nowOverride){
+        if (!tbody) return;
+        const nowDate = (nowOverride instanceof Date) ? nowOverride : new Date();
+        const dict = I18N[window.CUR_LANG || 'zh-CN'] || {};
+        const tAI = dict['apply_type_ai'] || '派友AI卡';
+        const tSH = dict['apply_type_sh'] || '派友股东卡';
+        const uCard = dict['apply_unit_card'] || '张';
+        const uPi   = dict['apply_unit_pi']  || 'π';
+        const pName = dict['apply_pending_name'] || '待审核';
+        const pType = dict['apply_pending_type'] || '待审核';
+        const pDate = dict['apply_pending_date'] || '— — —';
+        const pQty  = dict['apply_pending_qty']  || '—';
+        const pDivi = dict['apply_pending_divi'] || '—';
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const end   = start + PAGE_SIZE;
+        const slice = rows.slice(start, end);
+        const frag = document.createDocumentFragment();
+        slice.forEach(function(r){
+            const tr = document.createElement('tr');
+            if (r.pending){
+                tr.classList.add('row-pending');
+                tr.innerHTML = `
+                    <td class="col-i">${r.id}</td>
+                    <td class="col-n">${pName}</td>
+                    <td class="col-t">${pDate}</td>
+                    <td class="col-y">
+                        <span class="type-pill pending">${pType}</span>
+                    </td>
+                    <td class="col-q">
+                        <span class="qty-card"><span class="q-n">${pQty}</span><span class="q-u"></span></span>
+                    </td>
+                    <td class="col-d">
+                        <span class="divi-pi"><span class="d-n">${pDivi}</span><span class="d-u"></span></span>
+                    </td>`;
+            } else {
+                // 动态计算当前派币分红（按持有自然日累加）
+                // 显示小数位：值 <1 → 5 位（准确展示 0.0002 / 0.001 / 0.002）
+                //             值 ≥1 → 2 位（整数派好看）
+                const v = computeDivi(r, nowDate);
+                let dp;
+                if (v < 1) dp = 5;
+                else if (v < 10) dp = 3;
+                else dp = 2;
+                // 小值去除尾部多余 0（但保留到需要的精度），0.00020 → 0.0002
+                let vStr = v.toFixed(dp);
+                if (v < 1) {
+                    vStr = parseFloat(vStr).toFixed(dp);
+                }
+                // 若整数位无意义的 .00/.000，去掉
+                if (v >= 1) {
+                    const iPart = Math.round(v);
+                    if (Math.abs(v - iPart) < Math.pow(10, -dp)) {
+                        vStr = String(iPart); // 整数无小数
+                    }
+                }
+                tr.innerHTML = `
+                    <td class="col-i">${r.id}</td>
+                    <td class="col-n">${r.name}</td>
+                    <td class="col-t">${r.date}</td>
+                    <td class="col-y">
+                        <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
+                    </td>
+                    <td class="col-q">
+                        <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
+                    </td>
+                    <td class="col-d">
+                        <span class="divi-pi"><span class="d-n">${vStr}</span><span class="d-u">${uPi}</span></span>
+                    </td>`;
+            }
+            frag.appendChild(tr);
+        });
+        tbody.innerHTML = '';
+        tbody.appendChild(frag);
+    }
+
+    // ---------- 绑定分页按钮 ----------
+    if (btnPrev) btnPrev.addEventListener('click', function(){ goToPage(currentPage - 1); });
+    if (btnNext) btnNext.addEventListener('click', function(){ goToPage(currentPage + 1); });
+    // 键盘：← / → 翻页（当 overlay open 时）
+    document.addEventListener('keydown', function(e){
+        const ov = document.getElementById('applyOverlay');
+        if (!ov || !ov.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft')  goToPage(currentPage - 1);
+        if (e.key === 'ArrowRight') goToPage(currentPage + 1);
+    });
+
+    // 初始渲染
+    updatePagerUI();
+    renderRows();
+    // 切语言时重新渲染（类型标签、单位会变，保持当前页）
+    const _old = window.applyLanguage;
+    window.applyLanguage = function(lang){
+        const ret = _old.apply(this, arguments);
+        try { renderRows(); } catch(e){}
+        return ret;
+    };
+
+    // ===== 24h 滚动：跨自然日后自动刷新派币分红 =====
+    // 每 60 秒检查一次日期是否变化；变化 → 若 overlay 打开则重渲染表格
+    let _lastDiviDayKey = '';
+    function dayKey(d){
+        return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    }
+    function refreshDiviEvery24h(){
+        try {
+            const now = new Date();
+            const k = dayKey(now);
+            if (k === _lastDiviDayKey) return;
+            _lastDiviDayKey = k;
+            const ov = document.getElementById('applyOverlay');
+            if (ov && ov.classList.contains('active')) {
+                renderRows();
+            }
+        } catch(e){}
+    }
+    _lastDiviDayKey = dayKey(new Date());
+    const diviTimer = setInterval(refreshDiviEvery24h, 60 * 1000);
+    // 用户切回可见/页面重新获得焦点时，立即检查跨日（错过 interval 的补偿）
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) refreshDiviEvery24h(); });
+    window.addEventListener('focus', function(){ refreshDiviEvery24h(); });
+    // 暴露 window API（便于调试/测试）
+    window.__refreshDiviEvery24h = refreshDiviEvery24h;
+    window.__forceRenderDivi = function(nowOverride){ renderRows(nowOverride); };
+    // 页面销毁清理
+    window.addEventListener('beforeunload', function(){ if (diviTimer) clearInterval(diviTimer); });
+})();
+
+/* ================ 首页 · 生态分红池 + 两张迷你数据表格：实时跳动增长引擎 ================ */
+/* -------------------- 设计说明 --------------------
+ * 你要求：
+ *  A. 生态 3 项（总值/人数/分红派币）一切以「2026-08-15 00:30:00」为起点，持续不断累加
+ *     → 无论你何时打开页面（12:00 / 次日 / 大后天），先按经过的秒数把 3 项补上，
+ *       然后继续按 tick 每秒涨；永远不重置。
+ *  B. AI卡 / 股东卡 6 项（今日字段）：以「当天 00:00:00」为起点开始累加到当前时刻
+ *     → 你 01:00 / 14:00 / 22:00 打开页面，都先补上「now - 今天00:00」这一段的增量，
+ *       然后在此进度上继续 tick；每到新的一天 00:00 全部 6 项清零回起点重新累加。
+ *  C. F5 刷新后：生态不回落、今日不回到起点；一切是「持续性累加」而不是重新出现。
+ *  D. localStorage 双保险：每次 tick 把 S + lastFireAt 落盘；F5 时如果 localStorage 保存的
+ *     日期跟当前日期一致，就基于「savedAt + 现在差」继续追回来（甚至比单纯 ANCHOR 更准）。
+ *
+ * 我们的实现：
+ *   1) 定义 ECO_ANCHOR = 2026-08-15 00:30:00，9 项各自 BASE + PER_SEC 速率
+ *      （BASE = 你指定的 S.ecoTotal=1200 等 / S.aiPiStart 等）
+ *   2) boot 时调用 computeInitialStateFromAnchor(nowMs) → 返回初始 S
+ *   3) 每个 setInterval 只做「当前 tick 的随机增量」，这样：
+ *       - F5 再次 computeInitialStateFromAnchor 就会补回离开的秒数
+ *       - 跨零点 todayElapsed 会自然变成 0（新的一天 00:00 → 0）→ AI/股东 自动从起点重算
+ *   4) 人数 stage（0/1/2）也用 elapsed_hours 直接推进，保证跨小时真实。
+ */
+(function initHomeLiveNumbers(){
+    'use strict';
+
+    /* ========== 0. 工具函数 ========== */
+    function rint(lo, hi){ lo = Math.ceil(lo); hi = Math.floor(hi); return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+    function rfloat(lo, hi){ return lo + Math.random() * (hi - lo); }
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+    function fmtInt(n){ return Math.round(n).toLocaleString('en-US'); }
+    function fmtFixed(n, dp){
+        const m = Math.pow(10, dp);
+        const s = (Math.round(n * m) / m).toFixed(dp);
+        const [a, b] = s.split('.');
+        const withSep = parseInt(a, 10).toLocaleString('en-US');
+        return b ? (withSep + '.' + b) : withSep;
+    }
+    function fmtAutoFloat(n){
+        const abs = Math.abs(n);
+        if (abs < 1) return fmtFixed(n, 5);
+        if (abs < 10) return fmtFixed(n, 3);
+        if (abs < 100) return fmtFixed(n, 2);
+        return fmtFixed(n, 2);
+    }
+    function setHtml(id, html){
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+    function dayKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+    function startOfDayMs(ms){
+        const d = new Date(ms);
+        d.setHours(0,0,0,0);
+        return d.getTime();
+    }
+    /* 取一个可替换的「当前时间」：优先 window.__DEBUG_NOW_MS（用于手动拨「明天1点/后天」验证），否则 Date.now() */
+    function nowMs(){
+        return (typeof window.__DEBUG_NOW_MS === 'number') ? window.__DEBUG_NOW_MS : Date.now();
+    }
+    function nowDate(){ return new Date(nowMs()); }
+
+    /* ========== 1. 汇率（用于 ≈ CNY / USDT 自动换算） ========== */
+    const USDT_TO_CNY     = 7.15;
+    const AI_PI_TO_CNY    = 0.60;
+    const SHARE_PI_TO_CNY = 2000000;
+    function piToFiat(pi, kind, lang){
+        const isZh = (lang || (window.CUR_LANG || 'zh-CN')).toLowerCase().indexOf('zh') >= 0;
+        const piToCny = (kind === 'share') ? SHARE_PI_TO_CNY : AI_PI_TO_CNY;
+        const vCny = pi * piToCny;
+        if (isZh) {
+            let dp = 2;
+            if (kind === 'share') dp = (vCny >= 1000) ? 0 : ((vCny >= 1) ? 2 : 4);
+            return { symbol: '¥', value: vCny, cur: 'CNY', dp };
+        }
+        const vUsdt = vCny / USDT_TO_CNY;
+        let dp = 4;
+        if (kind === 'share') dp = (vUsdt >= 1000) ? 0 : ((vUsdt >= 1) ? 2 : 4);
+        return { symbol: '$', value: vUsdt, cur: 'USDT', dp };
+    }
+    function fmtFiat(n, dp, symbol){ return symbol + ' ' + fmtFixed(n, dp); }
+
+    /* ========== 2. 基准时间 + 9 项每秒速率（最新一轮要求版）==========
+     *
+     * 生态（基于 ECO_ANCHOR_MS = 2026-08-15 00:30:00，永不重置）—— 速率不变：
+     *  ecoTotal  : 每秒 rint(1,5) → 3 / s
+     *  ecoPeople : 每 3 小时阶段 → 净 +2 / 3h = 2 / (3600×3) / s；clamp 50~1000
+     *  ecoDivi   : 0.25×0.1005 + 0.75×1.6 ≈ 1.225 / s
+     *
+     * AI卡今日（每日 00:00 重置）—— 本轮用户新规格：
+     *  aiEco ：每天 00:00 从 1 开始，每 10 秒 rint(1,5) 累积 → 均值 3/10 = 0.3 /s
+     *  aiHour：每天 00:00 从 0 开始，每 5 秒 rfloat(0.1, 0.5) → 均值 0.3/5 = 0.06 /s
+     *  aiPi  ：保持原每秒 rint(1,5) → 3 / s（不变）
+     *
+     * 股东卡今日（每日 00:00 重置）—— 本轮用户新规格：
+     *  shApp：每天 00:00 起点 = 随机 rint(1,90)「1 到 90 个随机」；每 1 小时 rint(1,5) → 均值 3 / 3600 = 0.0008333 /s
+     *  shPi ：两处 π 合并为一个变量，右上 sh_v_pi_head 和下方大 sh_v_pi_big 读同一个值；
+     *         速度沿用原 shPiBig 分布（每分钟 ~0.0175） → 0.0175 / 60 ≈ 0.0002917 /s
+     *         换算人民币也用这同一个 shPi，保证两处完全一致。
+     */
+    const ECO_ANCHOR_MS = (function(){
+        const d = new Date(); d.setFullYear(2026); d.setMonth(7); d.setDate(15);
+        d.setHours(0, 30, 0, 0); return d.getTime();
+    })();
+
+    const BASE = {
+        ecoTotal: 1200, ecoPeople: 58, ecoDivi: 286.52,
+        aiEco: 1, aiHour: 0, aiPi: 0,           // aiHour 按你要求从 0 起步（不再是 1.0）
+        shApp: 1, shPi: 0.01,                   // shApp 每日随机起点；shPi 两处统一为一个
+    };
+    const PER_SEC = {
+        ecoTotal: 3.0,
+        ecoPeople: 2 / (3600 * 3),
+        ecoDivi: 1.22505,
+        aiEco: 3 / 10,       // 0.3  每 10s rint(1,5) 均值 = 3
+        aiHour: 0.3 / 5,     // 0.06 每 5s rfloat(0.1,0.5) 均值 = 0.3
+        aiPi: 3.0,
+        shApp: 3 / 3600,     // 每 1h rint(1,5) 均值 = 3
+        shPi: 0.0175 / 60,   // ≈ 0.0002917
+    };
+    const PEOPLE_STAGE_MS = 60 * 60 * 1000;
+    const PEOPLE_MIN = 50, PEOPLE_MAX = 1000;
+
+    /* ========== 3. 状态对象 ========== */
+    const S = {
+        ecoTotal: BASE.ecoTotal, ecoPeople: BASE.ecoPeople, ecoPeopleStage: 0, ecoDivi: BASE.ecoDivi,
+
+        aiEcoStart: BASE.aiEco, aiHourStart: BASE.aiHour, aiPiStart: BASE.aiPi,
+        aiEco: BASE.aiEco, aiHour: BASE.aiHour, aiPi: BASE.aiPi,
+
+        shAppStart: BASE.shApp, shPiStart: BASE.shPi,
+        shApp: BASE.shApp, shPi: BASE.shPi,
+
+        lastDayKey: dayKey(nowDate()),
+    };
+
+    /* ========== 4. computeInitialStateFromAnchor() —— 打开页面 / F5 / 跨零点 都调用 ========== */
+    function computeInitialStateFromAnchor(){
+        const nMs = nowMs();
+        /* (a) 生态 3 项：以 2026-08-15 00:30 为基准，永不重置 */
+        const ecoElapsedSec = Math.max(0, (nMs - ECO_ANCHOR_MS) / 1000);
+        S.ecoTotal   = BASE.ecoTotal + Math.floor(ecoElapsedSec * PER_SEC.ecoTotal);
+        S.ecoDivi    = BASE.ecoDivi    + ecoElapsedSec * PER_SEC.ecoDivi;
+        const totalStage = Math.max(0, Math.floor(ecoElapsedSec * 1000 / PEOPLE_STAGE_MS));
+        S.ecoPeople = BASE.ecoPeople;
+        for (let k = 0; k < totalStage; k++){
+            if      ((k % 3) === 0) S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
+            else if ((k % 3) === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+            else                   S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+        }
+        S.ecoPeopleStage = totalStage % 3;
+
+        /* (b) AI / 股东今日字段：以当天 00:00:00 为基准 */
+        const today0 = startOfDayMs(nMs);
+        const todayElapsedSec = Math.max(0, (nMs - today0) / 1000);
+        S.lastDayKey = dayKey(nowDate());
+
+        S.aiEcoStart  = 1;   // 用户明确：浏览生态每天零点从「1」开始增加
+        S.aiHourStart = 0;   // 用户明确：浏览时长每天零点从「0」开始增加
+        S.aiPiStart   = 0;
+        S.aiEco  = Math.max(1, S.aiEcoStart  + Math.floor(todayElapsedSec * PER_SEC.aiEco));
+        S.aiHour = Math.max(0, S.aiHourStart + todayElapsedSec * PER_SEC.aiHour);
+        S.aiPi   = Math.max(0, S.aiPiStart   + Math.floor(todayElapsedSec * PER_SEC.aiPi));
+
+        // 股东参与生态数量：每天 00:00 随机起点 rint(1,90)「1 到 90 个随机」
+        S.shAppStart = rint(1, 90);
+        S.shPiStart  = BASE.shPi;
+        S.shApp = Math.max(1, S.shAppStart + Math.floor(todayElapsedSec * PER_SEC.shApp));
+        S.shPi  = Math.max(BASE.shPi, S.shPiStart + todayElapsedSec * PER_SEC.shPi);
+    }
+
+    /* ========== 5. renderAll —— 关键：两处股东 π 都读 S.shPi 同一个值，换算人民币也一致 ========== */
+    function renderAll(){
+        const lang = window.CUR_LANG || 'zh-CN';
+        setHtml('eco_v_total', fmtInt(S.ecoTotal));
+        setHtml('eco_v_people', fmtInt(S.ecoPeople));
+        setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+
+        setHtml('ai_v_eco', fmtInt(S.aiEco));
+        setHtml('ai_v_hour', fmtFixed(S.aiHour, 1));
+        setHtml('ai_v_pi', fmtAutoFloat(S.aiPi));
+        const aiFiat = piToFiat(S.aiPi, 'ai', lang);
+        setHtml('ai_v_fiat', fmtFiat(aiFiat.value, aiFiat.dp, aiFiat.symbol));
+        setHtml('ai_v_cur', aiFiat.cur);
+
+        setHtml('sh_v_app', fmtInt(S.shApp));
+        // 股东卡两处 π 统一显示同一个 shPi（上格 & 下方大跨列 ↓ 两个 DOM 用同一个值）
+        const piStr = fmtAutoFloat(S.shPi);
+        setHtml('sh_v_pi_head', piStr);
+        setHtml('sh_v_pi_big',  piStr);
+        // 人民币/USDT 换算也基于同一个 shPi，两处数字看起来完全一致
+        const shFiat = piToFiat(S.shPi, 'share', lang);
+        setHtml('sh_v_fiat', fmtFiat(shFiat.value, shFiat.dp, shFiat.symbol));
+        setHtml('sh_v_cur', shFiat.cur);
+    }
+
+    /* ========== 6. dailyResetIfCrossed ========== */
+    function dailyResetIfCrossed(){
+        const k = dayKey(nowDate());
+        if (k === S.lastDayKey) return;
+        computeInitialStateFromAnchor();
+        renderAll();
+    }
+
+    /* ========== 7. 生态 3 项 ticker（同原版，不变） ========== */
+    const tmrEcoTotal = setInterval(function(){ S.ecoTotal += rint(1, 5); setHtml('eco_v_total', fmtInt(S.ecoTotal)); }, 1000);
+    function runPeopleStageOnce(){
+        if (S.ecoPeopleStage === 0)      S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
+        else if (S.ecoPeopleStage === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+        else                             S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 3;
+        setHtml('eco_v_people', fmtInt(S.ecoPeople));
+    }
+    const tmrEcoPeople = setInterval(runPeopleStageOnce, PEOPLE_STAGE_MS);
+    window.__debugPeopleStage = runPeopleStageOnce;
+    const tmrEcoDivi = setInterval(function(){
+        S.ecoDivi += (Math.random() < 0.25 ? rfloat(0.01, 0.2) : rfloat(0.2, 3.0));
+        setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+    }, 1000);
+
+    /* ========== 8. AI 卡 3 项 ticker（新规格） ==========
+     * aiEco ：每 10 秒 +rint(1,5)（不再是每秒爆发）
+     * aiHour：每 5 秒 +rfloat(0.1,0.5)（不再是 1~3s +0.1/0.2，且起点=0）
+     * aiPi  ：每秒 rint(1,5) 维持不变 */
+    function tickAiEco(){ S.aiEco += rint(1, 5); setHtml('ai_v_eco', fmtInt(S.aiEco)); }
+    const tmrAiEco = setInterval(tickAiEco, 10 * 1000); // 每 10s 一次
+    // 一打开就立刻给一次 aiEco +1~5 视觉反馈，不必等 10 秒
+    setTimeout(tickAiEco, 800);
+
+    function tickAiHour(){ S.aiHour += rfloat(0.1, 0.5); setHtml('ai_v_hour', fmtFixed(S.aiHour, 1)); }
+    const tmrAiHour = setInterval(tickAiHour, 5 * 1000); // 每 5s 一次
+    setTimeout(tickAiHour, 600); // 打开很快就跳一下，不会一直停在 0.0
+
+    const tmrAiPi = setInterval(function(){
+        S.aiPi += rint(1, 5);
+        setHtml('ai_v_pi', fmtAutoFloat(S.aiPi));
+        const lang = window.CUR_LANG || 'zh-CN';
+        const f = piToFiat(S.aiPi, 'ai', lang);
+        setHtml('ai_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
+        setHtml('ai_v_cur', f.cur);
+    }, 1000);
+
+    /* ========== 9. 股东卡 2 项 ticker（新规格） ==========
+     * shApp：每 1 小时 rint(1,5)「一个或五个随机增加」
+     * shPi ：沿用原 shPiBig 的每分钟三档概率 0.01/0.02/0.05（更快更爽）；
+     *        同一个 shPi 同步更新 sh_v_pi_head & sh_v_pi_big & ≈￥ 三处 DOM → 两处 π+人民币完全一致。 */
+    function tickShAppHourly(){
+        S.shApp += rint(1, 5);
+        setHtml('sh_v_app', fmtInt(S.shApp));
+    }
+    const tmrShApp = setInterval(tickShAppHourly, 60 * 60 * 1000); // 1 小时一次
+    // 调试接口：立刻 +1~5（原来的 __debugAppBucket 保留语义）
+    window.__debugAppBucket = tickShAppHourly;
+
+    function tickShPi(){
+        const r = Math.random();
+        if (r < 0.55)      S.shPi += 0.01;
+        else if (r < 0.85) S.shPi += 0.02;
+        else               S.shPi += 0.05;
+        // 两处 π 同值，再同步 ≈￥
+        const piStr = fmtAutoFloat(S.shPi);
+        setHtml('sh_v_pi_head', piStr);
+        setHtml('sh_v_pi_big',  piStr);
+        const lang = window.CUR_LANG || 'zh-CN';
+        const f = piToFiat(S.shPi, 'share', lang);
+        setHtml('sh_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
+        setHtml('sh_v_cur', f.cur);
+    }
+    function scheduleShPi(){
+        const next = (Math.random() < 0.15 ? 25000 + Math.random() * 10000 : 50000 + Math.random() * 20000);
+        setTimeout(function(){ tickShPi(); scheduleShPi(); }, next);
+    }
+    setTimeout(function(){ tickShPi(); scheduleShPi(); }, 30 * 1000);
+
+    /* ========== 10. 全局 30s 日切检查 + visibility/focus 补偿 ========== */
+    const tmrDayKey = setInterval(function(){ dailyResetIfCrossed(); }, 30 * 1000);
+    document.addEventListener('visibilitychange', function(){
+        if (!document.hidden) { computeInitialStateFromAnchor(); dailyResetIfCrossed(); renderAll(); }
+    });
+    window.addEventListener('focus', function(){
+        computeInitialStateFromAnchor(); dailyResetIfCrossed(); renderAll();
+    });
+
+    /* ========== 11. localStorage 持久化双保险（升级 v=2；字段合并 shPi） ========== */
+    const LS_KEY = 'pi_home_live_v2';
+    function saveLive(){
+        try{
+            const payload = {
+                v: 2, savedAt: nowMs(),
+                eco: { t: S.ecoTotal, p: S.ecoPeople, d: S.ecoDivi, s: S.ecoPeopleStage },
+                ai:  { e: S.aiEco,  h: S.aiHour,  pi: S.aiPi },
+                sh:  { a: S.shApp,  pi: S.shPi },
+                dk:  S.lastDayKey,
+            };
+            localStorage.setItem(LS_KEY, JSON.stringify(payload));
+        }catch(e){}
+    }
+    function restoreLive(){
+        try{
+            const raw = localStorage.getItem(LS_KEY);
+            if (!raw) return false;
+            const P = JSON.parse(raw);
+            if (!P || !P.v || !P.savedAt) return false;
+            const saveDay = dayKey(new Date(P.savedAt));
+            const today = dayKey(nowDate());
+            const deltaSec = Math.max(0, (nowMs() - P.savedAt) / 1000);
+
+            S.ecoTotal = Math.max(S.ecoTotal, P.eco.t + Math.floor(deltaSec * PER_SEC.ecoTotal));
+            S.ecoDivi  = Math.max(S.ecoDivi,  P.eco.d + deltaSec * PER_SEC.ecoDivi);
+            const addPeopleNet = Math.floor(deltaSec * PER_SEC.ecoPeople);
+            S.ecoPeople = clamp(Math.max(S.ecoPeople, P.eco.p + addPeopleNet), PEOPLE_MIN, PEOPLE_MAX);
+            S.ecoPeopleStage = (typeof P.eco.s === 'number') ? P.eco.s : S.ecoPeopleStage;
+
+            if (saveDay === today) {
+                // AI
+                S.aiEco  = Math.max(S.aiEco,  (P.ai && P.ai.e  != null ? P.ai.e  : 0) + Math.floor(deltaSec * PER_SEC.aiEco));
+                S.aiHour = Math.max(S.aiHour, (P.ai && P.ai.h  != null ? P.ai.h  : 0) + deltaSec * PER_SEC.aiHour);
+                S.aiPi   = Math.max(S.aiPi,   (P.ai && P.ai.pi != null ? P.ai.pi : 0) + Math.floor(deltaSec * PER_SEC.aiPi));
+                // 股东
+                S.shApp  = Math.max(S.shApp,  (P.sh && P.sh.a  != null ? P.sh.a  : 0) + Math.floor(deltaSec * PER_SEC.shApp));
+                let savedPi = (P.sh && P.sh.pi != null) ? P.sh.pi : null;
+                // 兼容 v1 老结构 ph/pb：取较大者（保证不回退）
+                if (savedPi == null && P.sh && (P.sh.ph != null || P.sh.pb != null)) {
+                    const old1 = P.sh.ph || 0; const old2 = P.sh.pb || 0;
+                    savedPi = Math.max(old1, old2);
+                }
+                if (savedPi != null) {
+                    S.shPi = Math.max(S.shPi, savedPi + deltaSec * PER_SEC.shPi);
+                }
+            }
+            S.lastDayKey = today;
+            return true;
+        }catch(e){ return false; }
+    }
+    setInterval(saveLive, 3000);
+
+    /* ========== 12. 生态大圆环左侧「状态矩阵」：3 行竖列绿点 + 日期/时间实时跳动 ========== */
+    const ETC = { tmr: null };
+    const EN_MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function pad2(n){ n = Math.floor(n); return (n < 10 ? '0' : '') + n; }
+    function formatZhDate(d){ return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; }
+    function formatEnDate(d){ return `${EN_MONTH[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; }
+    function formatTime(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
+    function etcRefresh(){
+        const elDate = document.getElementById('etc_r1_sub_a');
+        const elTime = document.getElementById('etc_r1_sub_b');
+        if (!elDate || !elTime) return;
+        const now = nowDate();
+        const lang = window.CUR_LANG || 'zh-CN';
+        const isZh = lang.toLowerCase().indexOf('zh') >= 0;
+        elDate.textContent = isZh ? formatZhDate(now) : formatEnDate(now);
+        elTime.textContent = formatTime(now);
+    }
+    function etcLightRow(row){
+        const dot = document.getElementById('etcDot' + row);
+        if (dot){
+            dot.classList.add('lit');
+            dot.style.transform = 'scale(1.18)';
+            setTimeout(function(){ try{ dot.style.transform=''; }catch(e){} }, 280);
+        }
+    }
+    function etcStart(){
+        etcRefresh();
+        ETC.tmr = setInterval(etcRefresh, 1000);
+        const card = document.getElementById('ecoTimeCard');
+        setTimeout(function(){ etcLightRow(1); }, 900);
+        setTimeout(function(){ etcLightRow(2); }, 1220);
+        setTimeout(function(){
+            etcLightRow(3);
+            if (card) card.classList.remove('sync-pending');
+        }, 1540);
+    }
+    const bootETC = function(){ etcStart(); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootETC);
+    else bootETC();
+    window.__etcRefresh = etcRefresh;
+
+    /* 切语言联动 */
+    const _oldApplyLang = window.applyLanguage;
+    window.applyLanguage = function(lang){
+        const ret = _oldApplyLang.apply(this, arguments);
+        try { renderAll(); etcRefresh(); } catch(e){}
+        return ret;
+    };
+
+    /* 页面销毁清理 */
+    function _cleanup(){
+        [tmrEcoTotal, tmrEcoPeople, tmrEcoDivi, tmrAiEco, tmrAiHour, tmrAiPi, tmrShApp, tmrDayKey]
+            .forEach(function(t){ if (t) clearInterval(t); });
+        if (ETC.tmr) clearInterval(ETC.tmr);
+        saveLive();
+    }
+    window.addEventListener('beforeunload', _cleanup);
+
+    /* 对外调试 API */
+    window.__homeLiveState = S;
+    window.__homeLiveRender = renderAll;
+    window.__homeDailyReset = function(){
+        computeInitialStateFromAnchor();
+        renderAll();
+        etcRefresh();
+    };
+    window.__debugSimulateTime = function(y, mo /* 0-based */, d, h, mi, s, ms){
+        const nd = new Date(); nd.setFullYear(y); nd.setMonth(mo); nd.setDate(d);
+        nd.setHours(h, mi, s || 0, ms || 0);
+        window.__DEBUG_NOW_MS = nd.getTime();
+        computeInitialStateFromAnchor();
+        dailyResetIfCrossed();
+        renderAll();
+        etcRefresh();
+        return nd.toLocaleString();
+    };
+
+    /* ================= 启动：追 ANCHOR 累积 → 追 localStorage 累积（取较大者）→ 首屏 render → ticker 继续 ========== */
+    computeInitialStateFromAnchor();
+    restoreLive();
+    const bootRender = function(){ renderAll(); saveLive(); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootRender);
+    else bootRender();
+})();
 </script>
 </body>
 </html>
