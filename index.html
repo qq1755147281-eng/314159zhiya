@@ -3388,8 +3388,8 @@ const I18N = {
         'apply_th_type': '类型',
         'apply_th_qty':  '持有张数',
         'apply_th_divi': '派币分红',
-        'apply_type_ai': '派友AI卡',
-        'apply_type_sh': '派友股东卡',
+        'apply_type_ai': '派友AI卡·二级',
+        'apply_type_sh': '派友股东卡·二级',
         'apply_unit_card':'张',
         'apply_unit_pi': 'π',
         'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 100 条持有记录',
@@ -3605,8 +3605,8 @@ const I18N = {
         'apply_th_type': 'Type',
         'apply_th_qty':  'Qty',
         'apply_th_divi': 'Dividend (π)',
-        'apply_type_ai': 'AI Card',
-        'apply_type_sh': 'Shareholder Card',
+        'apply_type_ai': 'AI Card · Lv.2',
+        'apply_type_sh': 'Shareholder Card · Lv.2',
         'apply_unit_card':'pcs',
         'apply_unit_pi': 'π',
         'apply_foot':    '※ Data auto refresh every 5 min · 100 holdings records',
@@ -4290,11 +4290,27 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     const TOTAL = 100;
     const TOTAL_PAGES = Math.ceil(TOTAL / PAGE_SIZE);
     let currentPage = 1; // 1-based
-
+    // 用户指定 01~10 的今日分红派币（序号 1 基索引 1..10，这里存 0 基 [0..9]）
+    // 口播：01=0.001 / 02=1 / 03=0.002 / 04=1 / 05=0.0002 / 06=2 / 07=0.001 / 08=3 / 09=0.001 / 10=1
+    const TOP10_TODAY_DIVI = [
+        0.001,  // 01
+        1.0,    // 02
+        0.002,  // 03
+        1.0,    // 04
+        0.0002, // 05
+        2.0,    // 06
+        0.001,  // 07
+        3.0,    // 08
+        0.001,  // 09
+        1.0     // 10
+    ];
     // 生成 100 条随机持有记录
     const rows = [];
     const today = new Date();
     const pad = (n) => String(n).padStart(2,'0');
+    // D0 基准：页面加载的「今天」作为偏移原点（必须在 today 定义之后）
+    // D0 (今天) = TOP10_TODAY_DIVI[i]；D+N (N 天后) = target + dailyGain * N；D-N 同理
+    const initToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     // 简易伪随机（可重复）：给每页固定 seed 感的稳定数据
     function rnd(seed){
         const x = Math.sin(seed) * 10000;
@@ -4310,29 +4326,24 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             const d = new Date(today.getTime() - daysAgo * 86400000);
             const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
             let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
-            // 基准派币分红（购入当天的起点）—— 按你新要求：
-            //  - 派友股东卡(sh)：从 0.01 / 0.02 / 0.03 随机起步（乘以张数 → 每个人起点不一样的小数）
-            //  - 派友AI卡(ai)    ：从 1 / 5 / 10 三档区间随机起步（乘以张数 → 每个人起点不一样）
-            let basePerCard;
-            if (isAI){
-                // 3 档：1.x / 5.x / 10.x（每张）→ 1 + floor(rnd*3) -> {1,5,10}，再加 0~1 小数扰动
-                const tierIdx = Math.floor(rnd(seed*3.1) * 3); // 0,1,2
-                const tierBase = [1, 5, 10][tierIdx];
-                const jitter = rnd(seed*5.9) * 0.9999; // 0 ~ 0.9999 小数抖动
-                basePerCard = tierBase + jitter;
-            } else {
-                // 股东卡 3 档 0.01 / 0.02 / 0.03（每张），再加 0.0001 ~ 0.0099 抖动保证人人不一样
-                const tierIdx = Math.floor(rnd(seed*7.3) * 3);
-                const tierBase = [0.01, 0.02, 0.03][tierIdx];
-                const jitter = 0.0001 + rnd(seed*11.7) * 0.0098; // 不产生 0
-                basePerCard = tierBase + jitter;
-            }
-            const diviBase = parseFloat((basePerCard * cards).toFixed(4));
-            // 日增幅（保持原规则不变）
-            //   - AI卡：每张每天 +3.0 π
-            //   - 股东卡：每张每月 +0.1 π => 每天 +0.1/30 π
+            // 日增幅（保持原规则：AI 每张每天 +3.0 π，股东 每张每月 +0.1 π => 每天 +0.1/30 π）
             const dailyGainPerCard = isAI ? 3.0 : (0.1 / 30);
             const dailyGain = parseFloat((dailyGainPerCard * cards).toFixed(6));
+            // 今日（today）必须显示的目标分红：严格按 TOP10_TODAY_DIVI[i]
+            const diviTodayTarget = TOP10_TODAY_DIVI[i] || 0;
+            // 持有起始日 到 今日 的自然日差 = 已经累计涨了几天
+            const _holdMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const MS = 86400000;
+            const holdDaysUntilToday = Math.max(0, Math.round((todayMidnight.getTime() - _holdMidnight.getTime()) / MS));
+            // 反推出购入起点基准 diviBase = 今日目标值 - （日增 × 持有到今天的天数）
+            // 这样 computeDivi(r, today) = diviBase + dailyGain * holdDaysUntilToday === diviTodayTarget
+            // 明天以后则在 target 基础上继续每日 +dailyGain
+            let diviBase = diviTodayTarget - dailyGain * holdDaysUntilToday;
+            if (diviBase < 0) diviBase = 0; // 兜底不产生负数基准
+            diviBase = parseFloat(diviBase.toFixed(6));
+            // 基准 perCard 仅调试用途（不再影响渲染值）
+            const basePerCard = cards > 0 ? parseFloat((diviBase / cards).toFixed(6)) : 0;
             const name = NAME_POOL[i % NAME_POOL.length];
             rows.push({
                 id: String(i + 1).padStart(2,'0'),
@@ -4340,10 +4351,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 pending: false,
                 name: name,
                 date: dateStr,
-                _holdDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()),
+                _holdDate: _holdMidnight,
                 type: isAI ? 'ai' : 'sh',
                 cards: cards,
-                basePerCard: parseFloat(basePerCard.toFixed(6)), // 调试用
+                basePerCard: basePerCard,
+                diviTodayTarget: diviTodayTarget,
                 diviBase: diviBase,
                 dailyGain: dailyGain,
                 divi: null
@@ -4365,24 +4377,20 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 
     /**
      * 核心：计算某条记录「截至 nowDate」时的累计派币分红
-     * 规则：
-     *   AI 卡  -> 每张每天 +3.0 π
-     *   股东卡 -> 每张每月 +0.1 π => 每张每天 + 0.1/30 π
-     *   持有满 1 个自然日（24h 滚动 -> 实现上：nowDate 日 vs 持有日 相差几天即加几天份）
-     * 返回 number（未格式化）
+     * 规则（top10 新逻辑，以今天为 D0 锚）：
+     *   - D0 (今天) → TOP10_TODAY_DIVI 指定的固定值
+     *   - D+1 (明天) → target + 1 × dailyGain
+     *   - D+N → target + N × dailyGain
+     *   日增幅本身保持：AI卡 每张每天 +3.0 π；股东卡 每张每月 +0.1 π（每天 0.1/30 π）
+     * 非 top10 (pending) → 0（UI 显示「—」占位，不影响此函数）
      */
-    function daysBetween(holdStartMidnight, nowMidnight){
-        // 均为 00:00 归一化 Date
-        const MS = 86400000;
-        const d = Math.round((nowMidnight.getTime() - holdStartMidnight.getTime()) / MS);
-        return Math.max(0, d);
-    }
     function computeDivi(r, nowDate){
         if (!r || r.pending) return 0;
+        const MS = 86400000;
         const nowMid = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-        const n = daysBetween(r._holdDate, nowMid);
-        const grow = (r.dailyGain || 0) * n;
-        return (r.diviBase || 0) + grow;
+        const offsetDays = Math.round((nowMid.getTime() - initToday.getTime()) / MS);
+        const target = (typeof r.diviTodayTarget === 'number') ? r.diviTodayTarget : (r.diviBase || 0);
+        return target + (r.dailyGain || 0) * offsetDays;
     }
     // 对外（便于测试/手动触发）
     window.__applyComputeDivi = computeDivi;
@@ -4457,10 +4465,25 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                     </td>`;
             } else {
                 // 动态计算当前派币分红（按持有自然日累加）
-                // 显示小数位：AI 卡涨得多（整数为主）→ 保留 2 位；股东卡日涨 0.00… → 保留 4 位
+                // 显示小数位：值 <1 → 5 位（准确展示 0.0002 / 0.001 / 0.002）
+                //             值 ≥1 → 2 位（整数派好看）
                 const v = computeDivi(r, nowDate);
-                const dp = (r.type === 'ai') ? 2 : 4;
-                const vStr = v.toFixed(dp);
+                let dp;
+                if (v < 1) dp = 5;
+                else if (v < 10) dp = 3;
+                else dp = 2;
+                // 小值去除尾部多余 0（但保留到需要的精度），0.00020 → 0.0002
+                let vStr = v.toFixed(dp);
+                if (v < 1) {
+                    vStr = parseFloat(vStr).toFixed(dp);
+                }
+                // 若整数位无意义的 .00/.000，去掉
+                if (v >= 1) {
+                    const iPart = Math.round(v);
+                    if (Math.abs(v - iPart) < Math.pow(10, -dp)) {
+                        vStr = String(iPart); // 整数无小数
+                    }
+                }
                 tr.innerHTML = `
                     <td class="col-i">${r.id}</td>
                     <td class="col-n">${r.name}</td>
