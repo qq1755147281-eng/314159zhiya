@@ -4310,18 +4310,27 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             const d = new Date(today.getTime() - daysAgo * 86400000);
             const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
             let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
-            const rate = isAI ? 0.81 : 5.62;
-            const divPi = (cards * rate).toFixed(2);
+            // 基准派币分红（「购入那一天 00:00 时的起点」，后续按日递增）
+            const rate0 = isAI ? 0.81 : 5.62;
+            const diviBase = parseFloat((cards * rate0).toFixed(4));
+            // 日增幅（按类型）
+            //   - AI卡：每张每天 +3.0 π  -> 每天总涨 = 3.0 * cards
+            //   - 股东卡：每张每月 +0.1 π -> 每天总涨 = 0.1/30 * cards ≈ 0.0033333 * cards
+            const dailyGainPerCard = isAI ? 3.0 : (0.1 / 30);
+            const dailyGain = parseFloat((dailyGainPerCard * cards).toFixed(6));
             const name = NAME_POOL[i % NAME_POOL.length];
             rows.push({
                 id: String(i + 1).padStart(2,'0'),
                 idx: i,
                 pending: false,
                 name: name,
-                date: dateStr,
+                date: dateStr,            // 持有起始日 YYYY-MM-DD
+                _holdDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()), // 归一化到当日 00:00
                 type: isAI ? 'ai' : 'sh',
                 cards: cards,
-                divi: divPi
+                diviBase: diviBase,       // 起点分红
+                dailyGain: dailyGain,     // 每天累计涨多少 π
+                divi: null                // 由 computeDivi 实时计算
             });
         } else {
             // 第 11~100 名（idx 10~99）：全部「待审核」占位
@@ -4337,6 +4346,31 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             });
         }
     }
+
+    /**
+     * 核心：计算某条记录「截至 nowDate」时的累计派币分红
+     * 规则：
+     *   AI 卡  -> 每张每天 +3.0 π
+     *   股东卡 -> 每张每月 +0.1 π => 每张每天 + 0.1/30 π
+     *   持有满 1 个自然日（24h 滚动 -> 实现上：nowDate 日 vs 持有日 相差几天即加几天份）
+     * 返回 number（未格式化）
+     */
+    function daysBetween(holdStartMidnight, nowMidnight){
+        // 均为 00:00 归一化 Date
+        const MS = 86400000;
+        const d = Math.round((nowMidnight.getTime() - holdStartMidnight.getTime()) / MS);
+        return Math.max(0, d);
+    }
+    function computeDivi(r, nowDate){
+        if (!r || r.pending) return 0;
+        const nowMid = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+        const n = daysBetween(r._holdDate, nowMid);
+        const grow = (r.dailyGain || 0) * n;
+        return (r.diviBase || 0) + grow;
+    }
+    // 对外（便于测试/手动触发）
+    window.__applyComputeDivi = computeDivi;
+    window.__applyRows = rows;
 
     // ---------- 分页控件元素 ----------
     const btnPrev = document.getElementById('apgPrev');
@@ -4371,8 +4405,9 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         } catch(e){}
     }
 
-    function renderRows(){
+    function renderRows(nowOverride){
         if (!tbody) return;
+        const nowDate = (nowOverride instanceof Date) ? nowOverride : new Date();
         const dict = I18N[window.CUR_LANG || 'zh-CN'] || {};
         const tAI = dict['apply_type_ai'] || '派友AI卡';
         const tSH = dict['apply_type_sh'] || '派友股东卡';
@@ -4405,6 +4440,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                         <span class="divi-pi"><span class="d-n">${pDivi}</span><span class="d-u"></span></span>
                     </td>`;
             } else {
+                // 动态计算当前派币分红（按持有自然日累加）
+                // 显示小数位：AI 卡涨得多（整数为主）→ 保留 2 位；股东卡日涨 0.00… → 保留 4 位
+                const v = computeDivi(r, nowDate);
+                const dp = (r.type === 'ai') ? 2 : 4;
+                const vStr = v.toFixed(dp);
                 tr.innerHTML = `
                     <td class="col-i">${r.id}</td>
                     <td class="col-n">${r.name}</td>
@@ -4416,7 +4456,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                         <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
                     </td>
                     <td class="col-d">
-                        <span class="divi-pi"><span class="d-n">${r.divi}</span><span class="d-u">${uPi}</span></span>
+                        <span class="divi-pi"><span class="d-n">${vStr}</span><span class="d-u">${uPi}</span></span>
                     </td>`;
             }
             frag.appendChild(tr);
@@ -4446,6 +4486,35 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         try { renderRows(); } catch(e){}
         return ret;
     };
+
+    // ===== 24h 滚动：跨自然日后自动刷新派币分红 =====
+    // 每 60 秒检查一次日期是否变化；变化 → 若 overlay 打开则重渲染表格
+    let _lastDiviDayKey = '';
+    function dayKey(d){
+        return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    }
+    function refreshDiviEvery24h(){
+        try {
+            const now = new Date();
+            const k = dayKey(now);
+            if (k === _lastDiviDayKey) return;
+            _lastDiviDayKey = k;
+            const ov = document.getElementById('applyOverlay');
+            if (ov && ov.classList.contains('active')) {
+                renderRows();
+            }
+        } catch(e){}
+    }
+    _lastDiviDayKey = dayKey(new Date());
+    const diviTimer = setInterval(refreshDiviEvery24h, 60 * 1000);
+    // 用户切回可见/页面重新获得焦点时，立即检查跨日（错过 interval 的补偿）
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) refreshDiviEvery24h(); });
+    window.addEventListener('focus', function(){ refreshDiviEvery24h(); });
+    // 暴露 window API（便于调试/测试）
+    window.__refreshDiviEvery24h = refreshDiviEvery24h;
+    window.__forceRenderDivi = function(nowOverride){ renderRows(nowOverride); };
+    // 页面销毁清理
+    window.addEventListener('beforeunload', function(){ if (diviTimer) clearInterval(diviTimer); });
 })();
 </script>
 </body>
