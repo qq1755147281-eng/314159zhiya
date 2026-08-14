@@ -1814,7 +1814,7 @@
         .apply-stat.gold   .as-v .n { color: var(--accent-gold-2); }
         .apply-stat.purple .as-v .n { color: #e9d5ff; }
 
-        /* ========== 申请详情·5列表格（金边玻璃态） ========== */
+        /* ========== 申请详情·6列表格（金边玻璃态）：序号 / 名称 / 时间 / 类型 / 张数 / 分红派币 ========== */
         .apply-tbl-wrap {
             padding: 4px 14px 0;
             flex: 1;
@@ -1827,11 +1827,12 @@
             border-collapse: separate;
             border-spacing: 0 5px;
             flex-shrink: 0;
+            table-layout: fixed;
         }
         .apply-tbl thead th {
             position: sticky; top: 0; z-index: 2;
-            padding: 7px 6px;
-            font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+            padding: 7px 5px;
+            font-size: 8.6px; font-weight: 800; letter-spacing: 0.04em;
             color: #c9b27a;
             background: linear-gradient(180deg, rgba(212,175,55,0.10), rgba(212,175,55,0.02));
             border-top: 1px solid rgba(253,230,138,0.22);
@@ -1848,6 +1849,14 @@
             border-right: 1px solid rgba(253,230,138,0.22);
             text-align: right;
         }
+        /* 6 列宽度分配 */
+        .apply-tbl.tbl-6col th.col-i { width: 9%; }
+        .apply-tbl.tbl-6col th.col-n { width: 24%; }
+        .apply-tbl.tbl-6col th.col-t { width: 20%; }
+        .apply-tbl.tbl-6col th.col-y { width: 20%; }
+        .apply-tbl.tbl-6col th.col-q { width: 13%; }
+        .apply-tbl.tbl-6col th.col-d { width: 14%; }
+
         .apply-tbl tbody {
             display: block;  /* 允许 tbody 滚动 */
             max-height: 100%;
@@ -1869,43 +1878,31 @@
         }
         .apply-tbl tbody tr:hover { border-color: rgba(253,230,138,0.22); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
         .apply-tbl tbody td {
-            padding: 7px 6px;
-            font-size: 10.2px;
+            padding: 7px 5px;
+            font-size: 10px;
             line-height: 1.25;
             color: var(--text-primary);
             border: none;
             word-break: break-word;
+            vertical-align: middle;
         }
-        .apply-tbl td.col-i { width: 38px; text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
-        .apply-tbl th.col-i { width: 38px; }
-        .apply-tbl td.col-n { width: 2.2fr; }
-        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.6px; width: 2.2fr; }
-        .apply-tbl td.col-y { width: 2fr; }
-        .apply-tbl td.col-q { width: 1.4fr; text-align: right; font-weight: 900; letter-spacing: -0.01em; }
+        .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
+        .apply-tbl td.col-n { font-weight: 800; color: var(--text-primary); line-height: 1.2; padding-left: 6px; }
+        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.2px; }
+        .apply-tbl td.col-y { /* type pill 容器 */ }
+        .apply-tbl td.col-q { text-align: right; font-weight: 900; letter-spacing: -0.01em; }
         .apply-tbl th.col-q { text-align: right; }
-        .apply-tbl td.col-n .cn-name {
-            display: block;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1.25;
-            font-size: 10.4px;
-        }
-        .apply-tbl td.col-n .cn-en {
-            display: block;
-            font-size: 8.4px;
-            color: var(--text-quaternary);
-            letter-spacing: 0.04em;
-            font-weight: 500;
-            margin-top: 1.5px;
-        }
+        .apply-tbl td.col-d { text-align: right; font-weight: 900; letter-spacing: -0.01em; color: var(--accent-gold-2); }
+        .apply-tbl th.col-d { text-align: right; }
+
         /* 类型标签：AI 金卡 / 股东紫卡 */
         .type-pill {
             display: inline-flex; align-items: center; gap: 3px;
-            padding: 2.5px 6px;
+            padding: 2.3px 6px;
             border-radius: 999px;
-            font-size: 8.5px;
+            font-size: 8.2px;
             font-weight: 800;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.03em;
             line-height: 1;
         }
         .type-pill.ai {
@@ -1918,8 +1915,13 @@
             border: 1px solid rgba(196,181,253,0.34);
             color: #ede9fe;
         }
-        .qty-pi { color: var(--accent-gold-2); }
-        .qty-pi .q-u { font-size: 8.5px; color: var(--accent-gold-2); opacity: .8; margin-left: 1px; font-weight: 700; }
+        /* 持有张数：紫色强调 */
+        .qty-card { color: #e9d5ff; }
+        .qty-card .q-u { font-size: 8.2px; color: #e9d5ff; opacity: .85; margin-left: 1.5px; font-weight: 700; }
+        /* 分红派币：金色强调 */
+        .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 1.5px; }
+        .divi-pi .d-u { font-size: 8.2px; color: var(--accent-gold-2); opacity: .85; margin-left: 1.5px; font-weight: 700; }
+
         /* 脚注 */
         .apply-foot {
             flex-shrink: 0;
@@ -2186,36 +2188,36 @@
                         <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                 </button>
-                <h3 class="apply-title" data-i18n="apply_title">今日详情</h3>
-                <p class="apply-sub" data-i18n="apply_sub">今日申请记录 · TODAY RECORDS</p>
+                <h3 class="apply-title" data-i18n="apply_title">派友AI股东卡持有记录</h3>
             </div>
-            <!-- 汇总信息（迷你2卡） -->
+            <!-- 汇总信息（迷你2卡）：持有张数统计 -->
             <div class="apply-stat-row">
                 <div class="apply-stat gold">
                     <div class="as-icon">🤖</div>
                     <div class="as-body">
-                        <div class="as-l" data-i18n="apply_s_ai_lbl">派友AI卡申请</div>
-                        <div class="as-v"><span class="n" data-i18n="apply_s_ai_v">842</span><span class="u" data-i18n="apply_s_u">笔</span></div>
+                        <div class="as-l" data-i18n="apply_s_ai_lbl">派友AI卡持有</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_ai_v">842</span><span class="u" data-i18n="apply_s_u">张</span></div>
                     </div>
                 </div>
                 <div class="apply-stat purple">
                     <div class="as-icon">💎</div>
                     <div class="as-body">
-                        <div class="as-l" data-i18n="apply_s_sh_lbl">派友股东卡申请</div>
-                        <div class="as-v"><span class="n" data-i18n="apply_s_sh_v">442</span><span class="u" data-i18n="apply_s_u">笔</span></div>
+                        <div class="as-l" data-i18n="apply_s_sh_lbl">派友股东卡持有</div>
+                        <div class="as-v"><span class="n" data-i18n="apply_s_sh_v">442</span><span class="u" data-i18n="apply_s_u">张</span></div>
                     </div>
                 </div>
             </div>
-            <!-- 表头 + 数据表格（5 列：序号 / 名称 / 申请时间 / 类型 / 数量） -->
+            <!-- 表头 + 数据表格（6 列：序号 / 名称 / 持有时间 / 类型 / 持有张数 / 派币分红 π） -->
             <div class="apply-tbl-wrap">
-                <table class="apply-tbl">
+                <table class="apply-tbl tbl-6col">
                     <thead>
                         <tr>
                             <th class="col-i" data-i18n="apply_th_id">#</th>
                             <th class="col-n" data-i18n="apply_th_name">名称</th>
-                            <th class="col-t" data-i18n="apply_th_time">申请时间</th>
+                            <th class="col-t" data-i18n="apply_th_time">持有时间</th>
                             <th class="col-y" data-i18n="apply_th_type">类型</th>
-                            <th class="col-q" data-i18n="apply_th_qty">数量</th>
+                            <th class="col-q" data-i18n="apply_th_qty">持有张数</th>
+                            <th class="col-d" data-i18n="apply_th_divi">派币分红</th>
                         </tr>
                     </thead>
                     <tbody id="applyTblBody">
@@ -2224,7 +2226,7 @@
                 </table>
             </div>
             <!-- 底部脚注 -->
-            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 1,284 条记录</div>
+            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 1,284 条持有记录</div>
         </div>
     </div>
 
@@ -3075,23 +3077,24 @@ const I18N = {
         'hs_apply_title': '派友AI股东卡',
         'hs_apply_sub':   '申请详情 · APPLY DETAIL',
 
-        // 申请详情覆盖层（今日详情 Modal）
-        'apply_title': '今日详情',
-        'apply_sub':   '今日申请记录 · TODAY RECORDS',
-        'apply_s_ai_lbl':'派友AI卡申请',
+        // 申请详情覆盖层（派友AI股东卡持有记录）
+        'apply_title': '派友AI股东卡持有记录',
+        'apply_s_ai_lbl':'派友AI卡持有',
         'apply_s_ai_v':  '842',
-        'apply_s_sh_lbl':'派友股东卡申请',
+        'apply_s_sh_lbl':'派友股东卡持有',
         'apply_s_sh_v':  '442',
-        'apply_s_u':     '笔',
+        'apply_s_u':     '张',
         'apply_th_id':   '序号',
         'apply_th_name': '名称',
-        'apply_th_time': '申请时间',
+        'apply_th_time': '持有时间',
         'apply_th_type': '类型',
-        'apply_th_qty':  '数量',
+        'apply_th_qty':  '持有张数',
+        'apply_th_divi': '派币分红',
         'apply_type_ai': '派友AI卡',
         'apply_type_sh': '派友股东卡',
+        'apply_unit_card':'张',
         'apply_unit_pi': 'π',
-        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 1,284 条记录',
+        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 1,284 条持有记录',
 
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
@@ -3282,23 +3285,24 @@ const I18N = {
         'hs_apply_title': 'PiFriends AI & Share Card',
         'hs_apply_sub':   'APPLY DETAILS · 申请详情',
 
-        // Apply overlay (Today Detail Modal)
-        'apply_title': 'Today Details',
-        'apply_sub':   'TODAY APPLICATION RECORDS · 今日申请记录',
-        'apply_s_ai_lbl':'AI Card Applications',
+        // Apply overlay (Holdings Record Modal)
+        'apply_title': 'PiFriends Holdings Record',
+        'apply_s_ai_lbl':'AI Cards Held',
         'apply_s_ai_v':  '842',
-        'apply_s_sh_lbl':'Shareholder Card Applications',
+        'apply_s_sh_lbl':'Shareholder Cards Held',
         'apply_s_sh_v':  '442',
-        'apply_s_u':     'apps',
+        'apply_s_u':     'pcs',
         'apply_th_id':   '#',
         'apply_th_name': 'Name',
-        'apply_th_time': 'Apply Time',
+        'apply_th_time': 'Held Since',
         'apply_th_type': 'Type',
         'apply_th_qty':  'Qty',
+        'apply_th_divi': 'Dividend (π)',
         'apply_type_ai': 'AI Card',
         'apply_type_sh': 'Shareholder Card',
+        'apply_unit_card':'pcs',
         'apply_unit_pi': 'π',
-        'apply_foot':    '※ Data auto refresh every 5 min · Total 1,284 records',
+        'apply_foot':    '※ Data auto refresh every 5 min · 1,284 holdings records',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
@@ -3954,41 +3958,34 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeApply();
     });
 
-    /* ---- 5 列样例数据：序号/名称(中英双行)/申请时间/类型(AI 金 或 股东 紫)/数量 π ---- */
-    const NAME_ZH = [
-        ['王星辰','Wang Xingchen'],
-        ['李泽洋','Li Zeyang'],
-        ['张雨桐','Zhang Yutong'],
-        ['刘逸凡','Liu Yifan'],
-        ['陈诗涵','Chen Shihan'],
-        ['周浩然','Zhou Haoran'],
-        ['吴瑞雪','Wu Ruixue'],
-        ['赵佳怡','Zhao Jiayi'],
-        ['黄俊杰','Huang Junjie'],
-        ['林诗雨','Lin Shiyu'],
-        ['郑明浩','Zheng Minghao'],
-        ['孙婉清','Sun Wanqing'],
+    /* ---- 6 列持有记录数据：序号 / 全名(仅中文) / 持有时间(仅年月日) / 类型 / 持有张数(整数) / 分红派币 π ---- */
+    const NAME_FULL = [
+        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵',
+        '周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨'
     ];
-    // 10 行：类型 AI / SH 交替，数量 1~50 π 之间小数，时间今日随机
+    // 10 行：AI / SH 交替；张数为整数（AI 少、股东多）；分红派币 = 张数 × 单张系数（AI 0.8 / SH 5.6）
     const rows = [];
     const today = new Date();
     const pad = (n) => String(n).padStart(2,'0');
-    const dateStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
     for (let i = 0; i < 10; i++){
         const isAI = (i % 2 !== 0); // 1,3,5,7,9 = AI 卡；0,2,4,6,8 = 股东卡
-        const hour = 8 + Math.floor(i * 0.9) + (Math.floor(Math.random()*2));
-        const min  = 10 + Math.floor(Math.random()*48);
-        const sec  = Math.floor(Math.random()*60);
-        const qty = isAI
-            ? (1.2 + Math.random() * 4.2).toFixed(2)   // AI 卡：小
-            : (5 + Math.random() * 48).toFixed(2);     // 股东卡：大
+        // 持有起始日：近 3 个月内随机（仅年月日）
+        const d = new Date(today.getTime() - Math.floor((Math.random()*90)) * 86400000);
+        const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+        // 持有张数：AI 1~5 张 ｜ 股东 1~30 张（整数）
+        let cards;
+        if (isAI) cards = 1 + Math.floor(Math.random()*5);
+        else      cards = 1 + Math.floor(Math.random()*30);
+        // 分红派币：张数 × 单张系数
+        const rate = isAI ? 0.81 : 5.62;
+        const divPi = (cards * rate).toFixed(2);
         rows.push({
             id: String(i + 1).padStart(2,'0'),
-            name_zh: NAME_ZH[i][0],
-            name_en: NAME_ZH[i][1],
-            time: `${dateStr} ${pad(hour)}:${pad(min)}:${pad(sec)}`,
+            name: NAME_FULL[i],
+            date: dateStr,
             type: isAI ? 'ai' : 'sh',
-            qty: qty
+            cards: cards,
+            divi: divPi
         });
     }
 
@@ -3997,22 +3994,23 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         const dict = I18N[window.CUR_LANG || 'zh-CN'] || {};
         const tAI = dict['apply_type_ai'] || '派友AI卡';
         const tSH = dict['apply_type_sh'] || '派友股东卡';
-        const u   = dict['apply_unit_pi'] || 'π';
+        const uCard = dict['apply_unit_card'] || '张';
+        const uPi   = dict['apply_unit_pi']  || 'π';
         const frag = document.createDocumentFragment();
         rows.forEach(function(r){
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="col-i">${r.id}</td>
-                <td class="col-n">
-                    <span class="cn-name">${r.name_zh}</span>
-                    <span class="cn-en">${r.name_en.toUpperCase()}</span>
-                </td>
-                <td class="col-t">${r.time}</td>
+                <td class="col-n">${r.name}</td>
+                <td class="col-t">${r.date}</td>
                 <td class="col-y">
                     <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
                 </td>
                 <td class="col-q">
-                    <span class="qty-pi"><span class="q-n">${r.qty}</span><span class="q-u"> ${u}</span></span>
+                    <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
+                </td>
+                <td class="col-d">
+                    <span class="divi-pi"><span class="d-n">${r.divi}</span><span class="d-u">${uPi}</span></span>
                 </td>`;
             frag.appendChild(tr);
         });
