@@ -1469,6 +1469,160 @@
         }
         .cg-foot-tip b { color: #f87171; font-weight: 800; }
 
+        /* ========== 首页 · 生态分红池下方：两张迷你高级数据表格 ========== */
+        /* 整体外包裹：宽度与 eco-card-wrapper 完全一致 */
+        .hs-tables-wrap {
+            margin: 10px var(--space-md) 2px;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        /* 单张表格：玻璃态 + 金边/紫边描边 + 小尺寸 */
+        .hs-table {
+            position: relative;
+            border-radius: 13px;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.97) 100%);
+            box-shadow:
+                0 5px 14px rgba(0,0,0,0.32),
+                inset 0 0 0 1px rgba(255,255,255,0.02);
+            overflow: hidden;
+            /* 紧凑 padding，表格要小 */
+            padding: 7px 9px 8px;
+        }
+        /* 渐变描边：金 / 紫 两套 */
+        .hs-table::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 13px;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .hs-table.gold::before {
+            background: linear-gradient(135deg, rgba(253,230,138,0.5) 0%, rgba(212,175,55,0.12) 35%, rgba(253,230,138,0.08) 65%, rgba(212,175,55,0.38) 100%);
+        }
+        .hs-table.purple::before {
+            background: linear-gradient(135deg, rgba(233,213,255,0.5) 0%, rgba(139,92,246,0.12) 35%, rgba(196,181,253,0.08) 65%, rgba(139,92,246,0.42) 100%);
+        }
+        /* 顶部极细扫光条 */
+        .hs-table::after {
+            content: ''; position: absolute; top: 0; left: -60%; z-index: 1;
+            width: 55%; height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 40%, rgba(253,230,138,0.12) 50%, rgba(255,255,255,0.04) 60%, transparent 100%);
+            transform: skewX(-18deg);
+            filter: blur(1px);
+            pointer-events: none;
+        }
+        .hs-table.gold::after   { animation: hsShineGold 7s ease-in-out infinite; }
+        .hs-table.purple::after { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 40%, rgba(233,213,255,0.14) 50%, rgba(255,255,255,0.04) 60%, transparent 100%); }
+        .hs-table.purple::after { animation: hsShinePurple 7.6s ease-in-out infinite; }
+        @keyframes hsShineGold   { 0%{left:-60%;opacity:0;} 12%{opacity:1;} 55%{left:110%;opacity:.9;} 60%{opacity:0;} 100%{left:110%;opacity:0;} }
+        @keyframes hsShinePurple { 0%{left:-60%;opacity:0;} 12%{opacity:1;} 55%{left:110%;opacity:.9;} 60%{opacity:0;} 100%{left:110%;opacity:0;} }
+
+        /* 表头徽章：左上角「派友AI卡 / 派友股东卡」小标签 */
+        .hs-tab-badge {
+            position: absolute; top: 6px; right: 8px; z-index: 2;
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 7px; border-radius: 999px;
+            font-size: 8.5px; font-weight: 900; letter-spacing: 0.16em;
+        }
+        .hs-table.gold .hs-tab-badge {
+            background: linear-gradient(135deg, rgba(253,230,138,0.14), rgba(212,175,55,0.08));
+            border: 1px solid rgba(253,230,138,0.28);
+            color: var(--accent-gold-2);
+            box-shadow: 0 0 8px rgba(253,230,138,0.1);
+        }
+        .hs-table.purple .hs-tab-badge {
+            background: linear-gradient(135deg, rgba(233,213,255,0.14), rgba(139,92,246,0.08));
+            border: 1px solid rgba(196,181,253,0.3);
+            color: #e9d5ff;
+            box-shadow: 0 0 8px rgba(196,181,253,0.12);
+        }
+
+        /* 两行 × 三列 Grid：两列数据 + 左列合并标题 */
+        .hs-grid {
+            position: relative; z-index: 2;
+            display: grid;
+            grid-template-columns: 1.02fr 1fr 1fr;
+            column-gap: 6px;
+            row-gap: 5px;
+        }
+        /* 第一列：合并 2 行 → 大标题块（小图标 + 卡片名） */
+        .hs-card-title {
+            grid-row: 1 / span 2;
+            grid-column: 1;
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 7px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .hs-table.gold   .hs-card-title { background: linear-gradient(145deg, rgba(253,230,138,0.07), rgba(212,175,55,0.03)); border-color: rgba(253,230,138,0.14); }
+        .hs-table.purple .hs-card-title { background: linear-gradient(145deg, rgba(233,213,255,0.08), rgba(139,92,246,0.03)); border-color: rgba(196,181,253,0.16); }
+        .hs-card-emoji {
+            width: 24px; height: 24px; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .hs-table.gold   .hs-card-emoji { background: linear-gradient(135deg, rgba(253,230,138,0.22), rgba(212,175,55,0.08)); color: #fff7d6; box-shadow: 0 0 0 1px rgba(253,230,138,0.22); }
+        .hs-table.purple .hs-card-emoji { background: linear-gradient(135deg, rgba(233,213,255,0.22), rgba(139,92,246,0.08)); color: #f5f3ff; box-shadow: 0 0 0 1px rgba(196,181,253,0.24); }
+        .hs-card-name {
+            display: flex; flex-direction: column; gap: 2px; min-width: 0;
+        }
+        .hs-card-name .t {
+            font-size: 11px; font-weight: 900; letter-spacing: 0.02em; line-height: 1.1;
+        }
+        .hs-table.gold   .hs-card-name .t { color: #fff7d6; background: linear-gradient(90deg,#fff4c8,var(--accent-gold-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hs-table.purple .hs-card-name .t { color: #f5f3ff; background: linear-gradient(90deg,#ede9fe,#e9d5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hs-card-name .s { font-size: 9px; color: var(--text-quaternary); font-weight: 600; letter-spacing: 0.04em; }
+
+        /* 数据单元格（右 2 列 × 上下列） */
+        .hs-cell {
+            display: flex; flex-direction: column; gap: 1.5px;
+            padding: 5px 6px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.018);
+            border: 1px solid rgba(255,255,255,0.035);
+            min-width: 0;
+        }
+        .hs-cell-label {
+            display: flex; align-items: center; gap: 3px;
+            font-size: 8.8px; color: var(--text-tertiary);
+            font-weight: 700; letter-spacing: 0.03em;
+        }
+        .hs-cell-label .dot {
+            width: 4px; height: 4px; border-radius: 999px;
+            flex-shrink: 0;
+        }
+        .hs-table.gold   .hs-cell-label .dot { background: linear-gradient(180deg,#fde68a,#d4af37); box-shadow: 0 0 3px rgba(253,230,138,0.6); }
+        .hs-table.purple .hs-cell-label .dot { background: linear-gradient(180deg,#e9d5ff,#8b5cf6); box-shadow: 0 0 3px rgba(233,213,255,0.5); }
+        .hs-cell-value {
+            display: flex; align-items: baseline; gap: 2px;
+            line-height: 1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .hs-cell-value .n {
+            font-size: 13px; font-weight: 900; letter-spacing: -0.01em;
+        }
+        .hs-cell-value .u {
+            font-size: 9.5px; font-weight: 700; color: var(--text-quaternary);
+        }
+        .hs-table.gold   .hs-cell-value .n { color: var(--accent-gold-2); }
+        .hs-table.purple .hs-cell-value .n { color: #e9d5ff; }
+
+        /* 特殊：股东卡 Row2 跨 2 列（美元≈人民币，一个单元格展示双价） */
+        .hs-cell.colspan-2 {
+            grid-column: 2 / span 2;
+            padding: 4px 6px;
+            flex-direction: row;
+            align-items: center; justify-content: space-between;
+            gap: 6px;
+        }
+        .hs-cell-price {
+            display: flex; align-items: baseline; gap: 3px; min-width: 0;
+        }
+        .hs-cell-price.usd .n { color: #93c5fd; }
+        .hs-cell-price.cny .n { color: var(--accent-gold-2); }
+        .hs-cell-price .arrow { color: var(--text-quaternary); font-weight: 800; font-size: 9.5px; }
+
         /* 响应式（更窄屏） */
         @media (max-width: 360px) {
             .ai-card-wrapper { width: 270px; height: 170px; }
@@ -1479,6 +1633,8 @@
         @media (max-width: 330px) {
             .ai-card-wrapper { width: 252px; height: 158px; }
             .eco-circle { width: 140px; height: 140px; }
+            .hs-card-name .s { display: none; }
+            .hs-cell-value .n { font-size: 12px; }
         }
     </style>
 </head>
@@ -1601,6 +1757,93 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- =============== 两张迷你数据表格（生态分红池下方·紧凑宽度） =============== -->
+        <div class="hs-tables-wrap">
+
+            <!-- 表格 1：派友 AI 卡（金色主题，两行三列） -->
+            <div class="hs-table gold" role="table" aria-label="派友AI卡今日数据">
+                <div class="hs-tab-badge" data-i18n="hs_ai_badge">AI · TODAY</div>
+                <div class="hs-grid">
+                    <!-- 左列：卡片名（横跨 2 行） -->
+                    <div class="hs-card-title" role="rowheader" rowspan="2">
+                        <div class="hs-card-emoji">🤖</div>
+                        <div class="hs-card-name">
+                            <div class="t" data-i18n="hs_ai_title">派友AI卡</div>
+                            <div class="s" data-i18n="hs_ai_sub">AI Power Card</div>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 2 列：今日浏览生态 个数 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c2_lbl">今日浏览生态</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_ai_r1c2_v">12,846</span>
+                            <span class="u" data-i18n="hs_u_count">个</span>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 3 列：浏览时长 小时 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c3_lbl">浏览时长</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_ai_r1c3_v">19.6</span>
+                            <span class="u" data-i18n="hs_u_hour">小时</span>
+                        </div>
+                    </div>
+                    <!-- 第 2 行 · 第 2 列：获取派币 数量 + 单位 跨 2 列（视觉紧凑） -->
+                    <div class="hs-cell colspan-2" role="cell">
+                        <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_ai_r2c_lbl">今日获取派币</span></div>
+                        <div class="hs-cell-price usd" style="align-items:center; justify-content:flex-end;">
+                            <span class="n" data-i18n="hs_ai_r2c_v">86.52</span>
+                            <span class="u">π</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表格 2：派友 股东卡（紫色主题，两行三列） -->
+            <div class="hs-table purple" role="table" aria-label="派友股东卡今日数据">
+                <div class="hs-tab-badge" data-i18n="hs_sh_badge">SHARE · TODAY</div>
+                <div class="hs-grid">
+                    <!-- 左列：卡片名（横跨 2 行） -->
+                    <div class="hs-card-title" role="rowheader" rowspan="2">
+                        <div class="hs-card-emoji">💎</div>
+                        <div class="hs-card-name">
+                            <div class="t" data-i18n="hs_sh_title">派友股东卡</div>
+                            <div class="s" data-i18n="hs_sh_sub">Shareholder Card</div>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 2 列：今日申请人数 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日申请人数</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_sh_r1c2_v">1,284</span>
+                            <span class="u" data-i18n="hs_u_people">人</span>
+                        </div>
+                    </div>
+                    <!-- 第 1 行 · 第 3 列：股东卡分红派币 -->
+                    <div class="hs-cell" role="cell">
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c3_lbl">今日分红派币</span></div>
+                        <div class="hs-cell-value">
+                            <span class="n" data-i18n="hs_sh_r1c3_v">286.52</span>
+                            <span class="u">π</span>
+                        </div>
+                    </div>
+                    <!-- 第 2 行 · 跨 2 列：美元价值 · 约等于 人民币 -->
+                    <div class="hs-cell colspan-2" role="cell">
+                        <div class="hs-cell-price usd">
+                            <span class="n" data-i18n="hs_sh_r2_usd">$ 38.12</span>
+                            <span class="u" data-i18n="hs_u_usd">USD</span>
+                        </div>
+                        <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
+                        <div class="hs-cell-price cny">
+                            <span class="n" data-i18n="hs_sh_r2_cny">¥ 272.86</span>
+                            <span class="u" data-i18n="hs_u_cny">CNY</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -2419,6 +2662,32 @@ const I18N = {
         'tab_chat':   '兑换',
         'tab_my':     '我的',
 
+        // 首页·下方两张迷你表格（AI卡=金色 / 股东卡=紫色）
+        'hs_ai_badge':   'AI · 今日',
+        'hs_ai_title':   '派友AI卡',
+        'hs_ai_sub':     'AI 算力卡',
+        'hs_ai_r1c2_lbl':'今日浏览生态',
+        'hs_ai_r1c2_v':  '12,846',
+        'hs_ai_r1c3_lbl':'浏览时长',
+        'hs_ai_r1c3_v':  '19.6',
+        'hs_ai_r2c_lbl': '今日获取派币',
+        'hs_ai_r2c_v':   '86.52',
+        'hs_sh_badge':   '股东 · 今日',
+        'hs_sh_title':   '派友股东卡',
+        'hs_sh_sub':     'SHAREHOLDER',
+        'hs_sh_r1c2_lbl':'今日申请人数',
+        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c3_lbl':'今日分红派币',
+        'hs_sh_r1c3_v':  '286.52',
+        'hs_sh_r2_usd':  '$ 38.12',
+        'hs_sh_r2_cny':  '¥ 272.86',
+        'hs_u_count':    '个',
+        'hs_u_hour':     '小时',
+        'hs_u_people':   '人',
+        'hs_u_usd':      'USD',
+        'hs_u_cny':      'CNY',
+        'hs_arrow_eq':   '≈',
+
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
         'cg_hero_p1':       '<span class="hl-red">重要提示：</span>由于在国内兑换任何加密货币（含派币变现）均属于<span class="hl-red">违法行为</span>，因此本次兑换必须通过官方群聊申请流程，由客服人员统一向公司提交办理。',
@@ -2575,6 +2844,32 @@ const I18N = {
         'tab_market': 'Market',
         'tab_chat':   'Redeem',
         'tab_my':     'Me',
+
+        // Home · mini tables (AI = Gold / Shareholder = Purple)
+        'hs_ai_badge':   'AI · TODAY',
+        'hs_ai_title':   'PiFriends AI Card',
+        'hs_ai_sub':     'AI POWER',
+        'hs_ai_r1c2_lbl':'Today Eco Browse',
+        'hs_ai_r1c2_v':  '12,846',
+        'hs_ai_r1c3_lbl':'Browse Time',
+        'hs_ai_r1c3_v':  '19.6',
+        'hs_ai_r2c_lbl': 'Pi Earned Today',
+        'hs_ai_r2c_v':   '86.52',
+        'hs_sh_badge':   'SHARE · TODAY',
+        'hs_sh_title':   'PiFriends Share Card',
+        'hs_sh_sub':     'HOLDER',
+        'hs_sh_r1c2_lbl':'Apply Users Today',
+        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c3_lbl':'Dividend Pi Today',
+        'hs_sh_r1c3_v':  '286.52',
+        'hs_sh_r2_usd':  '$ 38.12',
+        'hs_sh_r2_cny':  '¥ 272.86',
+        'hs_u_count':    '',
+        'hs_u_hour':     'hrs',
+        'hs_u_people':   'u',
+        'hs_u_usd':      'USD',
+        'hs_u_cny':      'CNY',
+        'hs_arrow_eq':   '≈',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
