@@ -1919,6 +1919,30 @@
             border: 1px solid rgba(196,181,253,0.34);
             color: #ede9fe;
         }
+        .type-pill.pending {
+            background: linear-gradient(135deg, rgba(148,163,184,0.2), rgba(100,116,139,0.08));
+            border: 1px solid rgba(148,163,184,0.35);
+            color: #cbd5e1;
+        }
+        /* 待审核行：整体灰雾 + 降低不透明度 + 小锁纹 */
+        .apply-tbl tbody tr.row-pending {
+            background: linear-gradient(145deg, rgba(100,116,139,0.06), rgba(30,41,59,0.02));
+            border-color: rgba(148,163,184,0.18);
+            opacity: .8;
+        }
+        .apply-tbl tbody tr.row-pending:hover {
+            border-color: rgba(148,163,184,0.32);
+            background: linear-gradient(145deg, rgba(148,163,184,0.10), rgba(30,41,59,0.03));
+        }
+        .apply-tbl tbody tr.row-pending td { color: var(--text-tertiary); }
+        .apply-tbl tbody tr.row-pending td.col-i { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-n { font-weight: 700; color: rgba(203,213,225,0.92); letter-spacing: 0.04em; }
+        .apply-tbl tbody tr.row-pending td.col-t { color: rgba(148,163,184,0.7); }
+        .apply-tbl tbody tr.row-pending td.col-q .qty-card { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-q .qty-card .q-u { color: rgba(148,163,184,0.65); }
+        .apply-tbl tbody tr.row-pending td.col-d { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-d .divi-pi { color: rgba(148,163,184,0.8); }
+        .apply-tbl tbody tr.row-pending td.col-d .divi-pi .d-u { color: rgba(148,163,184,0.65); }
         /* 持有张数：紫色强调 */
         .qty-card { color: #e9d5ff; }
         .qty-card .q-u { font-size: 8.2px; color: #e9d5ff; opacity: .85; margin-left: 1.5px; font-weight: 700; }
@@ -3270,6 +3294,12 @@ const I18N = {
         'pager_prev':    '上一页',
         'pager_next':    '下一页',
         'pager_tip':     '当前页',
+        // 第 11~100 名：待审核占位
+        'apply_pending_name': '待审核',
+        'apply_pending_type': '待审核',
+        'apply_pending_date': '— — —',
+        'apply_pending_qty':  '—',
+        'apply_pending_divi': '—',
 
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
@@ -3481,6 +3511,12 @@ const I18N = {
         'pager_prev':    'Prev',
         'pager_next':    'Next',
         'pager_tip':     'Page',
+        // Placeholder for 11~100 pending review
+        'apply_pending_name': 'Pending',
+        'apply_pending_type': 'Pending',
+        'apply_pending_date': '— — —',
+        'apply_pending_qty':  '—',
+        'apply_pending_divi': '—',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
@@ -4163,29 +4199,41 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         return x - Math.floor(x);
     }
     for (let i = 0; i < TOTAL; i++){
-        const isAI = (i % 2 !== 0); // 1,3,5... AI 卡；偶数 股东卡
+        // 前 10 名（01~10）：保留真实信息
+        const isTop10 = (i < 10);
+        const isAI = (i % 2 !== 0);
         const seed = (i + 7) * 13.37;
-        // 持有起始日：近 180 天内随机（仅年月日）
-        const daysAgo = Math.floor(rnd(seed) * 180);
-        const d = new Date(today.getTime() - daysAgo * 86400000);
-        const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-        // 持有张数：AI 1~7 ｜ 股东 1~35
-        let cards;
-        if (isAI) cards = 1 + Math.floor(rnd(seed*1.7) * 7);
-        else      cards = 1 + Math.floor(rnd(seed*2.3) * 35);
-        // 分红派币：张数 × 单张系数
-        const rate = isAI ? 0.81 : 5.62;
-        const divPi = (cards * rate).toFixed(2);
-        const name = NAME_POOL[i % NAME_POOL.length];
-        rows.push({
-            id: String(i + 1).padStart(2,'0'),
-            idx: i,        // 全局索引（0~99）
-            name: name,
-            date: dateStr,
-            type: isAI ? 'ai' : 'sh',
-            cards: cards,
-            divi: divPi
-        });
+        if (isTop10){
+            const daysAgo = Math.floor(rnd(seed) * 90);
+            const d = new Date(today.getTime() - daysAgo * 86400000);
+            const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+            let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
+            const rate = isAI ? 0.81 : 5.62;
+            const divPi = (cards * rate).toFixed(2);
+            const name = NAME_POOL[i % NAME_POOL.length];
+            rows.push({
+                id: String(i + 1).padStart(2,'0'),
+                idx: i,
+                pending: false,
+                name: name,
+                date: dateStr,
+                type: isAI ? 'ai' : 'sh',
+                cards: cards,
+                divi: divPi
+            });
+        } else {
+            // 第 11~100 名（idx 10~99）：全部「待审核」占位
+            rows.push({
+                id: String(i + 1).padStart(2,'0'),
+                idx: i,
+                pending: true,
+                name: null,
+                date: null,
+                type: null,
+                cards: null,
+                divi: null
+            });
+        }
     }
 
     // ---------- 分页控件元素 ----------
@@ -4228,25 +4276,47 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         const tSH = dict['apply_type_sh'] || '派友股东卡';
         const uCard = dict['apply_unit_card'] || '张';
         const uPi   = dict['apply_unit_pi']  || 'π';
+        const pName = dict['apply_pending_name'] || '待审核';
+        const pType = dict['apply_pending_type'] || '待审核';
+        const pDate = dict['apply_pending_date'] || '— — —';
+        const pQty  = dict['apply_pending_qty']  || '—';
+        const pDivi = dict['apply_pending_divi'] || '—';
         const start = (currentPage - 1) * PAGE_SIZE;
         const end   = start + PAGE_SIZE;
         const slice = rows.slice(start, end);
         const frag = document.createDocumentFragment();
         slice.forEach(function(r){
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="col-i">${r.id}</td>
-                <td class="col-n">${r.name}</td>
-                <td class="col-t">${r.date}</td>
-                <td class="col-y">
-                    <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
-                </td>
-                <td class="col-q">
-                    <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
-                </td>
-                <td class="col-d">
-                    <span class="divi-pi"><span class="d-n">${r.divi}</span><span class="d-u">${uPi}</span></span>
-                </td>`;
+            if (r.pending){
+                tr.classList.add('row-pending');
+                tr.innerHTML = `
+                    <td class="col-i">${r.id}</td>
+                    <td class="col-n">${pName}</td>
+                    <td class="col-t">${pDate}</td>
+                    <td class="col-y">
+                        <span class="type-pill pending">${pType}</span>
+                    </td>
+                    <td class="col-q">
+                        <span class="qty-card"><span class="q-n">${pQty}</span><span class="q-u"></span></span>
+                    </td>
+                    <td class="col-d">
+                        <span class="divi-pi"><span class="d-n">${pDivi}</span><span class="d-u"></span></span>
+                    </td>`;
+            } else {
+                tr.innerHTML = `
+                    <td class="col-i">${r.id}</td>
+                    <td class="col-n">${r.name}</td>
+                    <td class="col-t">${r.date}</td>
+                    <td class="col-y">
+                        <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
+                    </td>
+                    <td class="col-q">
+                        <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
+                    </td>
+                    <td class="col-d">
+                        <span class="divi-pi"><span class="d-n">${r.divi}</span><span class="d-u">${uPi}</span></span>
+                    </td>`;
+            }
             frag.appendChild(tr);
         });
         tbody.innerHTML = '';
