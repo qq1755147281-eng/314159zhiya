@@ -1628,6 +1628,31 @@
         .hs-cell-price.cny .n { color: var(--accent-gold-2); }
         .hs-cell-price .arrow { color: var(--text-quaternary); font-weight: 800; font-size: 8.5px; line-height: 1; }
 
+        /* 换算价样式：π 金色、人民币 CNY 金色、美元 USDT 蓝色（更有辨识度） */
+        .hs-cell-price.pi .n { color: var(--accent-gold-2); font-weight: 900; }
+        .hs-cell-price.pi .u { color: var(--accent-gold-2); opacity: .8; font-weight: 800; }
+        .hs-cell-price.fiat .n.n-cny { color: var(--accent-gold-2); }
+        .hs-cell-price.fiat .n.n-usdt { color: #60a5fa; }
+        .hs-cell-price.fiat .u { font-weight: 800; letter-spacing: 0.04em; }
+        .hs-cell-price.fiat.fiat-cny .u { color: var(--accent-gold-2); opacity: .85; }
+        .hs-cell-price.fiat.fiat-usdt .u { color: #60a5fa; opacity: .9; }
+
+        /* 换算行（ai-conv / sh-conv）统一：label → π → ≈ → fiat，紧凑对齐 */
+        .hs-cell.ai-conv .hs-cell-price,
+        .hs-cell.sh-conv .hs-cell-price {
+            display: inline-flex;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .hs-cell.ai-conv .hs-cell-price.pi .n,
+        .hs-cell.sh-conv .hs-cell-price.pi .n { font-size: 10.6px; }
+        .hs-cell.ai-conv .hs-cell-price.pi .u,
+        .hs-cell.sh-conv .hs-cell-price.pi .u { font-size: 8px; margin-left: 1.5px; }
+        .hs-cell.ai-conv .hs-cell-price.fiat .n,
+        .hs-cell.sh-conv .hs-cell-price.fiat .n { font-size: 11px; font-weight: 900; }
+        .hs-cell.ai-conv .hs-cell-price.fiat .u,
+        .hs-cell.sh-conv .hs-cell-price.fiat .u { font-size: 7.6px; }
+
         /* 响应式（更窄屏） */
         @media (max-width: 360px) {
             .ai-card-wrapper { width: 270px; height: 170px; }
@@ -1795,12 +1820,17 @@
                             <span class="u" data-i18n="hs_u_hour">小时</span>
                         </div>
                     </div>
-                    <!-- 第 2 行 · 第 2 列：获取派币 数量 + 单位 跨 2 列（视觉紧凑） -->
-                    <div class="hs-cell colspan-2" role="cell">
+                    <!-- 第 2 行 · 跨 2 列：π 数量 + ≈ CNY/USDT（根据语言动态切换） -->
+                    <div class="hs-cell colspan-2 ai-conv" role="cell">
                         <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_ai_r2c_lbl">今日获取派币</span></div>
-                        <div class="hs-cell-price usd" style="align-items:center; justify-content:flex-end;">
+                        <div class="hs-cell-price pi" style="align-items:center;">
                             <span class="n" data-i18n="hs_ai_r2c_v">86.52</span>
                             <span class="u">π</span>
+                        </div>
+                        <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
+                        <div class="hs-cell-price fiat" style="align-items:center;">
+                            <span class="n" data-i18n-dyn="hs_ai_r2c_fiat">¥ 618.20</span>
+                            <span class="u" data-i18n-dyn="hs_ai_r2c_cur">CNY</span>
                         </div>
                     </div>
                 </div>
@@ -1834,16 +1864,17 @@
                             <span class="u">π</span>
                         </div>
                     </div>
-                    <!-- 第 2 行 · 跨 2 列：美元价值 · 约等于 人民币 -->
-                    <div class="hs-cell colspan-2" role="cell">
-                        <div class="hs-cell-price usd">
-                            <span class="n" data-i18n="hs_sh_r2_usd">$ 38.12</span>
-                            <span class="u" data-i18n="hs_u_usd">USD</span>
+                    <!-- 第 2 行 · 跨 2 列：今日分红派币 π 数量 + ≈ CNY/USDT（按语言动态切换） -->
+                    <div class="hs-cell colspan-2 sh-conv" role="cell">
+                        <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_sh_r2_lbl">今日分红派币</span></div>
+                        <div class="hs-cell-price pi" style="align-items:center;">
+                            <span class="n" data-i18n="hs_sh_r1c3_v">286.52</span>
+                            <span class="u">π</span>
                         </div>
                         <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
-                        <div class="hs-cell-price cny">
-                            <span class="n" data-i18n="hs_sh_r2_cny">¥ 272.86</span>
-                            <span class="u" data-i18n="hs_u_cny">CNY</span>
+                        <div class="hs-cell-price fiat" style="align-items:center;">
+                            <span class="n" data-i18n-dyn="hs_sh_r2_fiat">¥ 2,046.17</span>
+                            <span class="u" data-i18n-dyn="hs_sh_r2_cur">CNY</span>
                         </div>
                     </div>
                 </div>
@@ -2682,16 +2713,18 @@ const I18N = {
         'hs_sh_sub':     'SHAREHOLDER',
         'hs_sh_r1c2_lbl':'今日申请人数',
         'hs_sh_r1c2_v':  '1,284',
-        'hs_sh_r1c3_lbl':'今日分红派币',
+        'hs_sh_r1c3_lbl':'今日分红派币（π）',
         'hs_sh_r1c3_v':  '286.52',
-        'hs_sh_r2_usd':  '$ 38.12',
-        'hs_sh_r2_cny':  '¥ 272.86',
+        'hs_sh_r2_lbl':  '今日分红派币',
         'hs_u_count':    '个',
         'hs_u_hour':     '小时',
         'hs_u_people':   '人',
-        'hs_u_usd':      'USD',
-        'hs_u_cny':      'CNY',
         'hs_arrow_eq':   '≈',
+        // 表格动态换算值（zh-CN：人民币 / en：USDT） 按汇率 1π≈$0.13304，1USD≈¥7.158
+        'hs_ai_r2c_fiat':'¥ 82.38',
+        'hs_ai_r2c_cur': 'CNY',
+        'hs_sh_r2_fiat': '¥ 272.86',
+        'hs_sh_r2_cur':  'CNY',
 
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
@@ -2865,16 +2898,18 @@ const I18N = {
         'hs_sh_sub':     'HOLDER',
         'hs_sh_r1c2_lbl':'Apply Users Today',
         'hs_sh_r1c2_v':  '1,284',
-        'hs_sh_r1c3_lbl':'Dividend Pi Today',
+        'hs_sh_r1c3_lbl':'Dividend Pi (π)',
         'hs_sh_r1c3_v':  '286.52',
-        'hs_sh_r2_usd':  '$ 38.12',
-        'hs_sh_r2_cny':  '¥ 272.86',
+        'hs_sh_r2_lbl':  'Dividend Pi Today',
         'hs_u_count':    '',
         'hs_u_hour':     'hrs',
         'hs_u_people':   'u',
-        'hs_u_usd':      'USD',
-        'hs_u_cny':      'CNY',
         'hs_arrow_eq':   '≈',
+        // Dynamic table conversion (en: USDT dollars)
+        'hs_ai_r2c_fiat':'$ 11.51',
+        'hs_ai_r2c_cur': 'USDT',
+        'hs_sh_r2_fiat': '$ 38.12',
+        'hs_sh_r2_cur':  'USDT',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
@@ -3035,6 +3070,29 @@ function applyLanguage(lang) {
             el.innerHTML = v.split('\\n').join('<br/>');
         } else {
             el.textContent = v;
+        }
+    }
+    // data-i18n-dyn：动态换算值（例如 π→CNY / π→USDT，语言切换时变货币）
+    const dEls = document.querySelectorAll('[data-i18n-dyn]');
+    for (let i = 0; i < dEls.length; i++) {
+        const el = dEls[i];
+        const key = el.getAttribute('data-i18n-dyn');
+        if (!(key in dict)) continue;
+        el.textContent = dict[key];
+        // 货币颜色主题：CNY 金色 / USDT 蓝色
+        const curKey = key.replace(/_fiat$/, '_cur');
+        const cur = dict[curKey] || '';
+        if (/fiat|cur/.test(key)) {
+            const parent = el.closest('.hs-cell-price.fiat');
+            if (parent) {
+                parent.classList.toggle('fiat-cny', cur === 'CNY');
+                parent.classList.toggle('fiat-usdt', cur === 'USDT');
+            }
+            // n 元素单独上色：CNY = gold / USDT = blue
+            if (key.endsWith('_fiat')) {
+                el.classList.toggle('n-cny', cur === 'CNY');
+                el.classList.toggle('n-usdt', cur === 'USDT');
+            }
         }
     }
     // 语言按钮标志
