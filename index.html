@@ -1895,15 +1895,19 @@
         .apply-tbl td.col-d { text-align: right; font-weight: 900; letter-spacing: -0.01em; color: var(--accent-gold-2); }
         .apply-tbl th.col-d { text-align: right; }
 
-        /* 类型标签：AI 金卡 / 股东紫卡 */
+        /* 类型标签：AI 金卡 / 股东紫卡 · 严格单行不换行，超长截断 */
         .type-pill {
-            display: inline-flex; align-items: center; gap: 3px;
-            padding: 2.3px 6px;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 2px;
+            padding: 2px 5.5px;
             border-radius: 999px;
-            font-size: 8.2px;
+            font-size: 7.8px;
             font-weight: 800;
-            letter-spacing: 0.03em;
+            letter-spacing: 0;
             line-height: 1;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 100%;
+            vertical-align: middle;
         }
         .type-pill.ai {
             background: linear-gradient(135deg, rgba(253,230,138,0.2), rgba(212,175,55,0.08));
@@ -1922,16 +1926,157 @@
         .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 1.5px; }
         .divi-pi .d-u { font-size: 8.2px; color: var(--accent-gold-2); opacity: .85; margin-left: 1.5px; font-weight: 700; }
 
+        /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
+        .apply-pager {
+            flex-shrink: 0;
+            padding: 12px 18px 10px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        /* 左右两按钮 */
+        .apg-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.055);
+            background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+            color: var(--text-secondary);
+            font-size: 9.6px; font-weight: 700; letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
+            white-space: nowrap;
+        }
+        .apg-btn:hover { border-color: rgba(253,230,138,0.22); color: var(--text-primary); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
+        .apg-btn:active { transform: translateY(0.5px) scale(.98); }
+        .apg-btn:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+        .apg-prev { justify-self: start; flex-direction: row; }
+        .apg-next { justify-self: end;   flex-direction: row; }
+        .apg-ic {
+            width: 20px; height: 20px; border-radius: 999px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--text-primary);
+            flex-shrink: 0;
+            transition: background .18s, border-color .18s, color .18s;
+        }
+        .apg-btn:hover .apg-ic { background: rgba(253,230,138,0.12); border-color: rgba(253,230,138,0.22); color: var(--accent-gold-2); }
+        .apg-btn.apg-prev .apg-ic-l { margin-right: 2px; }
+        .apg-btn.apg-next .apg-ic-r { margin-left: 2px; }
+
+        /* 中：黄色发光悬浮球 */
+        .apg-ball {
+            position: relative;
+            width: 64px; height: 64px;
+            border-radius: 999px;
+            justify-self: center;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            /* 多层金光 + 悬浮动画 */
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255,250,210,0.95) 0%, rgba(253,230,138,0.45) 28%, rgba(212,175,55,0.18) 60%, rgba(212,175,55,0.04) 100%);
+            box-shadow:
+                0 0 0 1px rgba(253,230,138,0.35),
+                0 0 18px 2px rgba(253,230,138,0.45),
+                0 0 42px 6px rgba(212,175,55,0.38),
+                0 8px 22px rgba(0,0,0,0.42),
+                inset 0 1px 0 rgba(255,255,255,0.85),
+                inset 0 -8px 12px rgba(212,175,55,0.45);
+            animation: apgBallFloat 3.2s ease-in-out infinite, apgBallPulse 2.4s ease-in-out infinite;
+        }
+        /* 外扫光环 */
+        .apg-ball-ring {
+            position: absolute; inset: -7px;
+            border-radius: 999px;
+            border: 1px dashed rgba(253,230,138,0.32);
+            animation: apgRingSpin 9s linear infinite;
+            pointer-events: none;
+        }
+        /* 内部高光扫光 */
+        .apg-ball-shine {
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.55) 38%, rgba(255,255,255,0.05) 52%, transparent 100%);
+            transform: translateX(-55%) rotate(-10deg);
+            filter: blur(0.3px);
+            pointer-events: none;
+            animation: apgBallShine 5.4s ease-in-out infinite;
+        }
+        /* 内部页码文字 1/10 */
+        .apg-ball-page {
+            position: relative; z-index: 2;
+            display: flex; align-items: baseline; gap: 1.5px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+        .apg-ball-page .apg-cur {
+            font-size: 17px; font-weight: 900; letter-spacing: -0.02em;
+            color: #3a2708;
+            text-shadow: 0 1px 0 rgba(255,250,210,0.6);
+        }
+        .apg-ball-page .apg-sep {
+            font-size: 10px; font-weight: 800; color: #5a430d; opacity: .75;
+        }
+        .apg-ball-page .apg-tot {
+            font-size: 11px; font-weight: 900; color: #5a430d; opacity: .9;
+            letter-spacing: 0;
+        }
+        /* 小字提示「当前页」 */
+        .apg-ball-tip {
+            position: relative; z-index: 2;
+            margin-top: 3px;
+            font-size: 7.6px; font-weight: 700; letter-spacing: 0.1em;
+            color: #4d390a;
+            opacity: .85;
+        }
+        /* 悬浮动画：轻微上下浮动 */
+        @keyframes apgBallFloat {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(-3px); }
+        }
+        /* 发光脉冲：外层金光忽强忽弱 */
+        @keyframes apgBallPulse {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(253,230,138,0.35),
+                    0 0 18px 2px rgba(253,230,138,0.45),
+                    0 0 42px 6px rgba(212,175,55,0.38),
+                    0 8px 22px rgba(0,0,0,0.42),
+                    inset 0 1px 0 rgba(255,255,255,0.85),
+                    inset 0 -8px 12px rgba(212,175,55,0.45);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(253,230,138,0.5),
+                    0 0 24px 3px rgba(253,230,138,0.6),
+                    0 0 54px 9px rgba(212,175,55,0.52),
+                    0 8px 22px rgba(0,0,0,0.42),
+                    inset 0 1px 0 rgba(255,255,255,0.92),
+                    inset 0 -8px 12px rgba(212,175,55,0.45);
+            }
+        }
+        /* 旋转外环（虚线） */
+        @keyframes apgRingSpin { from{transform: rotate(0);} to{transform: rotate(360deg);} }
+        /* 内部高光扫光左右移动 */
+        @keyframes apgBallShine {
+            0%   { transform: translateX(-55%) rotate(-10deg); opacity: 0.7; }
+            45%  { transform: translateX(55%)  rotate(-10deg); opacity: 1; }
+            50%  { opacity: 0; }
+            100% { transform: translateX(55%)  rotate(-10deg); opacity: 0; }
+        }
+
         /* 脚注 */
         .apply-foot {
             flex-shrink: 0;
-            padding: 10px 16px 12px;
-            font-size: 9px; color: var(--text-quaternary);
+            padding: 8px 16px 12px;
+            font-size: 8.8px; color: var(--text-quaternary);
             text-align: center;
             letter-spacing: 0.06em;
             font-weight: 600;
             border-top: 1px solid rgba(255,255,255,0.03);
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* 响应式（更窄屏） */
@@ -2225,8 +2370,35 @@
                     </tbody>
                 </table>
             </div>
+            <!-- ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== -->
+            <div class="apply-pager" role="navigation" aria-label="分页">
+                <!-- 左：上一页 -->
+                <button class="apg-btn apg-prev" id="apgPrev" type="button" aria-label="上一页">
+                    <span class="apg-ic apg-ic-l" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    </span>
+                    <span class="apg-txt" data-i18n="pager_prev">上一页</span>
+                </button>
+
+                <!-- 中：黄色发光悬浮球（当前页 / 总页数） -->
+                <div class="apg-ball" id="apgBall">
+                    <span class="apg-ball-shine"></span>
+                    <span class="apg-ball-ring"></span>
+                    <span class="apg-ball-page"><span class="apg-cur" id="apgCur">1</span><span class="apg-sep">/</span><span class="apg-tot" id="apgTot">10</span></span>
+                    <span class="apg-ball-tip" data-i18n="pager_tip">当前页</span>
+                </div>
+
+                <!-- 右：下一页 -->
+                <button class="apg-btn apg-next" id="apgNext" type="button" aria-label="下一页">
+                    <span class="apg-txt" data-i18n="pager_next">下一页</span>
+                    <span class="apg-ic apg-ic-r" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="13" height="13"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                    </span>
+                </button>
+            </div>
+
             <!-- 底部脚注 -->
-            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 1,284 条持有记录</div>
+            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 100 条持有记录</div>
         </div>
     </div>
 
@@ -3094,7 +3266,10 @@ const I18N = {
         'apply_type_sh': '派友股东卡',
         'apply_unit_card':'张',
         'apply_unit_pi': 'π',
-        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 1,284 条持有记录',
+        'apply_foot':    '※ 数据每 5 分钟自动更新 · 共 100 条持有记录',
+        'pager_prev':    '上一页',
+        'pager_next':    '下一页',
+        'pager_tip':     '当前页',
 
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
@@ -3302,7 +3477,10 @@ const I18N = {
         'apply_type_sh': 'Shareholder Card',
         'apply_unit_card':'pcs',
         'apply_unit_pi': 'π',
-        'apply_foot':    '※ Data auto refresh every 5 min · 1,284 holdings records',
+        'apply_foot':    '※ Data auto refresh every 5 min · 100 holdings records',
+        'pager_prev':    'Prev',
+        'pager_next':    'Next',
+        'pager_tip':     'Page',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
@@ -3958,35 +4136,89 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeApply();
     });
 
-    /* ---- 6 列持有记录数据：序号 / 全名(仅中文) / 持有时间(仅年月日) / 类型 / 持有张数(整数) / 分红派币 π ---- */
-    const NAME_FULL = [
-        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵',
-        '周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨'
+    /* ---- 6 列持有记录：100 条 = 10 页 × 10 行；分页器上一页 / 黄色发光球 / 下一页 ---- */
+    const NAME_POOL = [
+        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵','周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨',
+        '徐梓涵','宋浩宇','孙婉清','朱雨泽','何思成','高梓涵','郑明浩','梁文博','谢欣怡','韩宇轩',
+        '许子墨','冯钰琪','邓嘉怡','曹浩然','彭奕辰','曾雅诗','萧泽楷','田沐晨','董一诺','潘宇辰',
+        '袁嘉懿','蒋舒涵','蔡沐阳','余星辰','杜雨桐','魏子涵','程瑞霖','丁亦轩','沈慕晴','范子豪',
+        '傅锦程','安诗雅','乐逸飞','颜清越','龙紫嫣','易展鹏','尚靖琪','温新宇','柳亦宸','黎瑾瑜',
+        '史皓天','陶雪莹','姜皓轩','费思源','蓝若曦','屠思远','齐若兰','康皓宸','伍雅琴','余子墨',
+        '卜安然','耿云舟','关雅婷','苗雨泽','靳雨辰','穆泽楷','聂嘉树','褚清妍','柴书瑶','翟思齐',
+        '庞嘉瑞','阴依诺','郁俊熙','薄雅宁','宿云舒','白梓萱','怀瑾瑜','蒲青瑶','索思雅','冉明煦',
+        '郦浩宇','雍雨桐','璩瑞泽','桂逸帆','濮星宇','牛睿思','寿佳怡','通睿渊','边冠霖','扈慕凝'
     ];
-    // 10 行：AI / SH 交替；张数为整数（AI 少、股东多）；分红派币 = 张数 × 单张系数（AI 0.8 / SH 5.6）
+    const PAGE_SIZE = 10;
+    const TOTAL = 100;
+    const TOTAL_PAGES = Math.ceil(TOTAL / PAGE_SIZE);
+    let currentPage = 1; // 1-based
+
+    // 生成 100 条随机持有记录
     const rows = [];
     const today = new Date();
     const pad = (n) => String(n).padStart(2,'0');
-    for (let i = 0; i < 10; i++){
-        const isAI = (i % 2 !== 0); // 1,3,5,7,9 = AI 卡；0,2,4,6,8 = 股东卡
-        // 持有起始日：近 3 个月内随机（仅年月日）
-        const d = new Date(today.getTime() - Math.floor((Math.random()*90)) * 86400000);
+    // 简易伪随机（可重复）：给每页固定 seed 感的稳定数据
+    function rnd(seed){
+        const x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+    for (let i = 0; i < TOTAL; i++){
+        const isAI = (i % 2 !== 0); // 1,3,5... AI 卡；偶数 股东卡
+        const seed = (i + 7) * 13.37;
+        // 持有起始日：近 180 天内随机（仅年月日）
+        const daysAgo = Math.floor(rnd(seed) * 180);
+        const d = new Date(today.getTime() - daysAgo * 86400000);
         const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-        // 持有张数：AI 1~5 张 ｜ 股东 1~30 张（整数）
+        // 持有张数：AI 1~7 ｜ 股东 1~35
         let cards;
-        if (isAI) cards = 1 + Math.floor(Math.random()*5);
-        else      cards = 1 + Math.floor(Math.random()*30);
+        if (isAI) cards = 1 + Math.floor(rnd(seed*1.7) * 7);
+        else      cards = 1 + Math.floor(rnd(seed*2.3) * 35);
         // 分红派币：张数 × 单张系数
         const rate = isAI ? 0.81 : 5.62;
         const divPi = (cards * rate).toFixed(2);
+        const name = NAME_POOL[i % NAME_POOL.length];
         rows.push({
             id: String(i + 1).padStart(2,'0'),
-            name: NAME_FULL[i],
+            idx: i,        // 全局索引（0~99）
+            name: name,
             date: dateStr,
             type: isAI ? 'ai' : 'sh',
             cards: cards,
             divi: divPi
         });
+    }
+
+    // ---------- 分页控件元素 ----------
+    const btnPrev = document.getElementById('apgPrev');
+    const btnNext = document.getElementById('apgNext');
+    const elCur   = document.getElementById('apgCur');
+    const elTot   = document.getElementById('apgTot');
+
+    function updatePagerUI(){
+        if (elCur) elCur.textContent = String(currentPage);
+        if (elTot) elTot.textContent = String(TOTAL_PAGES);
+        if (btnPrev) btnPrev.disabled = (currentPage <= 1);
+        if (btnNext) btnNext.disabled = (currentPage >= TOTAL_PAGES);
+        // 悬浮球翻页时的"弹跳"视觉反馈
+        const ball = document.getElementById('apgBall');
+        if (ball){
+            ball.style.animation = 'none';
+            ball.offsetHeight; // reflow
+            ball.style.animation = '';
+        }
+    }
+
+    function goToPage(n){
+        const p = Math.max(1, Math.min(TOTAL_PAGES, n|0));
+        if (p === currentPage){ updatePagerUI(); return; }
+        currentPage = p;
+        renderRows();
+        updatePagerUI();
+        // 翻页时让 tbody 滚回顶部
+        try {
+            const tb = tbody?.parentElement?.parentElement?.querySelector('tbody');
+            if (tb) tb.scrollTop = 0;
+        } catch(e){}
     }
 
     function renderRows(){
@@ -3996,8 +4228,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         const tSH = dict['apply_type_sh'] || '派友股东卡';
         const uCard = dict['apply_unit_card'] || '张';
         const uPi   = dict['apply_unit_pi']  || 'π';
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const end   = start + PAGE_SIZE;
+        const slice = rows.slice(start, end);
         const frag = document.createDocumentFragment();
-        rows.forEach(function(r){
+        slice.forEach(function(r){
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="col-i">${r.id}</td>
@@ -4017,10 +4252,22 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         tbody.innerHTML = '';
         tbody.appendChild(frag);
     }
+
+    // ---------- 绑定分页按钮 ----------
+    if (btnPrev) btnPrev.addEventListener('click', function(){ goToPage(currentPage - 1); });
+    if (btnNext) btnNext.addEventListener('click', function(){ goToPage(currentPage + 1); });
+    // 键盘：← / → 翻页（当 overlay open 时）
+    document.addEventListener('keydown', function(e){
+        const ov = document.getElementById('applyOverlay');
+        if (!ov || !ov.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft')  goToPage(currentPage - 1);
+        if (e.key === 'ArrowRight') goToPage(currentPage + 1);
+    });
+
     // 初始渲染
+    updatePagerUI();
     renderRows();
-    // 切语言时重新渲染（类型标签、单位会变）
-    const origApplyLang = window.applyLanguage;
+    // 切语言时重新渲染（类型标签、单位会变，保持当前页）
     const _old = window.applyLanguage;
     window.applyLanguage = function(lang){
         const ret = _old.apply(this, arguments);
