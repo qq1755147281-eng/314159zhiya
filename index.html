@@ -4310,12 +4310,27 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             const d = new Date(today.getTime() - daysAgo * 86400000);
             const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
             let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
-            // 基准派币分红（「购入那一天 00:00 时的起点」，后续按日递增）
-            const rate0 = isAI ? 0.81 : 5.62;
-            const diviBase = parseFloat((cards * rate0).toFixed(4));
-            // 日增幅（按类型）
-            //   - AI卡：每张每天 +3.0 π  -> 每天总涨 = 3.0 * cards
-            //   - 股东卡：每张每月 +0.1 π -> 每天总涨 = 0.1/30 * cards ≈ 0.0033333 * cards
+            // 基准派币分红（购入当天的起点）—— 按你新要求：
+            //  - 派友股东卡(sh)：从 0.01 / 0.02 / 0.03 随机起步（乘以张数 → 每个人起点不一样的小数）
+            //  - 派友AI卡(ai)    ：从 1 / 5 / 10 三档区间随机起步（乘以张数 → 每个人起点不一样）
+            let basePerCard;
+            if (isAI){
+                // 3 档：1.x / 5.x / 10.x（每张）→ 1 + floor(rnd*3) -> {1,5,10}，再加 0~1 小数扰动
+                const tierIdx = Math.floor(rnd(seed*3.1) * 3); // 0,1,2
+                const tierBase = [1, 5, 10][tierIdx];
+                const jitter = rnd(seed*5.9) * 0.9999; // 0 ~ 0.9999 小数抖动
+                basePerCard = tierBase + jitter;
+            } else {
+                // 股东卡 3 档 0.01 / 0.02 / 0.03（每张），再加 0.0001 ~ 0.0099 抖动保证人人不一样
+                const tierIdx = Math.floor(rnd(seed*7.3) * 3);
+                const tierBase = [0.01, 0.02, 0.03][tierIdx];
+                const jitter = 0.0001 + rnd(seed*11.7) * 0.0098; // 不产生 0
+                basePerCard = tierBase + jitter;
+            }
+            const diviBase = parseFloat((basePerCard * cards).toFixed(4));
+            // 日增幅（保持原规则不变）
+            //   - AI卡：每张每天 +3.0 π
+            //   - 股东卡：每张每月 +0.1 π => 每天 +0.1/30 π
             const dailyGainPerCard = isAI ? 3.0 : (0.1 / 30);
             const dailyGain = parseFloat((dailyGainPerCard * cards).toFixed(6));
             const name = NAME_POOL[i % NAME_POOL.length];
@@ -4324,13 +4339,14 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 idx: i,
                 pending: false,
                 name: name,
-                date: dateStr,            // 持有起始日 YYYY-MM-DD
-                _holdDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()), // 归一化到当日 00:00
+                date: dateStr,
+                _holdDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()),
                 type: isAI ? 'ai' : 'sh',
                 cards: cards,
-                diviBase: diviBase,       // 起点分红
-                dailyGain: dailyGain,     // 每天累计涨多少 π
-                divi: null                // 由 computeDivi 实时计算
+                basePerCard: parseFloat(basePerCard.toFixed(6)), // 调试用
+                diviBase: diviBase,
+                dailyGain: dailyGain,
+                divi: null
             });
         } else {
             // 第 11~100 名（idx 10~99）：全部「待审核」占位
