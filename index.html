@@ -2316,7 +2316,7 @@
 
                         <div class="eco-circle-label" data-i18n="eco_pool_label">派币分红总值</div>
                         <div class="eco-circle-amount">
-                            <strong data-i18n="eco_total_v">1,200</strong><span class="unit">π</span>
+                            <strong data-i18n="eco_total_v" id="eco_v_total">1,200</strong><span class="unit">π</span>
                         </div>
                     </div>
                 </div>
@@ -2326,14 +2326,14 @@
                     <div class="eco-btn" id="btnEcoPeople">
                         <div class="eco-btn-icon team">👥</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_people_v">58</div>
+                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">58</div>
                             <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
                         </div>
                     </div>
                     <div class="eco-btn" id="btnEcoDividend">
                         <div class="eco-btn-icon reward">🎁</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_divi_v">286.52</div>
+                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">286.52</div>
                             <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
                         </div>
                     </div>
@@ -2360,7 +2360,7 @@
                     <div class="hs-cell" role="cell">
                         <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c2_lbl">今日浏览生态</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_ai_r1c2_v">12,846</span>
+                            <span class="n" data-i18n="hs_ai_r1c2_v" id="ai_v_eco">12,846</span>
                             <span class="u" data-i18n="hs_u_count">个</span>
                         </div>
                     </div>
@@ -2368,7 +2368,7 @@
                     <div class="hs-cell" role="cell">
                         <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_ai_r1c3_lbl">浏览时长</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_ai_r1c3_v">19.6</span>
+                            <span class="n" data-i18n="hs_ai_r1c3_v" id="ai_v_hour">19.6</span>
                             <span class="u" data-i18n="hs_u_hour">小时</span>
                         </div>
                     </div>
@@ -2376,13 +2376,13 @@
                     <div class="hs-cell colspan-2 ai-conv" role="cell">
                         <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_ai_r2c_lbl">今日获取派币</span></div>
                         <div class="hs-cell-price pi" style="align-items:center;">
-                            <span class="n" data-i18n="hs_ai_r2c_v">86.52</span>
+                            <span class="n" data-i18n="hs_ai_r2c_v" id="ai_v_pi">86.52</span>
                             <span class="u">π</span>
                         </div>
                         <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
                         <div class="hs-cell-price fiat" style="align-items:center;">
-                            <span class="n" data-i18n-dyn="hs_ai_r2c_fiat">¥ 618.20</span>
-                            <span class="u" data-i18n-dyn="hs_ai_r2c_cur">CNY</span>
+                            <span class="n" data-i18n-dyn="hs_ai_r2c_fiat" id="ai_v_fiat">¥ 618.20</span>
+                            <span class="u" data-i18n-dyn="hs_ai_r2c_cur" id="ai_v_cur">CNY</span>
                         </div>
                     </div>
                 </div>
@@ -2404,7 +2404,7 @@
                     <div class="hs-cell" role="cell">
                         <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日申请人数</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_sh_r1c2_v">1,284</span>
+                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">1,284</span>
                             <span class="u" data-i18n="hs_u_people">人</span>
                         </div>
                     </div>
@@ -2412,7 +2412,7 @@
                     <div class="hs-cell" role="cell">
                         <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c3_lbl">今日分红派币</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_sh_r1c3_v">286.52</span>
+                            <span class="n" data-i18n="hs_sh_r1c3_v" id="sh_v_pi_head">286.52</span>
                             <span class="u">π</span>
                         </div>
                     </div>
@@ -2420,13 +2420,13 @@
                     <div class="hs-cell colspan-2 sh-conv" role="cell">
                         <div class="hs-cell-label" style="flex-shrink:0;"><span class="dot"></span><span data-i18n="hs_sh_r2_lbl">今日分红派币</span></div>
                         <div class="hs-cell-price pi" style="align-items:center;">
-                            <span class="n" data-i18n="hs_sh_r1c3_v">286.52</span>
+                            <span class="n" data-i18n="hs_sh_r1c3_v" id="sh_v_pi_big">286.52</span>
                             <span class="u">π</span>
                         </div>
                         <span class="arrow" data-i18n="hs_arrow_eq">≈</span>
                         <div class="hs-cell-price fiat" style="align-items:center;">
-                            <span class="n" data-i18n-dyn="hs_sh_r2_fiat">¥ 2,046.17</span>
-                            <span class="u" data-i18n-dyn="hs_sh_r2_cur">CNY</span>
+                            <span class="n" data-i18n-dyn="hs_sh_r2_fiat" id="sh_v_fiat">¥ 2,046.17</span>
+                            <span class="u" data-i18n-dyn="hs_sh_r2_cur" id="sh_v_cur">CNY</span>
                         </div>
                     </div>
                 </div>
@@ -4554,6 +4554,326 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     window.__forceRenderDivi = function(nowOverride){ renderRows(nowOverride); };
     // 页面销毁清理
     window.addEventListener('beforeunload', function(){ if (diviTimer) clearInterval(diviTimer); });
+})();
+
+/* ================ 首页 · 生态分红池 + 两张迷你数据表格：实时跳动增长引擎 ================ */
+(function initHomeLiveNumbers(){
+    /* ========== 0. 工具函数 ========== */
+    function rint(lo, hi){ lo = Math.ceil(lo); hi = Math.floor(hi); return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+    function rfloat(lo, hi){ return lo + Math.random() * (hi - lo); }
+    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+    function fmtInt(n){ return Math.round(n).toLocaleString('en-US'); }
+    function fmtFixed(n, dp){
+        const m = Math.pow(10, dp);
+        const s = (Math.round(n * m) / m).toFixed(dp);
+        // 加千分位但不破坏小数
+        const [a, b] = s.split('.');
+        const withSep = parseInt(a, 10).toLocaleString('en-US');
+        return b ? (withSep + '.' + b) : withSep;
+    }
+    function fmtAutoFloat(n){
+        // <1 → 5 位；<10 → 3 位；<100 → 2 位；否则 2 位
+        const abs = Math.abs(n);
+        if (abs < 1) return fmtFixed(n, 5);
+        if (abs < 10) return fmtFixed(n, 3);
+        if (abs < 100) return fmtFixed(n, 2);
+        return fmtFixed(n, 2);
+    }
+    function setHtml(id, html){
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+    function hourKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}_${d.getHours()}`; }
+    function dayKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+
+    /* ========== 1. 汇率（用于 ≈ CNY / USDT 自动换算） ========== */
+    // 根据旧 i18n 值推算：86.52 π → ¥ 618.20 → 汇率 ≈ 618.20/86.52 ≈ 7.145
+    const PI_RATE_CNY = 7.145;
+    const PI_RATE_USDT = 1.0; // π:USDT ≈1
+    function piToFiat(pi, lang){
+        if ((lang || (window.CUR_LANG || 'zh-CN')).toLowerCase().indexOf('zh') >= 0) {
+            return { symbol: '¥', value: pi * PI_RATE_CNY, cur: 'CNY', dp: 2 };
+        }
+        return { symbol: '$', value: pi * PI_RATE_USDT, cur: 'USDT', dp: 4 };
+    }
+    function fmtFiat(n, dp, symbol){ return symbol + ' ' + fmtFixed(n, dp); }
+
+    /* ========== 2. 运行状态（起点取自当前 HTML 默认值） ========== */
+    const S = {
+        /* -------- 生态分红池（大圆环） -------- */
+        ecoTotal: 1200,     // 派币分红总值  π
+        ecoPeople: 58,      // 分红人数
+        ecoPeopleStage: 0,  // 0=+2 / 1=+1~5 随机增 / 2=-1~5 随机减（每小时一轮）
+        ecoPeopleMin: 50, ecoPeopleMax: 1000,
+        ecoDivi: 286.52,    // 分红派币  π
+
+        /* -------- 派友 AI 卡（每日重置） -------- */
+        aiEcoStart: 1,      // 每天 12:00 → 从 1 开始增长
+        aiHourStart: 1.0,   // 从 1 小时起步
+        aiPiStart: 0,       // 今日获取派币 起点 0（用户没提，用 0 起步快速增长感强）
+        aiEco: 1, aiHour: 1.0, aiPi: 0,
+
+        /* -------- 派友股东卡（每日重置） -------- */
+        shAppStart: 1,
+        shPiHeadStart: 0.01,    // 第1行第3列「今日分红派币」起点 0.01（用户：速度 ≈每分钟+0.01）
+        shPiBigStart: 0.01,     // 跨2列大「≈」那行的 π 起点 0.01
+        shApp: 1, shPiHead: 0.01, shPiBig: 0.01,
+
+        /* -------- 重置 & 阶段指针 -------- */
+        lastDayKey: dayKey(new Date()),
+        appBucketQueue: [],      // 未来要抛出的「申请人数 +N」时刻队列（模拟不均匀）
+        appBucketTimer: null,
+    };
+
+    /* ========== 3. 渲染函数 ========== */
+    function renderAll(){
+        const lang = window.CUR_LANG || 'zh-CN';
+
+        /* 生态分红池 */
+        setHtml('eco_v_total', fmtInt(S.ecoTotal));
+        setHtml('eco_v_people', fmtInt(S.ecoPeople));
+        setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+
+        /* AI 卡 */
+        setHtml('ai_v_eco', fmtInt(S.aiEco));
+        setHtml('ai_v_hour', fmtFixed(S.aiHour, 1));
+        setHtml('ai_v_pi', fmtAutoFloat(S.aiPi));
+        const aiFiat = piToFiat(S.aiPi, lang);
+        setHtml('ai_v_fiat', fmtFiat(aiFiat.value, aiFiat.dp, aiFiat.symbol));
+        setHtml('ai_v_cur', aiFiat.cur);
+
+        /* 股东卡 */
+        setHtml('sh_v_app', fmtInt(S.shApp));
+        setHtml('sh_v_pi_head', fmtAutoFloat(S.shPiHead));
+        // 大跨2列：π 值用 sh_v_pi_big；它对应的 ≈ fiat 按 sh_v_pi_big 算
+        setHtml('sh_v_pi_big', fmtAutoFloat(S.shPiBig));
+        const shFiat = piToFiat(S.shPiBig, lang);
+        setHtml('sh_v_fiat', fmtFiat(shFiat.value, shFiat.dp, shFiat.symbol));
+        setHtml('sh_v_cur', shFiat.cur);
+    }
+
+    /* ========== 4. 每日零点重置（AI 3 项 + 股东 3 项全部回到今日起点） ========== */
+    function dailyResetIfCrossed(){
+        const k = dayKey(new Date());
+        if (k === S.lastDayKey) return;
+        S.lastDayKey = k;
+        // 今日字段清零到起点
+        S.aiEco  = S.aiEcoStart;
+        S.aiHour = S.aiHourStart;
+        S.aiPi   = S.aiPiStart;
+        S.shApp  = S.shAppStart;
+        S.shPiHead = S.shPiHeadStart;
+        S.shPiBig  = S.shPiBigStart;
+        // 申请人数 bucket 清空，重新播种
+        S.appBucketQueue = [];
+        seedAppBucket();
+        renderAll();
+    }
+
+    /* ========== 5. 增长器：生态分红池 3 项 ========== */
+    // ① 派币分红总值：每秒 1~5 随机整数
+    const tmrEcoTotal = setInterval(function(){
+        S.ecoTotal += rint(1, 5);
+        setHtml('eco_v_total', fmtInt(S.ecoTotal));
+    }, 1000);
+
+    // ② 分红人数：3 阶段 × 1小时 = 一轮循环；+2 → +rand1_5 → -rand1_5；clamp 50~1000
+    // （真实部署 1h = 3_600_000 ms；调试可用 window.__debugPeopleStage 手动推进）
+    const PEOPLE_STAGE_MS = 60 * 60 * 1000; // 1 小时
+    function runPeopleStageOnce(){
+        if (S.ecoPeopleStage === 0) {
+            // 固定 +2
+            S.ecoPeople = clamp(S.ecoPeople + 2, S.ecoPeopleMin, S.ecoPeopleMax);
+        } else if (S.ecoPeopleStage === 1) {
+            // 随机 +1~5
+            S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), S.ecoPeopleMin, S.ecoPeopleMax);
+        } else {
+            // 随机 -1~5（不能降破 50）
+            S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), S.ecoPeopleMin, S.ecoPeopleMax);
+        }
+        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 3;
+        setHtml('eco_v_people', fmtInt(S.ecoPeople));
+    }
+    const tmrEcoPeople = setInterval(runPeopleStageOnce, PEOPLE_STAGE_MS);
+    window.__debugPeopleStage = runPeopleStageOnce; // 调试：立即推进一个阶段
+
+    // ③ 分红派币：每秒 +0.01 ~ +3，偶尔是 0.1/0.2 小数
+    const tmrEcoDivi = setInterval(function(){
+        // 25% 概率落在 0.01 ~ 0.2 小数档（符合「有时候 0.1 有时候 0.2」口播）
+        // 75% 概率落在 0.2 ~ 3 之间（含整数感 + 小档快速增长）
+        let inc;
+        if (Math.random() < 0.25) inc = rfloat(0.01, 0.2);
+        else                      inc = rfloat(0.2, 3.0);
+        S.ecoDivi += inc;
+        setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+    }, 1000);
+
+    /* ========== 6. 增长器：派友 AI 卡 3 项（每日重置） ========== */
+    // ① 今日浏览生态：不均匀「有时1min+1个，有时30s+5/10个」，平均每秒 3~5
+    //    实现：每秒 tick，4 种事件概率分布确保长期平均每秒 ~4
+    function tickAiEco(){
+        const r = Math.random();
+        if      (r < 0.05) S.aiEco += rint(10, 20); // 5% 小爆发
+        else if (r < 0.20) S.aiEco += rint(5, 10);  // 15% 中爆发（"30秒 +5/10"）
+        else if (r < 0.70) S.aiEco += rint(3, 5);   // 50% 常规档（你说的 3~5/s）
+        else if (r < 0.98) S.aiEco += rint(1, 2);   // 28% 慢档
+        else { /* 2% 空转跳过：模拟「1分钟才+1」稀疏感，累计效应后段补回 */ }
+        // 补偿：确保长期每秒 3~5
+        setHtml('ai_v_eco', fmtInt(S.aiEco));
+    }
+    const tmrAiEco = setInterval(tickAiEco, 1000);
+
+    // ② 浏览时长：每 1~3 秒 + 0.1 或 0.2 小时（你说的「有时候三秒钟增加一下」）
+    function tickAiHour(){
+        S.aiHour += (Math.random() < 0.5 ? 0.1 : 0.2);
+        setHtml('ai_v_hour', fmtFixed(S.aiHour, 1));
+    }
+    function scheduleAiHour(){
+        const next = 1000 + Math.floor(Math.random() * 2000); // 1~3 s
+        setTimeout(function(){ tickAiHour(); scheduleAiHour(); }, next);
+    }
+    scheduleAiHour();
+
+    // ③ 今日获取派币：每秒 +1~5 随机整数（你说的「每秒 1~5」）
+    const tmrAiPi = setInterval(function(){
+        S.aiPi += rint(1, 5);
+        setHtml('ai_v_pi', fmtAutoFloat(S.aiPi));
+        // 同步刷新 ≈ fiat
+        const lang = window.CUR_LANG || 'zh-CN';
+        const f = piToFiat(S.aiPi, lang);
+        setHtml('ai_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
+        setHtml('ai_v_cur', f.cur);
+    }, 1000);
+
+    /* ========== 7. 增长器：派友股东卡 3 项（每日重置） ========== */
+    // ① 今日申请人数：约每 5 分钟 +1~5（不均匀：有时 1 分钟 +6 人）
+    // 实现：以 5 分钟 (300s) 为一个 bucket，总增量 = rand1_5；拆分 2~6 次随机时刻抛出；
+    //       再叠加 8% 概率每分钟"随机冒 1~6 人"（模拟「有时 1min +6」的跳跃感）
+    const APP_BUCKET_WINDOW_MS = 5 * 60 * 1000;
+    function seedAppBucket(){
+        // 排未来 1~2 个 bucket（约 5~10 分钟内的增量点）
+        const now = Date.now();
+        // 1st bucket
+        const total1 = rint(1, 5);
+        const pieces1 = 2 + Math.floor(Math.random() * 5); // 2~6 段
+        for (let i = 0; i < pieces1; i++){
+            const share = (i === pieces1 - 1) ? total1 : Math.floor(total1 / pieces1);
+            const offset = Math.floor((APP_BUCKET_WINDOW_MS / pieces1) * i + rfloat(0, APP_BUCKET_WINDOW_MS / pieces1 - 100));
+            S.appBucketQueue.push({ fireAt: now + offset + 2000, inc: Math.max(1, share) });
+        }
+        // 2nd bucket
+        const total2 = rint(1, 5);
+        const pieces2 = 2 + Math.floor(Math.random() * 5);
+        for (let i = 0; i < pieces2; i++){
+            const share = (i === pieces2 - 1) ? total2 : Math.floor(total2 / pieces2);
+            const offset = APP_BUCKET_WINDOW_MS + Math.floor((APP_BUCKET_WINDOW_MS / pieces2) * i + rfloat(0, APP_BUCKET_WINDOW_MS / pieces2 - 100));
+            S.appBucketQueue.push({ fireAt: now + offset + 2000, inc: Math.max(1, share) });
+        }
+        S.appBucketQueue.sort(function(a,b){ return a.fireAt - b.fireAt; });
+    }
+    seedAppBucket();
+    // 主循环：每 1s 清掉到期 bucket；8% 概率每分钟随机抛 1~6 人跳变
+    let lastMinuteBurstKey = '';
+    const tmrShApp = setInterval(function(){
+        const now = Date.now();
+        while (S.appBucketQueue.length && S.appBucketQueue[0].fireAt <= now){
+            const item = S.appBucketQueue.shift();
+            S.shApp += item.inc;
+        }
+        // 每分钟一次随机跳变机会（有时 1 分钟 +6 人）
+        const mk = Math.floor(now / 60000);
+        if (String(mk) !== lastMinuteBurstKey){
+            lastMinuteBurstKey = String(mk);
+            if (Math.random() < 0.08) S.shApp += rint(1, 6);
+        }
+        // 如果 bucket 都消费完了 → 再播种下一批
+        if (S.appBucketQueue.length === 0) seedAppBucket();
+        setHtml('sh_v_app', fmtInt(S.shApp));
+    }, 1000);
+    window.__debugAppBucket = function(){
+        // 立即投放一个 bucket（用于调试）
+        S.shApp += rint(1, 5);
+        setHtml('sh_v_app', fmtInt(S.shApp));
+    };
+
+    // ② 今日分红派币（股东卡右上格）：≈ 每分钟 +0.01；有时是每秒 +0.01 偶尔触发
+    // 实现：1000ms tick，60s 内累计抛出 ≈0.01
+    let shHeadAccum = 0;
+    const tmrShPiHead = setInterval(function(){
+        // 60 秒 = 0.01 → 每秒 ≈ 0.000167；再加 2% 概率直接 +0.01（你说的「有时候每秒钟 +0.01」）
+        let inc = 0.00016 + Math.random() * 0.0002;
+        if (Math.random() < 0.02) inc += 0.01;
+        shHeadAccum += inc;
+        // 实际赋值按累计值
+        if (shHeadAccum >= 0.0001) {
+            S.shPiHead += shHeadAccum;
+            shHeadAccum = 0;
+            setHtml('sh_v_pi_head', fmtAutoFloat(S.shPiHead));
+        }
+    }, 1000);
+
+    // ③ 跨2列 ≈￥/USDT 那行「今日分红派币 π」：0.01 起步，每分钟随机 +0.01 / +0.02 / +0.05
+    // 实现：1 个 60 秒一次的主 tick；加上偶尔「提前」触发（不均匀）
+    function tickShPiBig(){
+        // 三档概率：0.01 (55%) / 0.02 (30%) / 0.05 (15%)
+        const r = Math.random();
+        if (r < 0.55) S.shPiBig += 0.01;
+        else if (r < 0.85) S.shPiBig += 0.02;
+        else S.shPiBig += 0.05;
+        // 同时更新 π 值显示 + ≈ fiat
+        setHtml('sh_v_pi_big', fmtAutoFloat(S.shPiBig));
+        const lang = window.CUR_LANG || 'zh-CN';
+        const f = piToFiat(S.shPiBig, lang);
+        setHtml('sh_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
+        setHtml('sh_v_cur', f.cur);
+    }
+    function scheduleShPiBig(){
+        // 主周期 60s ± 10s；偶尔 30s 就来（模拟不均匀）
+        const next = (Math.random() < 0.15 ? 25000 + Math.random() * 10000 : 50000 + Math.random() * 20000);
+        setTimeout(function(){ tickShPiBig(); scheduleShPiBig(); }, next);
+    }
+    // 首次不立刻（避免初始跳一下），30s 后来第一次
+    setTimeout(function(){ tickShPiBig(); scheduleShPiBig(); }, 30 * 1000);
+
+    /* ========== 8. 全局：跨零点重置监视器（30s 一次）+ visibility 补偿；语言切换联动重算 fiat ========== */
+    const tmrDayKey = setInterval(function(){
+        dailyResetIfCrossed();
+    }, 30 * 1000);
+    document.addEventListener('visibilitychange', function(){
+        if (!document.hidden) { dailyResetIfCrossed(); renderAll(); }
+    });
+    window.addEventListener('focus', function(){ dailyResetIfCrossed(); renderAll(); });
+
+    /* 切语言 → 重新算全部 ≈￥ / USDT */
+    const _oldApplyLang = window.applyLanguage;
+    window.applyLanguage = function(lang){
+        const ret = _oldApplyLang.apply(this, arguments);
+        try { renderAll(); } catch(e){}
+        return ret;
+    };
+
+    /* 页面销毁清理 */
+    function _cleanup(){
+        [tmrEcoTotal, tmrEcoPeople, tmrEcoDivi, tmrAiEco, tmrAiPi, tmrShApp, tmrShPiHead, tmrDayKey].forEach(function(t){ if (t) clearInterval(t); });
+    }
+    window.addEventListener('beforeunload', _cleanup);
+
+    /* 对外调试 API */
+    window.__homeLiveState = S;
+    window.__homeLiveRender = renderAll;
+    window.__homeDailyReset = function(){
+        S.aiEco=S.aiEcoStart; S.aiHour=S.aiHourStart; S.aiPi=S.aiPiStart;
+        S.shApp=S.shAppStart; S.shPiHead=S.shPiHeadStart; S.shPiBig=S.shPiBigStart;
+        S.appBucketQueue=[]; seedAppBucket();
+        renderAll();
+    };
+
+    /* 首次渲染：立即来一次（覆盖 i18n 初始写死值） */
+    const bootRender = function(){
+        renderAll();
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootRender);
+    else bootRender();
 })();
 </script>
 </body>
