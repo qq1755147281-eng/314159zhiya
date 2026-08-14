@@ -1978,18 +1978,120 @@
         .apg-btn:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
         .apg-prev { justify-self: start; flex-direction: row; }
         .apg-next { justify-self: end;   flex-direction: row; }
+        /* 旧 apg-ic 尺寸/背景被下方「圆形发光版」完全覆盖重写，此处仅占位无需删除 */
+        .apg-btn.apg-prev .apg-ic-l { margin-right: 4px; }
+        .apg-btn.apg-next .apg-ic-r { margin-left: 4px; }
+
+        /* ====== 圆形图标重做：上一页（蓝色多层光芒） / 下一页（紫色多层光芒） ====== */
         .apg-ic {
-            width: 20px; height: 20px; border-radius: 999px;
+            width: 28px; height: 28px; border-radius: 999px;
+            position: relative;
             display: inline-flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            color: var(--text-primary);
+            color: #ffffff; /* SVG 箭头强制白色 */
             flex-shrink: 0;
-            transition: background .18s, border-color .18s, color .18s;
+            transition: transform .22s ease, filter .22s ease;
         }
-        .apg-btn:hover .apg-ic { background: rgba(253,230,138,0.12); border-color: rgba(253,230,138,0.22); color: var(--accent-gold-2); }
-        .apg-btn.apg-prev .apg-ic-l { margin-right: 2px; }
-        .apg-btn.apg-next .apg-ic-r { margin-left: 2px; }
+        .apg-btn:active .apg-ic { transform: scale(.92); }
+        .apg-ic svg { color: #ffffff !important; stroke: #ffffff !important; display: block; }
+        .apg-ic path { stroke: #ffffff !important; }
+
+        /* 上一页图标：蓝色多层光芒渐变 + 柔光 shadow + 高光 */
+        .apg-prev .apg-ic-l {
+            background:
+                radial-gradient(circle at 30% 28%, rgba(255,255,255,0.95) 0%, rgba(191,219,254,0.4) 25%, rgba(96,165,250,0.2) 55%, rgba(37,99,235,0.1) 100%),
+                radial-gradient(circle at 70% 80%, rgba(96,165,250,0.45), rgba(37,99,235,0.15) 60%, transparent 100%);
+            box-shadow:
+                0 0 0 1px rgba(96,165,250,0.55),
+                0 0 10px 1.5px rgba(96,165,250,0.55),
+                0 0 26px 4.5px rgba(59,130,246,0.48),
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -5px 9px rgba(37,99,235,0.55);
+            animation: apgBlueGlow 2.8s ease-in-out infinite;
+        }
+        .apg-prev .apg-ic-l::before {
+            /* 内部高光斜扫（蓝色专属） */
+            content: '';
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 40%, rgba(191,219,254,0.2) 55%, transparent 100%);
+            transform: translateX(-40%) rotate(-8deg);
+            filter: blur(0.3px);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: apgIconShine 5.2s ease-in-out infinite;
+        }
+        /* 下一页图标：紫色多层光芒渐变 + 柔光 shadow + 高光 */
+        .apg-next .apg-ic-r {
+            background:
+                radial-gradient(circle at 30% 28%, rgba(255,255,255,0.95) 0%, rgba(233,213,255,0.42) 25%, rgba(167,139,250,0.22) 55%, rgba(124,58,237,0.1) 100%),
+                radial-gradient(circle at 70% 80%, rgba(167,139,250,0.48), rgba(124,58,237,0.16) 60%, transparent 100%);
+            box-shadow:
+                0 0 0 1px rgba(167,139,250,0.55),
+                0 0 10px 1.5px rgba(196,181,253,0.55),
+                0 0 26px 4.5px rgba(139,92,246,0.48),
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -5px 9px rgba(124,58,237,0.55);
+            animation: apgPurpleGlow 3.1s ease-in-out infinite;
+        }
+        .apg-next .apg-ic-r::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 999px;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 40%, rgba(233,213,255,0.2) 55%, transparent 100%);
+            transform: translateX(-40%) rotate(-8deg);
+            filter: blur(0.3px);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: apgIconShine 5.8s ease-in-out infinite;
+        }
+        /* 蓝色脉冲发光 */
+        @keyframes apgBlueGlow {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(96,165,250,0.55),
+                    0 0 10px 1.5px rgba(96,165,250,0.55),
+                    0 0 26px 4.5px rgba(59,130,246,0.48),
+                    inset 0 1px 0 rgba(255,255,255,0.9),
+                    inset 0 -5px 9px rgba(37,99,235,0.55);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(96,165,250,0.75),
+                    0 0 14px 2px rgba(96,165,250,0.75),
+                    0 0 34px 6.5px rgba(59,130,246,0.62),
+                    inset 0 1px 0 rgba(255,255,255,0.95),
+                    inset 0 -5px 9px rgba(37,99,235,0.55);
+            }
+        }
+        /* 紫色脉冲发光 */
+        @keyframes apgPurpleGlow {
+            0%,100% {
+                box-shadow:
+                    0 0 0 1px rgba(167,139,250,0.55),
+                    0 0 10px 1.5px rgba(196,181,253,0.55),
+                    0 0 26px 4.5px rgba(139,92,246,0.48),
+                    inset 0 1px 0 rgba(255,255,255,0.9),
+                    inset 0 -5px 9px rgba(124,58,237,0.55);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 1px rgba(167,139,250,0.75),
+                    0 0 14px 2px rgba(196,181,253,0.75),
+                    0 0 34px 6.5px rgba(139,92,246,0.62),
+                    inset 0 1px 0 rgba(255,255,255,0.95),
+                    inset 0 -5px 9px rgba(124,58,237,0.55);
+            }
+        }
+        /* 两个图标内部共用的高光扫光循环 */
+        @keyframes apgIconShine {
+            0%   { transform: translateX(-40%) rotate(-8deg); opacity: 0.7; }
+            45%  { transform: translateX(50%)  rotate(-8deg); opacity: 1; }
+            50%  { opacity: 0; }
+            100% { transform: translateX(50%)  rotate(-8deg); opacity: 0; }
+        }
+        /* disabled 时，发光图标褪色变灰（不刺眼） */
+        .apg-btn:disabled .apg-ic {
+            filter: grayscale(.85) opacity(.7);
+            animation: none;
+        }
 
         /* 中：黄色发光悬浮球 */
         .apg-ball {
