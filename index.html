@@ -269,33 +269,42 @@
         .ai-card-holder-name { font-size: 11px; color: rgba(253,230,138,0.85); font-weight: 700; letter-spacing: 0.06em; }
 
         /* ========== 生态分红池标题行 ========== */
+        /* 现在生态分红池下方卡片是「左边时间卡 + 右边大圆环」grid；整体视觉重心偏左
+         * 所以标题「生态分红池」要整体向右移动一点，与「大圆环主体」水平居中对齐 */
         .eco-title-row {
-            margin: 4px var(--space-md) 0px;          /* 整体上移 */
+            margin: 4px var(--space-md) 0px;
             display: flex; justify-content: center; align-items: center;
+            /* 向右偏移：用 padding-left 把整个标题容器推到与右侧大圆环视觉匹配位置 */
+            padding-left: calc(96px * 0.35 + 4px);
         }
         .eco-title-row h3 {
-            font-size: 13px; font-weight: 700; color: var(--text-primary);
-            letter-spacing: 0.12em;
+            font-size: 13px; font-weight: 800; color: var(--text-primary);
+            letter-spacing: 0.18em;
+            background: linear-gradient(120deg, #fde68a 0%, #fef3c7 40%, #ffffff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(212,175,55,0.35));
         }
 
         /* ========== 生态分红池：大圆圈（分级进度+节点） + 两个金黄按钮 ========== */
-        /* 整体包装：左 时间卡 + 右 生态分红池卡（水平并排，9:16 竖屏适配） */
+        /* 整体包装：左 时间/状态 三行卡 + 右 生态分红池卡（水平并排，9:16 竖屏适配） */
         .eco-card-wrapper {
             margin: 0 var(--space-md) 0;
             display: grid;
-            grid-template-columns: 96px 1fr;
+            grid-template-columns: 106px 1fr;
             column-gap: 8px;
             align-items: stretch;
         }
-        /* 左侧：时间识别卡（黄点→绿点 + 日期/时间双行） */
+        /* 左侧：状态矩阵卡（3 行竖排：每行一个发光绿点 + 右侧主/副两行小字） */
         .eco-time-card {
             position: relative; z-index: 2;
             background: linear-gradient(145deg, rgba(26,34,54,0.94) 0%, rgba(17,24,39,0.96) 100%);
             backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
             border: 1px solid var(--glass-border-strong);
             border-radius: 14px;
-            padding: 10px 8px 10px 8px;
-            display: flex; flex-direction: column; gap: 9px;
+            padding: 9px 7px 10px 7px;
+            display: flex; flex-direction: column; gap: 7px;
             box-shadow: 0 9px 22px rgba(0,0,0,0.28), 0 0 0 1px rgba(212,175,55,0.05),
                         inset 0 1px 0 rgba(255,255,255,0.04);
             overflow: hidden;
@@ -305,89 +314,85 @@
             background: linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.7) 50%, transparent 100%);
             opacity: 0.45;
         }
+        .eco-time-card::after {
+            content: ''; position: absolute; inset: 0;
+            background:
+                linear-gradient(90deg, rgba(74,222,128,0.04) 0%, transparent 40%),
+                linear-gradient(180deg, rgba(250,204,21,0.05) 0%, transparent 35%);
+            pointer-events: none;
+        }
+        /* 每一行：左点 + 右侧两行文字（主标题/副标题） */
         .etc-row {
-            display: grid; grid-template-columns: 12px 1fr;
-            column-gap: 7px;
-            align-items: center;
-        }
-        /* 发光点：初始黄色；时间同步后变绿色脉冲 */
-        .etc-dot {
-            width: 10px; height: 10px; border-radius: 999px;
-            background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #facc15 45%, #ca8a04 100%);
-            box-shadow:
-                0 0 0 1px rgba(250,204,21,0.65),
-                0 0 8px 1px rgba(250,204,21,0.7),
-                0 0 18px 3.5px rgba(234,179,8,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.95);
-            justify-self: center;
-            animation: etcDotYellowPulse 1.25s ease-in-out infinite;
-            transition: background .35s ease, box-shadow .35s ease;
-        }
-        @keyframes etcDotYellowPulse {
-            0%,100% { transform: scale(1); filter: brightness(1); }
-            50%     { transform: scale(1.18); filter: brightness(1.2); }
-        }
-        .eco-time-card.sync-ok .etc-dot {
-            background: radial-gradient(circle at 30% 30%, #dcfce7 0%, #4ade80 45%, #16a34a 100%);
-            box-shadow:
-                0 0 0 1px rgba(74,222,128,0.65),
-                0 0 8px 1px rgba(74,222,128,0.75),
-                0 0 20px 4px rgba(34,197,94,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.95);
-            animation: etcDotGreenPulse 1.6s ease-in-out infinite;
-        }
-        @keyframes etcDotGreenPulse {
-            0%,100% { transform: scale(1); filter: brightness(1); }
-            50%     { transform: scale(1.2); filter: brightness(1.25); }
-        }
-        /* 行1：日期 行2：时间 两行靠右堆叠，左侧发光点共用同一列？
-         * 改为：etc-grid 左上一个发光点占据两行（rowspan感），右侧上下两行日期/时间 */
-        .etc-grid {
             display: grid;
-            grid-template-columns: 18px 1fr;
-            grid-template-rows: auto auto;
-            column-gap: 5px; row-gap: 3px;
-            align-items: center;
+            grid-template-columns: 14px 1fr;
+            column-gap: 5px;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
         }
         .etc-dot-wrap {
-            grid-column: 1; grid-row: 1 / span 2;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 30px;
-        }
-        .etc-date {
-            grid-column: 2; grid-row: 1;
-            font-size: 9.5px; font-weight: 800;
-            color: var(--accent-gold-2);
-            letter-spacing: 0.02em; line-height: 1.15;
-            white-space: nowrap;
-        }
-        .etc-time {
-            grid-column: 2; grid-row: 2;
-            font-size: 10.5px; font-weight: 900;
-            color: #86efac;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-            letter-spacing: 0.08em; line-height: 1.15;
-            text-shadow: 0 0 8px rgba(34,197,94,0.35);
-            white-space: nowrap;
-        }
-        /* 副标签提示（极小字）：识别中 / 已同步 */
-        .etc-sub {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 7.8px; font-weight: 600;
-            color: rgba(148,163,184,0.75);
-            letter-spacing: 0.08em;
+            grid-column: 1;
             padding-top: 2px;
-            border-top: 1px dashed rgba(148,163,184,0.22);
-            margin-top: 2px;
+            display: flex; justify-content: center; align-items: flex-start;
         }
-        .eco-time-card.sync-ok .etc-sub { color: rgba(74,222,128,0.85); }
-        .eco-time-card .etc-sub::before { content: '● '; color: rgba(250,204,21,0.9); margin-right: 1px; }
-        .eco-time-card.sync-ok .etc-sub::before { content: '✓ '; color: rgba(74,222,128,0.95); }
-        /* 大屏竖屏模式 wrapper 保持宽度一致 */
+        .etc-text {
+            grid-column: 2;
+            display: flex; flex-direction: column; gap: 1px;
+            min-width: 0;
+        }
+        .etc-title {
+            font-size: 9.5px; font-weight: 800;
+            color: rgba(248,250,252,0.96);
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+            white-space: normal;
+            word-break: break-all;
+        }
+        .etc-sub-line {
+            font-size: 7.8px; font-weight: 600;
+            color: rgba(148,163,184,0.78);
+            line-height: 1.25;
+            white-space: normal;
+            word-break: break-all;
+            letter-spacing: 0.01em;
+        }
+        /* 3 种不同颜色的点（整体保持绿色家族，层次略微区分） */
+        .etc-dot {
+            width: 9px; height: 9px; border-radius: 999px;
+            display: inline-block; flex-shrink: 0;
+            transition: background .35s ease, box-shadow .35s ease, transform .35s ease;
+        }
+        .etc-dot.v-1 { /* 主时间同步：翠绿 */
+            background: radial-gradient(circle at 30% 30%, #dcfce7 0%, #4ade80 45%, #16a34a 100%);
+            box-shadow: 0 0 0 1px rgba(74,222,128,0.6), 0 0 7px 0.9px rgba(74,222,128,0.75), 0 0 16px 3px rgba(34,197,94,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotGreenPulse 1.6s ease-in-out infinite;
+        }
+        .etc-dot.v-2 { /* AI 卡集群：嫩绿黄 */
+            background: radial-gradient(circle at 30% 30%, #ecfccb 0%, #a3e635 42%, #65a30d 100%);
+            box-shadow: 0 0 0 1px rgba(163,230,53,0.6), 0 0 7px 0.9px rgba(163,230,53,0.75), 0 0 16px 3px rgba(101,163,13,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotLimePulse 1.85s ease-in-out infinite;
+        }
+        .etc-dot.v-3 { /* 股东分红：青绿冷调 */
+            background: radial-gradient(circle at 30% 30%, #cffafe 0%, #22d3ee 42%, #0891b2 100%);
+            box-shadow: 0 0 0 1px rgba(34,211,238,0.6), 0 0 7px 0.9px rgba(34,211,238,0.75), 0 0 16px 3px rgba(8,145,178,0.5), inset 0 1px 0 rgba(255,255,255,0.95);
+            animation: etcDotTealPulse 2.1s ease-in-out infinite;
+        }
+        @keyframes etcDotGreenPulse { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.2); filter:brightness(1.25);} }
+        @keyframes etcDotLimePulse  { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.23); filter:brightness(1.3);} }
+        @keyframes etcDotTealPulse  { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.2); filter:brightness(1.3);} }
+        /* 未同步态：全部 3 个点变黄闪烁（时间识别启动 1 秒内） */
+        .eco-time-card.sync-pending .etc-dot {
+            background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #facc15 45%, #ca8a04 100%) !important;
+            box-shadow: 0 0 0 1px rgba(250,204,21,0.65), 0 0 8px 1px rgba(250,204,21,0.7), 0 0 18px 3.5px rgba(234,179,8,0.45), inset 0 1px 0 rgba(255,255,255,0.95) !important;
+            animation: etcDotYellowPulse 1.25s ease-in-out infinite !important;
+        }
+        @keyframes etcDotYellowPulse { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.22); filter:brightness(1.2);} }
+        /* 大屏适配（稍微放大点） */
         @media (min-width: 421px) {
             .eco-card-wrapper { column-gap: 10px; }
-            .eco-time-card { padding: 12px 10px 12px; }
+            .eco-time-card { padding: 11px 8px 12px; }
+            .etc-title { font-size: 10px; }
+            .etc-sub-line { font-size: 8.2px; }
         }
         .eco-pool-card {
             position: relative;
@@ -2393,17 +2398,41 @@
             <h3 data-i18n="eco_pool_title">生态分红池</h3>
         </div>
 
-        <!-- 生态分红池卡片：左=时间卡，右=生态分红池 -->
+        <!-- 生态分红池卡片：左=状态矩阵（3 行竖列绿点），右=生态分红池 -->
         <div class="eco-card-wrapper">
-            <!-- ① 左侧：时间识别卡 -->
-            <div class="eco-time-card" id="ecoTimeCard">
-                <div class="etc-grid">
+            <!-- ① 左侧：状态矩阵卡（3 行，每行左=发光绿点，右=主标题/副标题两行小字） -->
+            <div class="eco-time-card sync-pending" id="ecoTimeCard">
+                <!-- 第 1 行：全网时间同步（主绿点+日期+时间） -->
+                <div class="etc-row" data-etc="1">
                     <div class="etc-dot-wrap">
-                        <span class="etc-dot" id="etcDot"></span>
+                        <span class="etc-dot v-1" id="etcDot1"></span>
                     </div>
-                    <div class="etc-date" id="etcDate">—</div>
-                    <div class="etc-time" id="etcTime">—</div>
-                    <div class="etc-sub" id="etcSub" data-i18n="etc_syncing">NET TIME SYNCING</div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r1_title">全网时间</span>
+                        <span class="etc-sub-line">
+                            <span id="etcDate">—</span> · <span id="etcTime">—</span>
+                        </span>
+                    </div>
+                </div>
+                <!-- 第 2 行：派友AI卡手机集群（已启动 · 生态浏览） -->
+                <div class="etc-row" data-etc="2">
+                    <div class="etc-dot-wrap">
+                        <span class="etc-dot v-2" id="etcDot2"></span>
+                    </div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r2_title">派友AI卡 · 手机集群</span>
+                        <span class="etc-sub-line" data-i18n="etc_r2_sub">全网 · 生态浏览 · 已启动</span>
+                    </div>
+                </div>
+                <!-- 第 3 行：派友股东AI卡（已启动分红） -->
+                <div class="etc-row" data-etc="3">
+                    <div class="etc-dot-wrap">
+                        <span class="etc-dot v-3" id="etcDot3"></span>
+                    </div>
+                    <div class="etc-text">
+                        <span class="etc-title" data-i18n="etc_r3_title">派友股东AI卡</span>
+                        <span class="etc-sub-line" data-i18n="etc_r3_sub">参与股东分红 · 已启动</span>
+                    </div>
                 </div>
             </div>
 
@@ -3531,6 +3560,12 @@ const I18N = {
         // 生态大圆环左侧「时间识别卡」
         'etc_syncing': '全网时间 · 识别中',
         'etc_synced':  '全网时间 · 已同步',
+        // 状态矩阵 3 行（左竖排 3 绿点）
+        'etc_r1_title': '全网时间',
+        'etc_r2_title': '派友AI卡 · 手机集群',
+        'etc_r2_sub':   '全网 · 生态浏览 · 已启动',
+        'etc_r3_title': '派友股东AI卡',
+        'etc_r3_sub':   '参与股东分红 · 已启动',
 
         // 对话页 · 兑换区域
         'cg_hero_title':    '兑换区域',
@@ -3754,6 +3789,12 @@ const I18N = {
         // Eco Time Card (left of the big circle)
         'etc_syncing': 'NET TIME · SYNCING',
         'etc_synced':  'NET TIME · SYNCED',
+        // Status matrix (3 vertical green-dot rows)
+        'etc_r1_title': 'Net Clock',
+        'etc_r2_title': 'AI Card · Mobile Fleet',
+        'etc_r2_sub':   'Global · Eco Browse · LIVE',
+        'etc_r3_title': 'Shareholder AI',
+        'etc_r3_sub':   'Dividend Engine · LIVE',
 
         // Chat page · Redemption Area
         'cg_hero_title':    'Redemption Zone',
@@ -4999,9 +5040,15 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     });
     window.addEventListener('focus', function(){ dailyResetIfCrossed(); renderAll(); });
 
-    /* ========== 9. 生态大圆环左侧「时间识别卡」：黄点1s后变绿 + 日期/秒 双行实时跳动 ========== */
+    /* ========== 9. 生态大圆环左侧「状态矩阵」：3 行竖列绿点
+     *  第 1 行：全网时间（翠绿点 + 日期·时间）—— 初始 3 行先全黄闪烁 1 秒，之后阶梯式：
+     *          t+0ms  第 1 行（时间）点亮绿
+     *          t+300ms 第 2 行（AI集群）点亮绿
+     *          t+600ms 第 3 行（股东分红）点亮绿，同时去掉全卡 sync-pending 黄壳
+     *  第 2 行：派友AI卡·手机集群 / 全网·生态浏览·已启动（嫩黄绿点）
+     *  第 3 行：派友股东AI卡 / 参与股东分红·已启动（青绿色冷调点）
+     * ==================================================================== */
     const ETC = {
-        synced: false,
         tmr: null,
     };
     const EN_MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -5010,43 +5057,44 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     function formatEnDate(d){ return `${EN_MONTH[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; }
     function formatTime(d){ return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; }
     function etcRefresh(/* bool */ forceLang){
-        const card = document.getElementById('ecoTimeCard');
         const elDate = document.getElementById('etcDate');
         const elTime = document.getElementById('etcTime');
-        const elSub  = document.getElementById('etcSub');
-        if (!card || !elDate || !elTime || !elSub) return;
-        // 1s 后黄点→绿点，并改 etcSub 为「已同步」
-        if (!ETC.synced) {
-            card.classList.remove('sync-ok');
-        } else {
-            card.classList.add('sync-ok');
-            // i18n sub 文本（如果 data-i18n 还没覆盖 etcSub，就手动读字典）
-            const dict = I18N[window.CUR_LANG || 'zh-CN'];
-            if (dict && 'etc_synced' in dict) {
-                elSub.textContent = dict['etc_synced'];
-            }
-        }
+        if (!elDate || !elTime) return;
         const now = new Date();
         const lang = window.CUR_LANG || 'zh-CN';
         const isZh = lang.toLowerCase().indexOf('zh') >= 0;
         elDate.textContent = isZh ? formatZhDate(now) : formatEnDate(now);
         elTime.textContent = formatTime(now);
     }
+    function etcLightRow(row /* 1|2|3 */){
+        const card = document.getElementById('ecoTimeCard');
+        const dot  = document.getElementById('etcDot' + row);
+        if (dot) {
+            dot.classList.add('lit');
+            dot.style.transform = 'scale(1.18)';
+            setTimeout(function(){ try{ dot.style.transform=''; }catch(e){} }, 280);
+        }
+    }
     function etcStart(){
-        // 初始立即刷新一次（显示「2026… 」占位+时间；此时点还是黄色 SYNCING）
+        // 1) 初始立即来一次日期时间（即使点还是黄色，日期已经在显示）
         etcRefresh();
-        // 1 秒后模拟「全网时间识别成功」：黄点→绿点，文案 SYNCED
-        setTimeout(function(){
-            ETC.synced = true;
-            etcRefresh();
-        }, 1000);
-        // 每 1 秒秒数跳动一下
+        // 2) 每 1 秒秒数跳动一下
         ETC.tmr = setInterval(etcRefresh, 1000);
+        // 3) 阶梯亮灯：3 行依次从黄变绿（模拟「时间识别 → AI 集群启动 → 股东分红启动」三段式启动动画）
+        const card = document.getElementById('ecoTimeCard');
+        setTimeout(function(){
+            etcLightRow(1); // 翠绿：时间同步完成
+            // 第 1 行亮完后已经去掉一部分 pending？先保留到第 3 行亮完再彻底去 pending
+        }, 900);
+        setTimeout(function(){ etcLightRow(2); }, 900 + 320); // 嫩黄绿：AI 集群 + 生态浏览
+        setTimeout(function(){
+            etcLightRow(3);                  // 青绿：股东分红
+            if (card) card.classList.remove('sync-pending'); // 全部 3 行点亮：去掉「黄壳」强制覆盖
+        }, 900 + 640);
     }
     const bootETC = function(){ etcStart(); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootETC);
     else bootETC();
-    // 切语言 / 手动刷新 API → 日期格式立刻跟着换（中英）
     window.__etcRefresh = etcRefresh;
 
     /* 切语言 → 重新算全部 ≈￥ / USDT，同时刷新时间卡日期格式（中文年月日 / 英文 Mmm d, yyyy） */
