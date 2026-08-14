@@ -99,15 +99,37 @@
             padding: 42px var(--space-md) 12px;
             display: flex; align-items: center; justify-content: space-between;
             position: relative; z-index: 5;
+            gap: 10px;
         }
+        /* 问候语：一行高级感布局 —— 左「您好」淡灰小字 + 右「派友 ☀️」渐变大字，中间无缝 */
         .greeting {
-            display: flex; flex-direction: column; gap: 2px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 8px;
+            min-width: 0;
         }
-        .greeting .hi { font-size: 13px; color: var(--text-tertiary); }
-        .greeting .name { font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.01em; }
-        .top-right-actions { display: flex; align-items: center; gap: 10px; }
+        .greeting .hi {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--text-tertiary);
+            flex-shrink: 0;
+        }
+        .greeting .name {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            background: linear-gradient(90deg, var(--accent-gold-2) 0%, #fde68a 60%, var(--accent-gold-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 4px rgba(253,230,138,0.35));
+            white-space: nowrap;
+        }
+        .top-right-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .btn-pill {
-            height: 34px; padding: 0 14px; border-radius: 999px;
+            height: 32px; padding: 0 12px; border-radius: 999px;
             display: inline-flex; align-items: center; gap: 6px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
@@ -1106,7 +1128,6 @@
                 <span class="name" data-i18n="greeting_name">派友 ☀️</span>
             </div>
             <div class="top-right-actions">
-                <button class="btn-pill" data-i18n="btn_login">🔐 Pi账号登录</button>
                 <button class="btn-pill" id="btnToggleLang">🇨🇳 <span data-i18n="btn_lang">语言</span></button>
             </div>
         </div>
