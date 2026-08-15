@@ -1787,6 +1787,160 @@
         .qp-back-btn .qp-bb-ico { font-size: 22px; line-height: 1; }
         .qp-back-btn .qp-bb-label { background: linear-gradient(135deg, #3b2c06 0%, #6b5114 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
+        /* ========== 购买确认弹窗（市场页卡片点击触发，黑金科技风格） ========== */
+        .bp-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.58);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 var(--space-md);
+            z-index: 88889;
+            opacity: 0; pointer-events: none;
+            transition: opacity .22s ease;
+        }
+        .bp-overlay.active { opacity: 1; pointer-events: auto; }
+        .bp-sheet {
+            width: 100%; max-width: 420px;
+            height: 80dvh; max-height: 80dvh;
+            border-radius: 22px;
+            position: relative; overflow: hidden;
+            background:
+                radial-gradient(140% 90% at 50% -10%, rgba(253,230,138,0.22) 0%, rgba(253,230,138,0.02) 45%, transparent 80%),
+                linear-gradient(165deg, rgba(24,32,58,0.98) 0%, rgba(12,18,36,0.99) 100%);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+            transform: translateY(14px) scale(0.98);
+            transition: transform .26s cubic-bezier(.2,.7,.2,1), opacity .22s ease;
+            opacity: 0;
+            display: flex; flex-direction: column;
+        }
+        .bp-overlay.active .bp-sheet { transform: translateY(0) scale(1); opacity: 1; }
+        .bp-sheet::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 22px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(253,230,138,0.18) 30%, rgba(139,92,246,0.55) 65%, rgba(253,230,138,0.85) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .bp-sheet::after {
+            content: ''; position: absolute; inset: 0; border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(255,255,255,0.02) 100%);
+            pointer-events: none; mix-blend-mode: screen;
+        }
+        .bp-head {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 18px 10px;
+        }
+        .bp-title {
+            margin: 0;
+            font-size: 17px; font-weight: 950; letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #ffffff 0%, #fff1b5 35%, #fde68a 65%, #d4af37 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(212,175,55,0.45));
+        }
+        .bp-x {
+            width: 32px; height: 32px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.7);
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+        }
+        .bp-x:hover { background: rgba(253,230,138,0.12); border-color: rgba(253,230,138,0.35); color: #fde68a; }
+
+        /* 动态信息区 */
+        .bp-info {
+            position: relative; z-index: 1;
+            margin: 4px 18px 0;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .bp-info-row { display: flex; align-items: center; gap: 10px; }
+        .bp-info-k {
+            flex: 0 0 76px;
+            font-size: 12.5px; font-weight: 700; color: var(--text-tertiary); letter-spacing: -0.005em;
+        }
+        .bp-info-v {
+            flex: 1; min-width: 0;
+            font-size: 14px; font-weight: 800; letter-spacing: -0.005em; color: var(--text-primary);
+            background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 风险提示 */
+        .bp-warning {
+            position: relative; z-index: 1;
+            margin: 10px 18px 0;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(248,113,113,0.08) 0%, rgba(248,113,113,0.02) 100%);
+            border: 1px dashed rgba(248,113,113,0.3);
+            display: flex; gap: 10px; align-items: flex-start;
+        }
+        .bp-warning-ico { font-size: 18px; flex-shrink: 0; line-height: 1.4; }
+        .bp-warning-text p {
+            margin: 0;
+            font-size: 12px; font-weight: 700; line-height: 1.5; color: #fecaca;
+            filter: drop-shadow(0 1px 2px rgba(248,113,113,0.25));
+        }
+        .bp-warning-text p + p { margin-top: 4px; color: #fde68a; }
+
+        /* 群聊渠道区 */
+        .bp-channels-title {
+            position: relative; z-index: 1;
+            margin: 12px 18px 6px;
+            font-size: 12.5px; font-weight: 800; color: var(--text-secondary);
+        }
+        .bp-channels {
+            position: relative; z-index: 1;
+            flex: 1 1 auto; overflow-y: auto;
+            margin: 0 18px;
+            display: flex; flex-direction: column; gap: 8px;
+            padding-bottom: 4px;
+        }
+        /* 弹窗内的群聊卡尺寸微调 */
+        .bp-channels .cg-channel-card { padding: 10px 12px; }
+
+        /* 底部按钮 */
+        .bp-foot { position: relative; z-index: 1; padding: 12px 18px calc(16px + env(safe-area-inset-bottom)); }
+        .bp-back-btn {
+            position: relative; overflow: hidden;
+            width: 100%; height: 54px; min-height: 54px; border-radius: 16px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 16px; font-weight: 950; letter-spacing: 0.06em;
+            color: #3b2c06;
+            background: linear-gradient(160deg, #fff4c8 0%, #fde68a 20%, #f5cf66 45%, #d4af37 75%, #9a7113 100%);
+            border: 1px solid rgba(253,230,138,0.95);
+            box-shadow:
+                0 14px 30px rgba(212,175,55,0.38),
+                0 2px 8px rgba(212,175,55,0.28),
+                inset 0 1px 0 rgba(255,255,255,0.82),
+                inset 0 -2px 0 rgba(140,100,10,0.40);
+            filter: drop-shadow(0 4px 14px rgba(212,175,55,0.45));
+            cursor: pointer;
+            transition: transform 0.18s cubic-bezier(.2,.7,.2,1), box-shadow 0.24s ease, filter 0.24s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bp-back-btn:active { transform: translateY(1.5px) scale(0.995); }
+        .bp-back-btn:hover { filter: brightness(1.08) drop-shadow(0 4px 18px rgba(212,175,55,0.6)); }
+        .bp-back-btn .bp-bb-shine {
+            position: absolute; top: -100%; left: -120%;
+            width: 50%; height: 300%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.62) 52%, transparent 65%);
+            transform: rotate(12deg);
+            opacity: 0.88;
+            pointer-events: none;
+            animation: myShine 3.6s ease-in-out infinite;
+            filter: blur(0.2px);
+        }
+        .bp-back-btn .bp-bb-ico { font-size: 20px; line-height: 1; }
+        .bp-back-btn .bp-bb-label { background: linear-gradient(135deg, #3b2c06 0%, #6b5114 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
         /* ========== 底部 Tab 高级线条图标 ========== */
         .app-footer {
             position: fixed; left: 50%; transform: translateX(-50%);
@@ -3942,7 +4096,110 @@
         </div>
     </div>
 
-    <!-- ================= 对话页 · 兑换区域 ================= -->
+    <!-- ================= 购买确认弹窗（市场页卡片点击触发） ================= -->
+    <div class="bp-overlay" id="bpOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="bp-sheet" role="document">
+            <div class="bp-head">
+                <h3 class="bp-title" data-i18n="bp_title">请确认您是否要购买此卡</h3>
+                <button class="bp-x" id="bpCloseX" type="button" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 动态内容：卡片名称 + 支付信息 -->
+            <div class="bp-info">
+                <div class="bp-info-row">
+                    <span class="bp-info-k" data-i18n="bp_card">此卡</span>
+                    <span class="bp-info-v" id="bpCardName">—</span>
+                </div>
+                <div class="bp-info-row">
+                    <span class="bp-info-k" data-i18n="bp_pay">您将要支付</span>
+                    <span class="bp-info-v" id="bpPayInfo">—</span>
+                </div>
+            </div>
+
+            <!-- 风险提示 -->
+            <div class="bp-warning">
+                <div class="bp-warning-ico">⚠️</div>
+                <div class="bp-warning-text">
+                    <p data-i18n="bp_warning1">由于在大陆地区以任何形式购买加密货币或投资兑换都是违法的，请联系官方客服提交操作内容</p>
+                    <p data-i18n="bp_warning2">操作将会在24小时之内生效</p>
+                </div>
+            </div>
+
+            <!-- 4个群聊渠道（复用 cg-channel-card 类，复制功能自动生效） -->
+            <div class="bp-channels-title"><span data-i18n="bp_channels">📮 联系与群聊通道（任选其一 · 可复制）</span></div>
+            <div class="bp-channels">
+                <div class="cg-channel-card mail" data-copy="pibot@pi-support.vip">
+                    <div class="cg-card-shine"></div>
+                    <div class="cg-icon">✉️</div>
+                    <div class="cg-info">
+                        <div class="cg-name" data-i18n="cg_c_mail_name">官方邮箱</div>
+                        <div class="cg-val">pibot@pi-support.vip</div>
+                    </div>
+                    <button class="cg-copy-btn" type="button" aria-label="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="cg-channel-card tg" data-copy="@pi_network_cn">
+                    <div class="cg-card-shine"></div>
+                    <div class="cg-icon">✈️</div>
+                    <div class="cg-info">
+                        <div class="cg-name" data-i18n="cg_c_tg_name">Telegram 群</div>
+                        <div class="cg-val">@pi_network_cn</div>
+                    </div>
+                    <button class="cg-copy-btn" type="button" aria-label="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="cg-channel-card qq" data-copy="865279431">
+                    <div class="cg-card-shine"></div>
+                    <div class="cg-icon">Q</div>
+                    <div class="cg-info">
+                        <div class="cg-name" data-i18n="cg_c_qq_name">QQ 官方群</div>
+                        <div class="cg-val">8652 794 31</div>
+                    </div>
+                    <button class="cg-copy-btn" type="button" aria-label="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="cg-channel-card tk" data-copy="group:pi_friends_chat">
+                    <div class="cg-card-shine"></div>
+                    <div class="cg-icon">🗨️</div>
+                    <div class="cg-info">
+                        <div class="cg-name" data-i18n="cg_c_tk_name">Teletalk 群</div>
+                        <div class="cg-val">group:pi_friends_chat</div>
+                    </div>
+                    <button class="cg-copy-btn" type="button" aria-label="复制">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <rect x="8" y="8" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4.5" y="4.5" width="11" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="bp-foot">
+                <button class="bp-back-btn" id="bpBackBtn" type="button">
+                    <span class="bp-bb-shine"></span>
+                    <span class="bp-bb-ico">✓</span>
+                    <span class="bp-bb-label" data-i18n="bp_confirm">我已了解，确认返回</span>
+                </button>
+            </div>
+        </div>
+    </div>
     <section class="page chat-page" data-page="chat">
         <div class="top-bar">
             <div class="greeting">
@@ -4385,6 +4642,14 @@ const I18N = {
         'qp_sh_income':   '累计收益',
         'qp_none':        '查无此人，请确认系统工作人员是否录入',
         'qp_back':        '返  回',
+        // 购买确认弹窗
+        'bp_title':       '请确认您是否要购买此卡',
+        'bp_card':        '此卡',
+        'bp_pay':         '您将要支付',
+        'bp_warning1':    '由于在大陆地区以任何形式购买加密货币或投资兑换都是违法的，请联系官方客服提交操作内容',
+        'bp_warning2':    '操作将会在24小时之内生效',
+        'bp_channels':    '📮 联系与群聊通道（任选其一 · 可复制）',
+        'bp_confirm':     '我已了解，确认返回',
         // 菜单
         'menu_wallet':        '我的钱包',
         'menu_wallet_v':      '1,286.52 π',
@@ -4622,6 +4887,14 @@ const I18N = {
         'qp_sh_income':   'Total Income',
         'qp_none':        'No record found. Please confirm with system operator.',
         'qp_back':        'BACK',
+        // Buy confirm popup
+        'bp_title':       'Please confirm your purchase',
+        'bp_card':        'Card',
+        'bp_pay':         'You will pay',
+        'bp_warning1':    'Purchasing or investing in cryptocurrency is prohibited in mainland China. Please contact official customer service.',
+        'bp_warning2':    'Processing will take effect within 24 hours.',
+        'bp_channels':    '📮 Contact Channels (Choose one · Copyable)',
+        'bp_confirm':     'I understand, confirm return',
 
         'menu_wallet':        'My Wallet',
         'menu_wallet_v':      '1,286.52 π',
@@ -6129,6 +6402,70 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     cacheEls();
     window.__qpOpen = open;
     window.__qpClose = close;
+})();
+
+/* ==================== 购买确认弹窗 · 市场页卡片点击触发 ==================== */
+(function initBuyConfirmModal(){
+    'use strict';
+    var overlay, btnX, btnBack, cardNameEl, payInfoEl;
+    var cached = false;
+
+    function $(id){ return document.getElementById(id); }
+
+    function cacheEls(){
+        if (cached) return;
+        overlay    = $('bpOverlay');
+        btnX       = $('bpCloseX');
+        btnBack    = $('bpBackBtn');
+        cardNameEl = $('bpCardName');
+        payInfoEl  = $('bpPayInfo');
+        if (btnX)    btnX.addEventListener('click', close);
+        if (btnBack) btnBack.addEventListener('click', close);
+        if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) close(); });
+        cached = true;
+    }
+
+    function open(cardEl){
+        cacheEls();
+        if (!overlay) return;
+        // 动态读取卡片标题和派币/人民币数据
+        var title = cardEl.querySelector('.mc-title')?.textContent?.trim() || '—';
+        var cells = cardEl.querySelectorAll('.mc-data-cell');
+        var piVal = cells[0]?.querySelector('.mc-dv')?.textContent?.trim() || '';
+        var rmbVal = cells[1]?.querySelector('.mc-dv')?.textContent?.trim() || '';
+        // 填充
+        if (cardNameEl) cardNameEl.textContent = title;
+        if (payInfoEl)  payInfoEl.textContent  = piVal + ' 派 / ' + rmbVal + ' 进行购买';
+        // 打开
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function close(){
+        cacheEls();
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    // 绑定市场页所有卡片的点击事件
+    document.addEventListener('click', function(e){
+        var t = e.target;
+        if (!t || !t.closest) return;
+        // 如果点击的是兑换弹窗内的复制按钮或群聊卡，不触发购买弹窗
+        if (t.closest('.bp-overlay')) return;
+        // 查找最近的市场页卡片
+        var card = t.closest('.ai-level-card');
+        if (!card) return;
+        // 确保卡片在市场页内
+        if (!card.closest('.market-page')) return;
+        // 打开购买确认弹窗
+        open(card);
+    });
+
+    window.__bpOpen = open;
+    window.__bpClose = close;
 })();
 </script>
 </body>
