@@ -1129,6 +1129,55 @@
             color: var(--text-tertiary);
         }
 
+        /* 我的页：中间留白 + 底部 2 个操作按钮 */
+        .my-spacer { flex: 1 1 auto; min-height: 24px; }
+        .my-page { display: flex; flex-direction: column; min-height: calc(100dvh - 70px); }
+        .my-bottom-actions {
+            display: flex; gap: 12px;
+            margin: 22px var(--space-md) calc(34px + env(safe-area-inset-bottom));
+        }
+        .my-action-btn {
+            flex: 1;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            height: 48px; border-radius: 14px;
+            font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .my-action-btn:active { transform: translateY(1px) scale(0.992); }
+        .my-action-btn .my-action-ico { font-size: 18px; line-height: 1; }
+        .my-action-btn.primary {
+            color: #3b2c06;
+            background: linear-gradient(135deg, #fde68a 0%, #f5d06a 35%, #d4af37 100%);
+            border-color: rgba(253,230,138,0.85);
+            box-shadow: 0 10px 22px rgba(212,175,55,0.28), inset 0 1px 0 rgba(255,255,255,0.65);
+            filter: drop-shadow(0 2px 6px rgba(212,175,55,0.35));
+        }
+        .my-action-btn.primary:hover { filter: brightness(1.06) drop-shadow(0 2px 8px rgba(212,175,55,0.5)); }
+        .my-action-btn.outline {
+            color: var(--text-primary);
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border-strong);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .my-action-btn.outline:hover { background: var(--bg-elevated); border-color: rgba(253,230,138,0.45); }
+
+        /* 极简 toast（复制/帮助提示） */
+        .my-toast {
+            position: fixed; left: 50%; top: 38%; transform: translate(-50%, -50%);
+            padding: 10px 16px; border-radius: 12px;
+            font-size: 13px; font-weight: 600; color: #0b1220;
+            background: linear-gradient(135deg, #fff1b5 0%, #fde68a 100%);
+            border: 1px solid rgba(212,175,55,0.6);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            z-index: 99999; opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .my-toast.show { opacity: 1; transform: translate(-50%, -56%); }
+
         /* ========== 底部 Tab 高级线条图标 ========== */
         .app-footer {
             position: fixed; left: 50%; transform: translateX(-50%);
@@ -3218,62 +3267,19 @@
             </div>
         </div>
 
-        <!-- 三格统计（持有派币 / AI卡X张 / 股东卡X张） -->
-        <div class="my-stats-grid">
-            <div class="my-stat">
-                <div class="v pi" data-i18n="my_stat_pi_v">1,286.52</div>
-                <div class="l" data-i18n="my_stat_pi_l">持有派币</div>
-            </div>
-            <div class="my-stat">
-                <div class="v" data-i18n="my_stat_aicard_v">3</div>
-                <div class="l" data-i18n="my_stat_aicard_l">AI卡 张数</div>
-            </div>
-            <div class="my-stat">
-                <div class="v" data-i18n="my_stat_shcard_v">2</div>
-                <div class="l" data-i18n="my_stat_shcard_l">股东卡 张数</div>
-            </div>
-        </div>
+        <!-- 中间留白：除顶部先锋者模块外，中间无任何菜单/列表/统计 -->
+        <div class="my-spacer"></div>
 
-        <!-- 主菜单组 -->
-        <div class="menu-group">
-            <div class="menu-item">
-                <div class="menu-icon wallet">💰</div>
-                <div class="menu-text" data-i18n="menu_wallet">我的钱包</div>
-                <div class="menu-right"><span class="menu-hint gray" data-i18n="menu_wallet_v">1,286.52 π</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="menu-icon aicard">💳</div>
-                <div class="menu-text" data-i18n="menu_my_ai_card">我的 AI 卡</div>
-                <div class="menu-right"><span class="menu-hint" data-i18n="menu_my_ai_card_v">3 张</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="menu-icon shcard">📜</div>
-                <div class="menu-text" data-i18n="menu_my_sh_card">我的股东卡</div>
-                <div class="menu-right"><span class="menu-hint purple" data-i18n="menu_my_sh_card_v">2 张</span></div>
-            </div>
-        </div>
-
-        <div class="menu-group">
-            <div class="menu-item">
-                <div class="menu-icon">🔒</div>
-                <div class="menu-text" data-i18n="menu_security">账户安全</div>
-                <div class="menu-right"><span>›</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="menu-icon">🎯</div>
-                <div class="menu-text" data-i18n="menu_invite">邀请好友</div>
-                <div class="menu-right"><span>›</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="menu-icon">❓</div>
-                <div class="menu-text" data-i18n="menu_help">帮助中心</div>
-                <div class="menu-right"><span>›</span></div>
-            </div>
-            <div class="menu-item">
-                <div class="menu-icon">ℹ️</div>
-                <div class="menu-text" data-i18n="menu_about">关于派币</div>
-                <div class="menu-right"><span>›</span></div>
-            </div>
+        <!-- 仅保留 2 个底部按钮：邀请好友 + 帮助中心 -->
+        <div class="my-bottom-actions">
+            <button class="my-action-btn outline" id="myBtnInvite">
+                <span class="my-action-ico">🎯</span>
+                <span class="my-action-label" data-i18n="menu_invite">邀请好友</span>
+            </button>
+            <button class="my-action-btn primary" id="myBtnHelp">
+                <span class="my-action-ico">❓</span>
+                <span class="my-action-label" data-i18n="menu_help">帮助中心</span>
+            </button>
         </div>
     </section>
 
@@ -5192,6 +5198,66 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     const bootRender = function(){ renderAll(); saveLive(); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootRender);
     else bootRender();
+})();
+
+/* ==================== 我的页：底部 2 个按钮（邀请好友 / 帮助中心）点击绑定 ==================== */
+(function initMyPageActions(){
+    'use strict';
+    function showToast(msg, ms){
+        ms = ms || 1600;
+        var el = document.getElementById('myGlobalToast');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'myGlobalToast';
+            el.className = 'my-toast';
+            document.body.appendChild(el);
+        }
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(function(){ el.classList.remove('show'); }, ms);
+    }
+    function copyText(text){
+        try {
+            if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(text).then(function(){ return true; }, function(){ return null; });
+            }
+        } catch(e){}
+        try {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.style.position='fixed'; ta.style.top='-1000px'; ta.style.opacity='0';
+            document.body.appendChild(ta); ta.select(); var ok = false;
+            try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+            document.body.removeChild(ta);
+            return Promise.resolve(ok);
+        } catch(e){ return Promise.resolve(null); }
+    }
+    function bind(){
+        var inv = document.getElementById('myBtnInvite');
+        var hlp = document.getElementById('myBtnHelp');
+        if (inv) {
+            inv.addEventListener('click', function(){
+                var inviteCode = 'PAI-' + (Math.random().toString(36).slice(2, 8).toUpperCase()) + '-PIONEER';
+                var link = 'https://pai.example/invite?c=' + encodeURIComponent(inviteCode);
+                var payload = (CUR_LANG === 'en' ? 'Join the Pioneer Network, my invite code: ' : '加入派友先锋者生态，我的邀请码：')
+                    + inviteCode + '  —  ' + link;
+                copyText(payload).then(function(ok){
+                    if (ok === true) showToast(CUR_LANG === 'en' ? 'Invite copied' : '邀请链接已复制');
+                    else showToast(inviteCode, 2200);
+                });
+            });
+        }
+        if (hlp) {
+            hlp.addEventListener('click', function(){
+                var msg = CUR_LANG === 'en'
+                    ? 'Help Center · Official support channels are in the Exchange page → Group List'
+                    : '帮助中心 · 官方联系方式请前往：兑换区域 → 官方群聊列表（邮箱 / Telegram / QQ）';
+                showToast(msg, 2400);
+            });
+        }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+    else bind();
 })();
 </script>
 </body>
