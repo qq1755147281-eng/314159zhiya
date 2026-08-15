@@ -1157,7 +1157,9 @@
         /* 我的页：中间留白 + 底部 2 个操作按钮 */
         .my-spacer { flex: 1 1 auto; min-height: 24px; }
         .my-spacer.small { flex: 0 0 auto; min-height: 14px; }
-        .my-page { display: flex; flex-direction: column; min-height: calc(100dvh - 70px); }
+        /* 注意：display:flex 只在 .active 时加；非 active 时让通用 .page{display:none} 生效（否则兑换页内容会被推到屏幕下方看不见） */
+        .my-page { flex-direction: column; min-height: calc(100dvh - 70px); }
+        .my-page.active { display: flex; }
         .my-bottom-actions {
             display: flex; gap: 14px;
             margin: 24px var(--space-md) calc(40px + env(safe-area-inset-bottom));
