@@ -1468,34 +1468,77 @@
         /* ========== 我的页：三按钮统一 · 灰紫哑光（cinder）高级小版 ========== */
         /* 通用基底：三个按钮都用 .cinder + .mini（可选 .primary 略微抬高一键查询） */
         .my-action-btn.cinder {
-            color: #e0e7ff;
+            color: #f8fafc;
             /* 深邃灰紫哑光底色，略带冷调金属感 */
             background: linear-gradient(160deg, #1e293b 0%, #1a1f35 45%, #0f172a 100%);
-            /* 0.5px 细描边：淡紫辉光描边，高级细腻 */
-            border: 0.5px solid rgba(139, 92, 246, 0.35);
+            /* 白色线条描边：更清晰，肉眼可见为白色 */
+            border: 0.8px solid rgba(255, 255, 255, 0.86);
+            /* 金色发光：多层 box-shadow ——
+               外层金色辉光 (0 0 10/16px gold) + 中层金色近线光晕 + 常规投影 + 内高光/暗边 */
             box-shadow:
+                /* 金色外发光：贴近线条的辉光 */
+                0 0 1px rgba(253, 230, 138, 0.85),
+                0 0 4px rgba(253, 230, 138, 0.62),
+                0 0 10px rgba(212, 175, 55, 0.52),
+                0 0 18px rgba(212, 175, 55, 0.32),
+                /* 常规阴影 */
                 0 8px 16px rgba(0, 0, 0, 0.32),
                 0 2px 5px rgba(0, 0, 0, 0.24),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                /* 内高光 / 暗边 */
+                inset 0 1px 0 rgba(255, 255, 255, 0.10),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.22);
-            filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.28));
+            /* 额外整体滤镜 drop-shadow 金色光晕 */
+            filter:
+                drop-shadow(0 0 3px rgba(253, 230, 138, 0.48))
+                drop-shadow(0 2px 6px rgba(212, 175, 55, 0.32));
+            position: relative;
+            z-index: 0;
+        }
+        /* 金色呼吸光晕层：用 ::before 在按钮外 2px 渲染一圈淡金描边，做呼吸 */
+        .my-action-btn.cinder::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            pointer-events: none;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, rgba(253,230,138,0.55), rgba(212,175,55,0.18) 40%, rgba(253,230,138,0.48) 70%, rgba(212,175,55,0.2)) border-box;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.75;
+            z-index: -1;
+            animation: cinderGoldPulse 3.2s ease-in-out infinite;
+        }
+        @keyframes cinderGoldPulse {
+            0%,100% { opacity: 0.55; transform: scale(1); }
+            50%     { opacity: 1;    transform: scale(1.012); }
         }
         .my-action-btn.cinder::after {
-            /* 顶部极细高光（不是大扫光），替代原来的巨型 shine */
-            background: linear-gradient(180deg, rgba(233,213,255,0.14) 0%, rgba(255,255,255,0) 24%, rgba(0,0,0,0.05) 100%);
+            /* 顶部极细高光（不是大扫光），替代原来的巨型 shine —— 改为暖金高光 */
+            background: linear-gradient(180deg, rgba(255, 245, 200, 0.20) 0%, rgba(255,255,255,0) 26%, rgba(0,0,0,0.06) 100%);
         }
-        /* Hover：淡紫辉光更亮一点 */
+        /* Hover：白线条更亮 + 金色发光更强 */
         .my-action-btn.cinder:hover {
-            border-color: rgba(167, 139, 250, 0.55);
+            border-color: rgba(255, 255, 255, 0.98);
             box-shadow:
+                0 0 1px rgba(255, 255, 255, 0.9),
+                0 0 6px rgba(253, 230, 138, 0.95),
+                0 0 14px rgba(212, 175, 55, 0.75),
+                0 0 26px rgba(212, 175, 55, 0.48),
                 0 10px 20px rgba(0, 0, 0, 0.38),
-                0 3px 8px rgba(139, 92, 246, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 3px 8px rgba(0, 0, 0, 0.24),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.22);
-            filter: brightness(1.06) drop-shadow(0 3px 12px rgba(139, 92, 246, 0.42));
+            filter:
+                brightness(1.08)
+                drop-shadow(0 0 5px rgba(253, 230, 138, 0.72))
+                drop-shadow(0 3px 10px rgba(212, 175, 55, 0.52));
         }
         .my-action-btn.cinder:active {
-            filter: brightness(0.96) drop-shadow(0 1px 5px rgba(139, 92, 246, 0.22));
+            filter:
+                brightness(0.96)
+                drop-shadow(0 0 2px rgba(253, 230, 138, 0.42))
+                drop-shadow(0 1px 4px rgba(212, 175, 55, 0.28));
         }
         /* mini 变体：邀请/帮助 44px，一键查询 46px；字号 15；圆角 14px */
         .my-action-btn.cinder.mini {
@@ -1507,23 +1550,35 @@
             border-radius: 14px;
             gap: 9px;
         }
-        .my-action-btn.cinder.mini .my-action-ico { font-size: 18px; }
-        /* primary：一键查询（略高 46，描边略亮，图标稍大） */
+        .my-action-btn.cinder.mini .my-action-ico { font-size: 18px; filter: drop-shadow(0 0 2px rgba(253,230,138,0.5)); }
+        /* primary：一键查询（略高 46，描边纯白更饱和 + 金光更强） */
         .my-action-btn.cinder.primary {
             height: 46px;
             min-height: 46px;
-            border-color: rgba(167, 139, 250, 0.48);
+            border-color: rgba(255, 255, 255, 0.98);
             box-shadow:
+                0 0 1.5px rgba(255, 255, 255, 0.95),
+                0 0 7px rgba(253, 230, 138, 0.95),
+                0 0 16px rgba(212, 175, 55, 0.68),
+                0 0 28px rgba(212, 175, 55, 0.42),
                 0 10px 20px rgba(0, 0, 0, 0.35),
-                0 3px 8px rgba(139, 92, 246, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 3px 8px rgba(0, 0, 0, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.13),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.22);
-            filter: drop-shadow(0 3px 12px rgba(139, 92, 246, 0.38));
+            filter:
+                drop-shadow(0 0 4px rgba(253, 230, 138, 0.62))
+                drop-shadow(0 3px 10px rgba(212, 175, 55, 0.44));
         }
         .my-action-btn.cinder.primary:hover {
-            filter: brightness(1.08) drop-shadow(0 4px 16px rgba(139, 92, 246, 0.55));
+            filter:
+                brightness(1.10)
+                drop-shadow(0 0 7px rgba(253, 230, 138, 0.95))
+                drop-shadow(0 4px 14px rgba(212, 175, 55, 0.65));
         }
-        .my-action-btn.cinder.primary .my-action-ico { font-size: 19px; }
+        .my-action-btn.cinder.primary .my-action-ico {
+            font-size: 19px;
+            filter: drop-shadow(0 0 3px rgba(253,230,138,0.65));
+        }
         /* 取消原来大扫光元素在 cinder 上的动画（如果存在） */
         .my-action-btn.cinder .my-btn-shine { animation: none; opacity: 0; }
 
