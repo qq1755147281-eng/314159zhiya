@@ -1131,10 +1131,15 @@
 
         /* 我的页：中间留白 + 底部 2 个操作按钮 */
         .my-spacer { flex: 1 1 auto; min-height: 24px; }
+        .my-spacer.small { flex: 0 0 auto; min-height: 14px; }
         .my-page { display: flex; flex-direction: column; min-height: calc(100dvh - 70px); }
         .my-bottom-actions {
             display: flex; gap: 12px;
             margin: 22px var(--space-md) calc(34px + env(safe-area-inset-bottom));
+        }
+        .my-bottom-actions.column {
+            flex-direction: column;
+            margin-top: 16px;
         }
         .my-action-btn {
             flex: 1;
@@ -1147,6 +1152,7 @@
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             -webkit-tap-highlight-color: transparent;
         }
+        .my-action-btn.full { flex: 1 1 100%; width: 100%; }
         .my-action-btn:active { transform: translateY(1px) scale(0.992); }
         .my-action-btn .my-action-ico { font-size: 18px; line-height: 1; }
         .my-action-btn.primary {
@@ -1164,6 +1170,59 @@
             box-shadow: 0 8px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04);
         }
         .my-action-btn.outline:hover { background: var(--bg-elevated); border-color: rgba(253,230,138,0.45); }
+
+        /* 我的页：先锋档案查询 · 方形卡 */
+        .my-query-card {
+            margin: 4px var(--space-md) 0;
+            padding: 16px 14px 14px;
+            border-radius: 16px;
+            position: relative; overflow: hidden;
+            background:
+                linear-gradient(145deg, rgba(22,28,48,0.94) 0%, rgba(14,20,36,0.98) 100%);
+            border: 1px solid var(--glass-border-strong);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .my-query-card::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.85) 0%, rgba(212,175,55,0.28) 40%, rgba(139,92,246,0.35) 75%, rgba(253,230,138,0.85) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .my-query-title {
+            position: relative; z-index: 1;
+            font-size: 14px; font-weight: 800; letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #fde68a 0%, #fff1b5 45%, #ffffff 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(212,175,55,0.5));
+        }
+        .my-input-wrap {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 12px;
+            height: 48px; border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+        .my-input-wrap:focus-within {
+            border-color: rgba(253,230,138,0.55);
+            background: rgba(253,230,138,0.06);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.14);
+        }
+        .my-input-ico { font-size: 16px; flex-shrink: 0; line-height: 1; }
+        .my-input {
+            flex: 1; min-width: 0;
+            background: transparent; border: none; outline: none;
+            font-size: 14.5px; font-weight: 600; letter-spacing: -0.005em;
+            color: var(--text-primary);
+            height: 100%;
+            -webkit-appearance: none; appearance: none;
+        }
+        .my-input::placeholder { color: var(--text-quaternary); font-weight: 500; }
 
         /* 极简 toast（复制/帮助提示） */
         .my-toast {
@@ -3256,27 +3315,45 @@
             </div>
         </div>
 
-        <!-- 用户卡头 -->
+        <!-- 用户卡头（只保留：圆形派头像 + 派友先锋者昵称；删除 ID / 认证先锋） -->
         <div class="my-header">
             <div class="my-user-row">
                 <div class="my-avatar">派</div>
                 <div class="my-user-info">
                     <div class="my-name" data-i18n="my_name">派友先锋者</div>
-                    <div class="my-sub" data-i18n="my_sub">ID: 3141-5926 · 认证先锋</div>
                 </div>
             </div>
         </div>
 
-        <!-- 中间留白：除顶部先锋者模块外，中间无任何菜单/列表/统计 -->
-        <div class="my-spacer"></div>
+        <!-- 正方形查询卡：手机号 / 姓名 / 确认查询 -->
+        <div class="my-query-card">
+            <div class="my-query-title" data-i18n="my_query_title">先锋档案查询</div>
+            <label class="my-input-wrap">
+                <span class="my-input-ico">📱</span>
+                <input type="tel" class="my-input" id="myQPhone" maxlength="20" autocomplete="tel"
+                       data-i18n-ph="my_q_ph" placeholder="请输入手机号" />
+            </label>
+            <label class="my-input-wrap">
+                <span class="my-input-ico">👤</span>
+                <input type="text" class="my-input" id="myQName" maxlength="32" autocomplete="name"
+                       data-i18n-ph="my_q_nm" placeholder="请输入姓名" />
+            </label>
+            <button class="my-action-btn primary full" id="myBtnQuery" style="margin-top:6px;">
+                <span class="my-action-ico">🔍</span>
+                <span class="my-action-label" data-i18n="my_q_btn">确认查询</span>
+            </button>
+        </div>
 
-        <!-- 仅保留 2 个底部按钮：邀请好友 + 帮助中心 -->
-        <div class="my-bottom-actions">
-            <button class="my-action-btn outline" id="myBtnInvite">
+        <!-- 中间留白（把帮助中心自然推到底部附近） -->
+        <div class="my-spacer small"></div>
+
+        <!-- 两个按钮改竖排：上面邀请好友，下面帮助中心 -->
+        <div class="my-bottom-actions column">
+            <button class="my-action-btn outline full" id="myBtnInvite">
                 <span class="my-action-ico">🎯</span>
                 <span class="my-action-label" data-i18n="menu_invite">邀请好友</span>
             </button>
-            <button class="my-action-btn primary" id="myBtnHelp">
+            <button class="my-action-btn primary full" id="myBtnHelp">
                 <span class="my-action-ico">❓</span>
                 <span class="my-action-label" data-i18n="menu_help">帮助中心</span>
             </button>
@@ -3730,6 +3807,14 @@ const I18N = {
         'my_stat_aicard_l': 'AI卡 张数',
         'my_stat_shcard_v': '2',
         'my_stat_shcard_l': '股东卡 张数',
+        // 查询卡
+        'my_query_title': '先锋档案查询',
+        'my_q_ph':        '请输入手机号',
+        'my_q_nm':        '请输入姓名',
+        'my_q_btn':       '确认查询',
+        'my_q_err_phone': '请输入手机号',
+        'my_q_err_name':  '请输入姓名',
+        'my_q_ok':        '查询已提交，先锋档案匹配中…',
         // 菜单
         'menu_wallet':        '我的钱包',
         'menu_wallet_v':      '1,286.52 π',
@@ -3959,6 +4044,14 @@ const I18N = {
         'my_stat_aicard_l': 'AI Cards',
         'my_stat_shcard_v': '2',
         'my_stat_shcard_l': 'Share Cards',
+        // Query card
+        'my_query_title': 'Pioneer Profile Query',
+        'my_q_ph':        'Enter mobile number',
+        'my_q_nm':        'Enter your name',
+        'my_q_btn':       'Confirm Query',
+        'my_q_err_phone': 'Please enter mobile number',
+        'my_q_err_name':  'Please enter your name',
+        'my_q_ok':        'Query submitted · matching Pioneer profile…',
 
         'menu_wallet':        'My Wallet',
         'menu_wallet_v':      '1,286.52 π',
@@ -4035,6 +4128,13 @@ function applyLanguage(lang) {
     document.querySelectorAll('#btnToggleLang, #btnToggleLang2, #btnToggleLang3, #btnToggleLang4').forEach(b => {
         if (b) b.innerHTML = `${flag} <span data-i18n="btn_lang">${dict['btn_lang']}</span>`;
     });
+    // data-i18n-ph：input placeholder 的双语切换
+    const phEls = document.querySelectorAll('[data-i18n-ph]');
+    for (let i = 0; i < phEls.length; i++) {
+        const el = phEls[i];
+        const key = el.getAttribute('data-i18n-ph');
+        if (key in dict) el.setAttribute('placeholder', dict[key]);
+    }
 }
 document.addEventListener('click', function(e){
     const t = e.target;
@@ -5235,24 +5335,52 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     function bind(){
         var inv = document.getElementById('myBtnInvite');
         var hlp = document.getElementById('myBtnHelp');
+        var q   = document.getElementById('myBtnQuery');
+        var ph  = document.getElementById('myQPhone');
+        var nm  = document.getElementById('myQName');
+        var ZH_FALLBACK = {
+            'my_q_err_phone': '请输入手机号',
+            'my_q_err_name':  '请输入姓名',
+            'my_q_ok':        '查询已提交，先锋档案匹配中…'
+        };
+        function dict(k){
+            try {
+                if (window.I18N && window.CUR_LANG && window.I18N[window.CUR_LANG] && typeof window.I18N[window.CUR_LANG][k] === 'string') {
+                    return window.I18N[window.CUR_LANG][k];
+                }
+                if (window.I18N && window.I18N['zh-CN'] && typeof window.I18N['zh-CN'][k] === 'string') {
+                    return window.I18N['zh-CN'][k];
+                }
+            } catch(e){}
+            return ZH_FALLBACK[k] || k;
+        }
         if (inv) {
             inv.addEventListener('click', function(){
                 var inviteCode = 'PAI-' + (Math.random().toString(36).slice(2, 8).toUpperCase()) + '-PIONEER';
                 var link = 'https://pai.example/invite?c=' + encodeURIComponent(inviteCode);
-                var payload = (CUR_LANG === 'en' ? 'Join the Pioneer Network, my invite code: ' : '加入派友先锋者生态，我的邀请码：')
+                var payload = ((window.CUR_LANG || '') === 'en' ? 'Join the Pioneer Network, my invite code: ' : '加入派友先锋者生态，我的邀请码：')
                     + inviteCode + '  —  ' + link;
                 copyText(payload).then(function(ok){
-                    if (ok === true) showToast(CUR_LANG === 'en' ? 'Invite copied' : '邀请链接已复制');
+                    if (ok === true) showToast(((window.CUR_LANG || '') === 'en' ? 'Invite copied' : '邀请链接已复制'));
                     else showToast(inviteCode, 2200);
                 });
             });
         }
         if (hlp) {
             hlp.addEventListener('click', function(){
-                var msg = CUR_LANG === 'en'
+                var msg = ((window.CUR_LANG || '') === 'en')
                     ? 'Help Center · Official support channels are in the Exchange page → Group List'
                     : '帮助中心 · 官方联系方式请前往：兑换区域 → 官方群聊列表（邮箱 / Telegram / QQ）';
                 showToast(msg, 2400);
+            });
+        }
+        if (q) {
+            q.addEventListener('click', function(){
+                var phone = (ph ? ph.value : '').trim();
+                var name  = (nm ? nm.value : '').trim();
+                if (!phone) return showToast(dict('my_q_err_phone'), 1800);
+                if (!name)  return showToast(dict('my_q_err_name'), 1800);
+                showToast(dict('my_q_ok') + (((window.CUR_LANG || '') === 'en') ? ' (' + name + ' · ' + phone + ')' : '（' + name + ' · ' + phone + '）'), 2400);
             });
         }
     }
