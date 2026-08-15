@@ -722,29 +722,29 @@
             margin: 0 var(--space-md) 4px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            column-gap: 8px;
+            column-gap: 6px;
             align-items: start;
         }
         /* 左右两列：独立纵向堆叠卡片 */
         .cards-col {
             display: flex;
             flex-direction: column;
-            gap: 7px;
+            gap: 5px;
             align-items: stretch;
         }
 
-        /* 单张卡片：复刻【派友AI股东卡】风格，等比例缩小版 */
+        /* 单张卡片：长方形紧凑样式（移除投资金额块后更矮） */
         .ai-level-card {
             position: relative;
-            border-radius: 15px;
-            padding: 9px 10px 9px 10px;
-            min-height: 180px;                /* 统一等高：保证左右列对齐 */
+            border-radius: 13px;
+            padding: 8px 9px 8px 9px;
+            min-height: 0;                /* 长方形：不强制等高 */
             overflow: hidden;
             transition: transform 0.22s ease, box-shadow 0.28s ease;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             animation: cardFloatMini 4.6s ease-in-out infinite;
         }
         /* 轻微上下悬浮动效，和首页AI卡交互一致 */
@@ -974,30 +974,11 @@
         .ai-gold .mc-dv { color: var(--accent-gold-2); }
         .sh-purple .mc-dv { color: #e9d5ff; }
 
-        /* ===== 底部：派币价格 + 购买按钮（缩小版） ===== */
+        /* ===== 底部：仅购买按钮（已移除投资金额块，按钮居中） ===== */
         .mc-bottom {
-            display: flex; align-items: center; justify-content: space-between; gap: 6px;
-            margin-top: auto;      /* 贴底，保证等高时内容分布一致 */
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 2px;
             position: relative; z-index: 3;
-        }
-        .mc-price-block { display: flex; align-items: baseline; gap: 3px; flex-direction: column; }
-        .mc-price-label {
-            font-size: 8px; color: var(--text-tertiary); font-weight: 600;
-            letter-spacing: 0.04em;
-        }
-        .mc-price {
-            display: inline-flex; align-items: baseline;
-            font-weight: 900; letter-spacing: -0.01em;
-        }
-        .mc-price .num { font-size: 15px; line-height: 1; }
-        .mc-price .unit { font-size: 9px; margin-left: 1px; }
-        .ai-gold .mc-price {
-            background: var(--accent-gold-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .sh-purple .mc-price {
-            background: var(--accent-purple-gradient);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .mc-buy {
             position: relative; z-index: 3;
@@ -3426,7 +3407,6 @@
                 <!-- AI卡 · LV.1 -->
                 <div class="ai-level-card ai-gold">
                     <div class="card-border"></div>
-                    <!-- 卡顶：芯片 + 品牌π -->
                     <div class="mc-top">
                         <div class="mc-chip-row">
                             <div class="mc-chip"></div>
@@ -3437,7 +3417,6 @@
                             <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
                         </div>
                     </div>
-                    <!-- 卡标题 -->
                     <div class="mc-title-block">
                         <div class="mc-title-row">
                             <div class="mc-title" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
@@ -3453,20 +3432,15 @@
                     <!-- 双列数据面板 -->
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">1.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">300<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">12<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">300<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
-                    <!-- 底行：价格 + 购买 -->
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3498,19 +3472,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">2.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">800<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">26<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">500<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3542,19 +3512,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">3.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">1500<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">42<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">800<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3586,19 +3552,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">4.3<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">2000<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">66<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">1000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3630,19 +3592,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">5.5<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">2500<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">88<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">1500<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3677,19 +3635,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">1.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">1000<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">8<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">500<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_1">100</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3721,19 +3675,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">2.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">1500<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">18<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">1000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_2">300</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3765,19 +3715,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">3.0<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">2000<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">32<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">1500<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_3">500</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3809,19 +3755,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">4.1<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">2500<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">54<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">2000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_4">800</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -3853,19 +3795,15 @@
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_power">算力值</span></div>
-                            <div class="mc-dv">5.2<span class="du" data-i18n="mk_unit_x">x</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">派币数量</span></div>
+                            <div class="mc-dv">3000<span class="du" data-i18n="mk_unit_pi">个</span></div>
                         </div>
                         <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">👥</span><span data-i18n="mk_data_holders">分红人数</span></div>
-                            <div class="mc-dv">76<span class="du" data-i18n="mk_unit_people">人</span></div>
+                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">人民币</span></div>
+                            <div class="mc-dv">3000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
-                        <div class="mc-price-block">
-                            <div class="mc-price-label" data-i18n="mk_price_label">投资金额</div>
-                            <div class="mc-price"><span class="num" data-i18n="mk_p_5">1000</span><span class="unit">π</span></div>
-                        </div>
                         <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
                     </div>
                 </div>
@@ -4383,13 +4321,10 @@ const I18N = {
         // 状态标签
         'mk_status_active': '活跃中',
         // 数据面板
-        'mk_data_power':   '算力值',
-        'mk_data_holders': '分红人数',
         'mk_data_pi':      '派币数量',
-        'mk_unit_x':       'x',
-        'mk_unit_people':  '人',
-        // 价格行
-        'mk_price_label': '投资金额',
+        'mk_data_rmb':     '人民币',
+        'mk_unit_pi':      '个',
+        'mk_unit_rmb':     '元',
 
         // 介绍卡片
         'intro_title': '派友AI卡 & 股东卡说明',
@@ -4419,12 +4354,7 @@ const I18N = {
         'mk_sh_desc_4': '4倍股东分红权益',
         'mk_sh_desc_5': '5倍顶级股东分红权益',
 
-        // 金额
-        'mk_p_1': '100',
-        'mk_p_2': '300',
-        'mk_p_3': '500',
-        'mk_p_4': '800',
-        'mk_p_5': '1000',
+        // 金额（已移除投资金额块，保留词条以防其他引用）
 
         // 我的页
         'my_name': '派友先锋者',
@@ -4632,13 +4562,10 @@ const I18N = {
         // Status tag
         'mk_status_active': 'Active',
         // Data panel
-        'mk_data_power':   'Power',
-        'mk_data_holders': 'Holders',
         'mk_data_pi':      'Pi Amount',
-        'mk_unit_x':       'x',
-        'mk_unit_people':  'u',
-        // Price row
-        'mk_price_label': 'Investment',
+        'mk_data_rmb':     'CNY',
+        'mk_unit_pi':      'π',
+        'mk_unit_rmb':     '¥',
 
         'intro_title': 'PiFriends AI & Shareholder Cards Guide',
         'intro_desc':  'Tap to view power, dividend and reward rules of both card types',
@@ -4665,11 +4592,6 @@ const I18N = {
         'mk_sh_desc_4': '4x shareholder dividend',
         'mk_sh_desc_5': '5x Top shareholder dividend',
 
-        'mk_p_1': '100',
-        'mk_p_2': '300',
-        'mk_p_3': '500',
-        'mk_p_4': '800',
-        'mk_p_5': '1000',
 
         // My page
         'my_name': 'Pi Friend Pioneer',
