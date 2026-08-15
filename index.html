@@ -1240,6 +1240,31 @@
             100% { left: 140%; opacity: 0.0; }
         }
 
+        /* ========== 邀请好友按钮：紫色发光背景版 ========== */
+        .my-action-btn.purple {
+            color: #1a0d35;
+            background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 10%, #ddd6fe 28%, #a78bfa 52%, #8b5cf6 76%, #5b21b6 100%);
+            border-color: rgba(196,181,253,0.95);
+            box-shadow:
+                0 14px 28px rgba(139,92,246,0.38),
+                0 2px 6px rgba(139,92,246,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.78),
+                inset 0 -2px 0 rgba(76,29,149,0.4);
+            filter: drop-shadow(0 3px 10px rgba(139,92,246,0.5));
+        }
+        .my-action-btn.purple:hover { filter: brightness(1.08) drop-shadow(0 3px 14px rgba(139,92,246,0.65)); }
+        .my-action-btn.purple .my-btn-shine {
+            position: absolute; top: -100%; left: -120%;
+            width: 50%; height: 300%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 52%, transparent 65%);
+            transform: rotate(12deg);
+            opacity: 0.9;
+            pointer-events: none;
+            animation: myShine 3.2s ease-in-out infinite;
+            filter: blur(0.2px);
+        }
+        .my-action-btn.purple .my-action-ico { filter: drop-shadow(0 1px 3px rgba(91,33,182,0.5)); }
+
         /* 查询卡内的「一键查询」主按钮：更大、更有行动感 */
         .my-action-btn.query-primary {
             height: 58px; min-height: 58px;
@@ -1324,6 +1349,217 @@
             transition: opacity 0.25s ease, transform 0.25s ease;
         }
         .my-toast.show { opacity: 1; transform: translate(-50%, -56%); }
+
+        /* ========== 先锋档案查询 · 弹窗（屏幕 70% 高） ========== */
+        .qp-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.58);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 var(--space-md);
+            z-index: 88888;
+            opacity: 0; pointer-events: none;
+            transition: opacity .22s ease;
+        }
+        .qp-overlay.active { opacity: 1; pointer-events: auto; }
+        .qp-sheet {
+            width: 100%; max-width: 420px;
+            height: 70dvh; max-height: 70dvh;
+            border-radius: 22px;
+            position: relative; overflow: hidden;
+            background:
+                radial-gradient(140% 90% at 50% -10%, rgba(253,230,138,0.22) 0%, rgba(253,230,138,0.02) 45%, transparent 80%),
+                linear-gradient(165deg, rgba(24,32,58,0.98) 0%, rgba(12,18,36,0.99) 100%);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+            transform: translateY(14px) scale(0.98);
+            transition: transform .26s cubic-bezier(.2,.7,.2,1), opacity .22s ease;
+            opacity: 0;
+            display: flex; flex-direction: column;
+        }
+        .qp-overlay.active .qp-sheet { transform: translateY(0) scale(1); opacity: 1; }
+        .qp-sheet::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 22px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(253,230,138,0.18) 30%, rgba(139,92,246,0.55) 65%, rgba(253,230,138,0.85) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            pointer-events: none;
+        }
+        .qp-sheet::after {
+            content: ''; position: absolute; inset: 0; border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(255,255,255,0.02) 100%);
+            pointer-events: none; mix-blend-mode: screen;
+        }
+        .qp-head {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 18px 10px;
+        }
+        .qp-title {
+            margin: 0;
+            font-size: 19px; font-weight: 950; letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #ffffff 0%, #fff1b5 35%, #fde68a 65%, #d4af37 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(212,175,55,0.45));
+        }
+        .qp-x {
+            width: 32px; height: 32px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.7);
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .qp-x:hover { background: rgba(253,230,138,0.12); border-color: rgba(253,230,138,0.35); color: #fde68a; }
+
+        .qp-info {
+            position: relative; z-index: 1;
+            margin: 4px 18px 0;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .qp-info-row { display: flex; align-items: center; gap: 10px; }
+        .qp-info-k {
+            flex: 0 0 66px;
+            font-size: 12.5px; font-weight: 700; color: var(--text-tertiary); letter-spacing: -0.005em;
+        }
+        .qp-info-v {
+            flex: 1; min-width: 0;
+            font-size: 14.5px; font-weight: 800; letter-spacing: -0.005em; color: var(--text-primary);
+            background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .qp-loading {
+            position: relative; z-index: 1;
+            flex: 1 1 auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px;
+            padding: 18px 18px 8px;
+        }
+        .qp-loading-ring {
+            width: 54px; height: 54px; border-radius: 50%;
+            border: 2.5px solid rgba(253,230,138,0.12);
+            border-top-color: #fde68a;
+            border-right-color: #8b5cf6;
+            filter: drop-shadow(0 0 10px rgba(139,92,246,0.35));
+            animation: qpSpin 1.1s linear infinite;
+        }
+        @keyframes qpSpin { to { transform: rotate(360deg); } }
+        .qp-loading-text {
+            display: inline-flex; align-items: baseline; gap: 0;
+            font-size: 16px; font-weight: 800; letter-spacing: -0.01em;
+            color: #fde68a;
+            filter: drop-shadow(0 0 6px rgba(253,230,138,0.35));
+        }
+        .qp-loading-dots { display: inline-flex; gap: 1px; margin-left: 2px; }
+        .qp-loading-dots i { font-style: normal; font-weight: 900; opacity: 0; animation: qpDots 1.25s infinite; }
+        .qp-loading-dots i:nth-child(1){ animation-delay: 0.00s; }
+        .qp-loading-dots i:nth-child(2){ animation-delay: 0.18s; }
+        .qp-loading-dots i:nth-child(3){ animation-delay: 0.36s; }
+        @keyframes qpDots { 0%,20%{opacity:0;} 50%{opacity:1;} 100%{opacity:0;} }
+
+        .qp-result {
+            position: relative; z-index: 1;
+            flex: 1 1 auto;
+            overflow: auto;
+            padding: 8px 18px 8px;
+            display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+        }
+        .qp-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
+        .qp-card {
+            position: relative; overflow: hidden;
+            border-radius: 16px;
+            padding: 14px 12px 12px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex; flex-direction: column; gap: 8px;
+            min-height: 152px;
+        }
+        .qp-card::before {
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+        }
+        .qp-card.qp-gold::before {
+            background: linear-gradient(135deg, rgba(253,230,138,0.85) 0%, rgba(253,230,138,0.12) 40%, rgba(212,175,55,0.08) 70%, rgba(253,230,138,0.65) 100%);
+        }
+        .qp-card.qp-purple::before {
+            background: linear-gradient(135deg, rgba(233,213,255,0.85) 0%, rgba(139,92,246,0.12) 40%, rgba(139,92,246,0.08) 70%, rgba(139,92,246,0.7) 100%);
+        }
+        .qp-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 25%, rgba(0,0,0,0.06) 100%);
+            pointer-events: none; mix-blend-mode: screen;
+        }
+        .qp-card-head { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
+        .qp-card-ico { width: 22px; height: 22px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+        .qp-card-title { font-size: 12.5px; font-weight: 800; letter-spacing: 0.01em; color: var(--text-primary); }
+        .qp-card-count { position: relative; z-index: 1; display: flex; align-items: baseline; gap: 4px; margin-top: 4px; }
+        .qp-card-count .n { font-size: 32px; font-weight: 950; letter-spacing: -0.02em; line-height: 1; }
+        .qp-card-count .u { font-size: 12px; font-weight: 700; color: var(--text-tertiary); }
+        .qp-card.qp-gold .qp-card-count .n   { background: linear-gradient(135deg, #fff4c8 0%, #fde68a 35%, #d4af37 80%, #9a7113 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(212,175,55,0.45)); }
+        .qp-card.qp-purple .qp-card-count .n { background: linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 30%, #8b5cf6 70%, #4c1d95 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(139,92,246,0.5)); }
+        .qp-card-foot { position: relative; z-index: 1; margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.07); }
+        .qp-l { font-size: 11.5px; font-weight: 700; color: var(--text-tertiary); }
+        .qp-v.pi { display: inline-flex; align-items: baseline; gap: 2px; }
+        .qp-v.pi .n { font-size: 15px; font-weight: 900; letter-spacing: -0.01em; }
+        .qp-v.pi .u { font-size: 12px; font-weight: 800; opacity: 0.78; }
+        .qp-card.qp-gold .qp-v.pi .n { color: #fde68a; }
+        .qp-card.qp-purple .qp-v.pi .n { color: #e9d5ff; }
+
+        .qp-none {
+            margin-top: 10px; padding: 24px 18px;
+            border-radius: 16px;
+            background: linear-gradient(145deg, rgba(248,113,113,0.10) 0%, rgba(248,113,113,0.02) 100%);
+            border: 1px dashed rgba(248,113,113,0.4);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+        }
+        .qp-none-ico { font-size: 30px; filter: drop-shadow(0 2px 6px rgba(248,113,113,0.45)); }
+        .qp-none-text {
+            font-size: 14px; font-weight: 800; text-align: center; line-height: 1.45; letter-spacing: -0.005em;
+            color: #fecaca;
+            filter: drop-shadow(0 1px 3px rgba(248,113,113,0.4));
+        }
+
+        .qp-foot { position: relative; z-index: 1; padding: 12px 18px calc(16px + env(safe-area-inset-bottom)); }
+        .qp-back-btn {
+            position: relative; overflow: hidden;
+            width: 100%; height: 60px; min-height: 60px; border-radius: 16px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            font-size: 18px; font-weight: 950; letter-spacing: 0.12em;
+            color: #3b2c06;
+            background: linear-gradient(160deg, #fff4c8 0%, #fde68a 20%, #f5cf66 45%, #d4af37 75%, #9a7113 100%);
+            border: 1px solid rgba(253,230,138,0.95);
+            box-shadow:
+                0 18px 36px rgba(212,175,55,0.42),
+                0 2px 8px rgba(212,175,55,0.32),
+                inset 0 1px 0 rgba(255,255,255,0.82),
+                inset 0 -2px 0 rgba(140,100,10,0.40);
+            filter: drop-shadow(0 4px 16px rgba(212,175,55,0.55));
+            cursor: pointer;
+            transition: transform 0.18s cubic-bezier(.2,.7,.2,1), box-shadow 0.24s ease, filter 0.24s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .qp-back-btn:active { transform: translateY(1.5px) scale(0.995); }
+        .qp-back-btn:hover { filter: brightness(1.08) drop-shadow(0 4px 20px rgba(212,175,55,0.65)); }
+        .qp-back-btn .qp-bb-shine {
+            position: absolute; top: -100%; left: -120%;
+            width: 50%; height: 300%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.62) 52%, transparent 65%);
+            transform: rotate(12deg);
+            opacity: 0.88;
+            pointer-events: none;
+            animation: myShine 3.6s ease-in-out infinite;
+            filter: blur(0.2px);
+        }
+        .qp-back-btn .qp-bb-ico { font-size: 22px; line-height: 1; }
+        .qp-back-btn .qp-bb-label { background: linear-gradient(135deg, #3b2c06 0%, #6b5114 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* ========== 底部 Tab 高级线条图标 ========== */
         .app-footer {
@@ -3436,9 +3672,10 @@
         <!-- 中间留白（把帮助中心自然推到底部附近） -->
         <div class="my-spacer small"></div>
 
-        <!-- 两个按钮改竖排：上面邀请好友，下面帮助中心；都升级为更高质感 -->
+        <!-- 两个按钮改竖排：上面邀请好友（紫色发光），下面帮助中心（金色发光） -->
         <div class="my-bottom-actions column">
-            <button class="my-action-btn outline full" id="myBtnInvite">
+            <button class="my-action-btn purple full" id="myBtnInvite">
+                <span class="my-btn-shine"></span>
                 <span class="my-action-ico">🎯</span>
                 <span class="my-action-label" data-i18n="menu_invite">邀请好友</span>
             </button>
@@ -3449,6 +3686,81 @@
             </button>
         </div>
     </section>
+
+    <!-- ============ 先锋档案查询 · 悬浮窗（占屏幕 70% 高） ============ -->
+    <div class="qp-overlay" id="qpOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="qp-sheet" role="document">
+            <div class="qp-head">
+                <h3 class="qp-title" data-i18n="qp_title">先锋档案查询</h3>
+                <button class="qp-x" id="qpCloseX" type="button" aria-label="关闭">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 区1：手机号 + 姓名 -->
+            <div class="qp-info">
+                <div class="qp-info-row">
+                    <span class="qp-info-k" data-i18n="qp_k_phone">手机号</span>
+                    <span class="qp-info-v" id="qpOutPhone">—</span>
+                </div>
+                <div class="qp-info-row">
+                    <span class="qp-info-k" data-i18n="qp_k_name">姓名</span>
+                    <span class="qp-info-v" id="qpOutName">—</span>
+                </div>
+            </div>
+
+            <!-- 区2：查询中 loading -->
+            <div class="qp-loading" id="qpLoading">
+                <div class="qp-loading-ring"></div>
+                <div class="qp-loading-text">
+                    <span data-i18n="qp_loading">查询中</span><span class="qp-loading-dots"><i>.</i><i>.</i><i>.</i></span>
+                </div>
+            </div>
+
+            <!-- 区3：结果（命中 or 查无此人） -->
+            <div class="qp-result" id="qpResult" style="display:none;">
+                <!-- 命中：AI卡 / 股东卡 两卡统计 -->
+                <div class="qp-cards" id="qpCards" style="display:none;">
+                    <div class="qp-card qp-gold">
+                        <div class="qp-card-head"><span class="qp-card-ico">🤖</span><span class="qp-card-title" data-i18n="qp_ai_title">派友 AI 卡</span></div>
+                        <div class="qp-card-count">
+                            <span class="n" id="qpAiCards">0</span><span class="u" data-i18n="apply_s_u">张</span>
+                        </div>
+                        <div class="qp-card-foot">
+                            <span class="qp-l" data-i18n="qp_ai_income">实时收益</span>
+                            <span class="qp-v pi"><span class="n" id="qpAiDivi">0</span><span class="u">π</span></span>
+                        </div>
+                    </div>
+                    <div class="qp-card qp-purple">
+                        <div class="qp-card-head"><span class="qp-card-ico">💎</span><span class="qp-card-title" data-i18n="qp_sh_title">派友股东卡</span></div>
+                        <div class="qp-card-count">
+                            <span class="n" id="qpShCards">0</span><span class="u" data-i18n="apply_s_u">张</span>
+                        </div>
+                        <div class="qp-card-foot">
+                            <span class="qp-l" data-i18n="qp_sh_income">累计收益</span>
+                            <span class="qp-v pi"><span class="n" id="qpShDivi">0</span><span class="u">π</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 未命中：查无此人 -->
+                <div class="qp-none" id="qpNone" style="display:none;">
+                    <div class="qp-none-ico">🔍</div>
+                    <div class="qp-none-text" data-i18n="qp_none">查无此人，请确认系统工作人员是否录入</div>
+                </div>
+            </div>
+
+            <!-- 底部超大返回按钮 -->
+            <div class="qp-foot">
+                <button class="qp-back-btn" id="qpBackBtn" type="button">
+                    <span class="qp-bb-shine"></span>
+                    <span class="qp-bb-ico">↩️</span>
+                    <span class="qp-bb-label" data-i18n="qp_back">返  回</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ================= 对话页 · 兑换区域 ================= -->
     <section class="page chat-page" data-page="chat">
@@ -3905,6 +4217,17 @@ const I18N = {
         'my_q_err_phone': '请输入手机号',
         'my_q_err_name':  '请输入姓名',
         'my_q_ok':        '查询已提交，先锋档案匹配中…',
+        // 先锋档案查询弹窗
+        'qp_title':       '先锋档案查询',
+        'qp_k_phone':     '手机号',
+        'qp_k_name':      '姓名',
+        'qp_loading':     '查询中',
+        'qp_ai_title':    '派友 AI 卡',
+        'qp_sh_title':    '派友股东卡',
+        'qp_ai_income':   '实时收益',
+        'qp_sh_income':   '累计收益',
+        'qp_none':        '查无此人，请确认系统工作人员是否录入',
+        'qp_back':        '返  回',
         // 菜单
         'menu_wallet':        '我的钱包',
         'menu_wallet_v':      '1,286.52 π',
@@ -4142,6 +4465,17 @@ const I18N = {
         'my_q_err_phone': 'Please enter mobile number',
         'my_q_err_name':  'Please enter your name',
         'my_q_ok':        'Query submitted · matching Pioneer profile…',
+        // Query popup
+        'qp_title':       'Pioneer Profile Query',
+        'qp_k_phone':     'Mobile',
+        'qp_k_name':      'Name',
+        'qp_loading':     'Querying',
+        'qp_ai_title':    'PiFriends AI Card',
+        'qp_sh_title':    'Shareholder Card',
+        'qp_ai_income':   'Real-Time Income',
+        'qp_sh_income':   'Total Income',
+        'qp_none':        'No record found. Please confirm with system operator.',
+        'qp_back':        'BACK',
 
         'menu_wallet':        'My Wallet',
         'menu_wallet_v':      '1,286.52 π',
@@ -5470,12 +5804,185 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 var name  = (nm ? nm.value : '').trim();
                 if (!phone) return showToast(dict('my_q_err_phone'), 1800);
                 if (!name)  return showToast(dict('my_q_err_name'), 1800);
-                showToast(dict('my_q_ok') + (((window.CUR_LANG || '') === 'en') ? ' (' + name + ' · ' + phone + ')' : '（' + name + ' · ' + phone + '）'), 2400);
+                // 打开先锋档案查询弹窗
+                if (typeof window.__qpOpen === 'function') {
+                    window.__qpOpen({ phone: phone, name: name });
+                }
+                showToast(dict('my_q_ok') + (((window.CUR_LANG || '') === 'en') ? ' (' + name + ' · ' + phone + ')' : '（' + name + ' · ' + phone + '）'), 1800);
             });
         }
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
-    else bind();
+    bind();
+    window.__bindMyPageActions_retry = 0;
+    (function reBind(){
+        if (document.getElementById('myBtnQuery') && document.getElementById('myBtnInvite') && document.getElementById('myBtnHelp')) return;
+        if ((++window.__bindMyPageActions_retry) > 30) return;
+        setTimeout(reBind, 150);
+        bind();
+    })();
+})();
+
+/* ==================== 先锋档案查询弹窗 · 打开 / loading / 匹配 / 关闭 ==================== */
+(function initQueryProfileModal(){
+    'use strict';
+    var overlay, btnX, btnBack;
+    var outPhone, outName;
+    var loadingWrap, resultWrap, cardsWrap, noneWrap;
+    var aiCardsEl, shCardsEl, aiDiviEl, shDiviEl;
+    var _tmr = null;
+
+    function $(id){ return document.getElementById(id); }
+    function dict(k){
+        var ZH = {
+            'qp_title':'先锋档案查询','qp_k_phone':'手机号','qp_k_name':'姓名','qp_loading':'查询中',
+            'qp_ai_title':'派友 AI 卡','qp_sh_title':'派友股东卡',
+            'qp_ai_income':'实时收益','qp_sh_income':'累计收益',
+            'qp_none':'查无此人，请确认系统工作人员是否录入','qp_back':'返  回',
+            'apply_s_u':'张'
+        };
+        try {
+            if (window.I18N && window.CUR_LANG && window.I18N[window.CUR_LANG] && typeof window.I18N[window.CUR_LANG][k] === 'string') {
+                return window.I18N[window.CUR_LANG][k];
+            }
+            if (window.I18N && window.I18N['zh-CN'] && typeof window.I18N['zh-CN'][k] === 'string') {
+                return window.I18N['zh-CN'][k];
+            }
+        } catch(e){}
+        return typeof ZH[k] === 'string' ? ZH[k] : k;
+    }
+    function fmt(n){
+        if (n == null || isNaN(+n)) return '0';
+        var v = +n;
+        if (Math.abs(v) >= 1000) {
+            return Math.round(v).toLocaleString('en-US');
+        }
+        var s = v.toFixed(8).replace(/\.?0+$/,'');
+        if (s === '' || s === '-0') s = '0';
+        return s;
+    }
+    function open({phone, name}){
+        cacheEls();
+        if (!overlay) return;
+        phone = String(phone || '').trim() || '—';
+        name  = String(name || '').trim()  || '—';
+        if (outPhone) outPhone.textContent = phone;
+        if (outName)  outName.textContent  = name;
+        // 重置 UI
+        if (loadingWrap) loadingWrap.style.display = '';
+        if (resultWrap)  resultWrap.style.display = 'none';
+        if (cardsWrap)   cardsWrap.style.display = 'none';
+        if (noneWrap)    noneWrap.style.display = 'none';
+        // 打开遮罩
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('qp-open');
+        // Loading 1.2 ~ 2.0s，然后匹配
+        if (_tmr) { clearTimeout(_tmr); _tmr = null; }
+        var delay = 1200 + Math.round(Math.random() * 800);
+        _tmr = setTimeout(function(){
+            _tmr = null;
+            runMatch({ phone: phone, name: name });
+        }, delay);
+    }
+    function close(){
+        if (_tmr) { clearTimeout(_tmr); _tmr = null; }
+        cacheEls();
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('qp-open');
+    }
+    function cacheEls(){
+        if (overlay) return;
+        overlay = $('qpOverlay');
+        btnX    = $('qpCloseX');
+        btnBack = $('qpBackBtn');
+        outPhone= $('qpOutPhone');
+        outName = $('qpOutName');
+        loadingWrap = $('qpLoading');
+        resultWrap  = $('qpResult');
+        cardsWrap   = $('qpCards');
+        noneWrap    = $('qpNone');
+        aiCardsEl = $('qpAiCards');
+        shCardsEl = $('qpShCards');
+        aiDiviEl  = $('qpAiDivi');
+        shDiviEl  = $('qpShDivi');
+        if (btnX)    btnX.addEventListener('click', close);
+        if (btnBack) btnBack.addEventListener('click', close);
+        if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) close(); });
+    }
+    /**
+     * 去首页表格系统（__applyRows，申请详情 100 条数据，NAME_POOL）匹配「姓名」；
+     * 如果姓名命中并且 手机号后 4 位也能对上 或 姓名精确命中 TOP10 真实姓名 → 视为命中档案。
+     * 没有命中 → 显示查无此人。
+     */
+    function runMatch({phone, name}){
+        cacheEls();
+        if (!resultWrap) return;
+        var rows = (window.__applyRows && Array.isArray(window.__applyRows)) ? window.__applyRows : null;
+        var matched = null;
+        var nameNorm = String(name || '').trim();
+        var phoneStr = String(phone || '').trim();
+        var phoneTail = phoneStr.replace(/\D/g,'').slice(-4);
+        if (rows && nameNorm) {
+            // 先按姓名精确匹配（TOP10 有真实姓名）
+            for (var i = 0; i < rows.length; i++){
+                var r = rows[i];
+                if (!r || r.pending) continue;
+                if (String(r.name || '').trim() === nameNorm) {
+                    // 如果还能对得上手机尾号，直接命中；否则也先作为候选
+                    matched = r;
+                    // 尾号校验：用 idx 映射一个尾号（seeded），若匹配则立即 break
+                    var seedTail = String(1000 + ((r.idx * 131 + 37) % 9000));
+                    if (!phoneTail || seedTail === phoneTail) break;
+                }
+            }
+            // 若无精确姓名命中，再做一个弱匹配：姓名属于 NAME_POOL 且手机输入了内容 => 当作工作人员未完整录入姓名到申请详情表中的"已录入人员"也给命中
+            // 保持：只有真在 rows 里有档案（top10 有 name 字段的）才算命中；否则查无此人
+        }
+        if (matched) {
+            var isAI = matched.type === 'ai';
+            var aiC = isAI ? (matched.cards || 0) : 0;
+            var shC = (!isAI) ? (matched.cards || 0) : 0;
+            // 给另一种卡也给个合理小数字（避免显示 0 张，更符合"有档案"的观感）
+            if (aiC === 0) aiC = 1 + ((matched.idx * 3) % 3);
+            if (shC === 0) shC = 1 + ((matched.idx * 7) % 2);
+            // 收益：用 computeDivi（TOP10 真实收益函数）作为该卡累计
+            var diviNow = 0;
+            try {
+                if (typeof window.__applyComputeDivi === 'function') {
+                    diviNow = +window.__applyComputeDivi(matched, new Date()) || 0;
+                }
+            } catch(e){ diviNow = 0; }
+            var aiDivi, shDivi;
+            if (isAI) {
+                aiDivi = diviNow;                          // AI 是"实时收益"
+                shDivi = aiDivi * 0.6 + 0.01 * (matched.idx % 11); // 股东给一个合理累计
+            } else {
+                shDivi = diviNow;                          // 股东是"累计收益"
+                aiDivi = shDivi * 0.45 + 0.01 * ((matched.idx + 5) % 17);
+            }
+            if (aiCardsEl) aiCardsEl.textContent = fmt(aiC);
+            if (shCardsEl) shCardsEl.textContent = fmt(shC);
+            if (aiDiviEl)  aiDiviEl.textContent  = fmt(aiDivi);
+            if (shDiviEl)  shDiviEl.textContent  = fmt(shDivi);
+            if (cardsWrap)  cardsWrap.style.display = '';
+            if (noneWrap)   noneWrap.style.display  = 'none';
+        } else {
+            if (cardsWrap)  cardsWrap.style.display = 'none';
+            if (noneWrap)   noneWrap.style.display  = '';
+            if (noneWrap) {
+                var txt = noneWrap.querySelector('.qp-none-text');
+                if (txt) txt.textContent = dict('qp_none');
+            }
+        }
+        if (loadingWrap) loadingWrap.style.display = 'none';
+        if (resultWrap)  resultWrap.style.display = '';
+    }
+    cacheEls();
+    window.__qpOpen = open;
+    window.__qpClose = close;
 })();
 </script>
 </body>
