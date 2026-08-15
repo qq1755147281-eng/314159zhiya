@@ -1023,37 +1023,62 @@
 
         /* ========== 我的页 ========== */
         .my-header {
-            margin: 10px var(--space-md) 14px;
-            padding: 16px;
-            border-radius: 18px;
+            margin: 10px var(--space-md) 12px;
+            padding: 10px 12px;
+            border-radius: 16px;
             position: relative; overflow: hidden;
             background:
-                linear-gradient(145deg, rgba(22,28,48,0.92) 0%, rgba(14,20,36,0.96) 100%);
+                radial-gradient(120% 140% at 0% 0%, rgba(253,230,138,0.14) 0%, rgba(253,230,138,0.02) 40%, transparent 70%),
+                linear-gradient(145deg, rgba(22,28,48,0.95) 0%, rgba(14,20,36,0.98) 100%);
             border: 1px solid var(--glass-border-strong);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.34);
         }
         .my-header::before {
-            content: ''; position: absolute; inset: 0; padding: 1.2px; border-radius: 18px;
-            background: linear-gradient(135deg, var(--accent-gold-2) 0%, rgba(212,175,55,0.3) 35%, rgba(139,92,246,0.4) 70%, var(--accent-gold-2) 100%);
+            content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(253,230,138,0.9) 0%, rgba(253,230,138,0.18) 30%, rgba(139,92,246,0.48) 65%, rgba(253,230,138,0.85) 100%);
             -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude;
             pointer-events: none;
         }
+        .my-header::after {
+            content: ''; position: absolute; inset: 0; border-radius: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 22%, rgba(255,255,255,0.02) 100%);
+            pointer-events: none; mix-blend-mode: screen;
+        }
         .my-user-row {
             position: relative; z-index: 1;
-            display: flex; align-items: center; gap: 14px;
+            display: flex; align-items: center; gap: 11px;
+            max-width: 100%;
         }
         .my-avatar {
-            width: 54px; height: 54px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 25%, #fff4c8 0%, #d4af37 55%, #8e6a14 100%);
-            border: 2px solid rgba(253,230,138,0.6);
-            box-shadow: 0 0 18px rgba(212,175,55,0.35);
+            width: 42px; height: 42px; border-radius: 50%;
+            position: relative;
+            background:
+                radial-gradient(circle at 32% 24%, #fff8da 0%, #fde68a 22%, #e7c156 58%, #a47d1a 100%);
+            border: 1.5px solid rgba(253,230,138,0.9);
+            box-shadow:
+                0 0 0 1px rgba(0,0,0,0.35),
+                0 0 14px rgba(212,175,55,0.55),
+                inset 0 0 8px rgba(255,245,180,0.6),
+                inset 0 -6px 12px rgba(140,100,10,0.45);
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 900; color: #3b2c06;
+            font-size: 18px; font-weight: 950; color: #3b2c06;
+            letter-spacing: -0.02em;
+            flex-shrink: 0;
         }
-        .my-user-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
-        .my-name { font-size: 18px; font-weight: 800; color: var(--text-primary); }
-        .my-sub  { font-size: 11.5px; color: var(--text-tertiary); }
+        .my-avatar::before {
+            content: ''; position: absolute; inset: 0; border-radius: 50%;
+            background: radial-gradient(circle at 36% 20%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 36%);
+            pointer-events: none;
+        }
+        .my-user-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+        .my-name {
+            font-size: 15.5px; font-weight: 900; letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #ffffff 0%, #fff1b5 40%, #fde68a 75%, #e7c156 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.55)) drop-shadow(0 0 6px rgba(253,230,138,0.18));
+        }
 
         /* 我的页 统计四格 */
         .my-stats-grid {
@@ -1134,42 +1159,105 @@
         .my-spacer.small { flex: 0 0 auto; min-height: 14px; }
         .my-page { display: flex; flex-direction: column; min-height: calc(100dvh - 70px); }
         .my-bottom-actions {
-            display: flex; gap: 12px;
-            margin: 22px var(--space-md) calc(34px + env(safe-area-inset-bottom));
+            display: flex; gap: 14px;
+            margin: 24px var(--space-md) calc(40px + env(safe-area-inset-bottom));
         }
         .my-bottom-actions.column {
             flex-direction: column;
-            margin-top: 16px;
+            margin-top: 18px;
+            gap: 14px;
         }
         .my-action-btn {
-            flex: 1;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            height: 48px; border-radius: 14px;
-            font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+            position: relative; overflow: hidden;
+            flex: 0 0 auto;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            height: 54px; min-height: 54px; border-radius: 16px;
+            font-size: 16px; font-weight: 800; letter-spacing: -0.01em;
             cursor: pointer;
             border: 1px solid transparent;
-            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 0 14px;
+            transition: transform 0.18s cubic-bezier(.2,.7,.2,1), box-shadow 0.24s ease, filter 0.24s ease, border-color 0.2s ease, background 0.2s ease;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             -webkit-tap-highlight-color: transparent;
+            will-change: transform;
+            box-sizing: border-box;
         }
         .my-action-btn.full { flex: 1 1 100%; width: 100%; }
-        .my-action-btn:active { transform: translateY(1px) scale(0.992); }
-        .my-action-btn .my-action-ico { font-size: 18px; line-height: 1; }
+        .my-action-btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 28%, rgba(0,0,0,0.06) 100%);
+            pointer-events: none; mix-blend-mode: screen;
+            border-radius: inherit;
+        }
+        .my-action-btn:active { transform: translateY(1.5px) scale(0.994); }
+        .my-action-btn .my-action-ico { font-size: 20px; line-height: 1; }
         .my-action-btn.primary {
             color: #3b2c06;
-            background: linear-gradient(135deg, #fde68a 0%, #f5d06a 35%, #d4af37 100%);
-            border-color: rgba(253,230,138,0.85);
-            box-shadow: 0 10px 22px rgba(212,175,55,0.28), inset 0 1px 0 rgba(255,255,255,0.65);
-            filter: drop-shadow(0 2px 6px rgba(212,175,55,0.35));
+            background: linear-gradient(160deg, #fff4c8 0%, #fde68a 18%, #f5cf66 45%, #d4af37 72%, #9a7113 100%);
+            border-color: rgba(253,230,138,0.95);
+            box-shadow:
+                0 14px 28px rgba(212,175,55,0.34),
+                0 2px 6px rgba(212,175,55,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.75),
+                inset 0 -2px 0 rgba(140,100,10,0.35);
+            filter: drop-shadow(0 3px 10px rgba(212,175,55,0.45));
         }
-        .my-action-btn.primary:hover { filter: brightness(1.06) drop-shadow(0 2px 8px rgba(212,175,55,0.5)); }
+        .my-action-btn.primary:hover { filter: brightness(1.08) drop-shadow(0 3px 14px rgba(212,175,55,0.62)); }
+        .my-action-btn.primary .my-btn-shine {
+            position: absolute; top: -100%; left: -120%;
+            width: 50%; height: 300%;
+            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.62) 52%, transparent 65%);
+            transform: rotate(12deg);
+            opacity: 0.88;
+            pointer-events: none;
+            animation: myShine 3.4s ease-in-out infinite;
+            filter: blur(0.2px);
+        }
         .my-action-btn.outline {
             color: var(--text-primary);
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border-strong);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04);
+            background:
+                linear-gradient(145deg, rgba(28,36,60,0.92) 0%, rgba(15,22,40,0.96) 100%);
+            border: 1px solid rgba(255,255,255,0.10);
+            box-shadow:
+                0 12px 24px rgba(0,0,0,0.34),
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -1px 0 rgba(0,0,0,0.32);
         }
-        .my-action-btn.outline:hover { background: var(--bg-elevated); border-color: rgba(253,230,138,0.45); }
+        .my-action-btn.outline:hover {
+            background: linear-gradient(145deg, rgba(34,44,72,0.95) 0%, rgba(18,26,46,0.98) 100%);
+            border-color: rgba(253,230,138,0.55);
+            box-shadow:
+                0 14px 28px rgba(0,0,0,0.40),
+                0 0 0 3px rgba(212,175,55,0.14),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .my-action-btn.outline .my-action-ico { filter: drop-shadow(0 1px 3px rgba(253,230,138,0.15)); }
+        @keyframes myShine {
+            0%   { left: -120%; opacity: 0.0; }
+            8%   { opacity: 0.95; }
+            46%  { left: 140%; opacity: 0.7; }
+            56%  { opacity: 0.0; }
+            100% { left: 140%; opacity: 0.0; }
+        }
+
+        /* 查询卡内的「一键查询」主按钮：更大、更有行动感 */
+        .my-action-btn.query-primary {
+            height: 58px; min-height: 58px;
+            font-size: 17px; font-weight: 900; letter-spacing: -0.005em;
+            border-radius: 14px;
+            gap: 10px;
+            flex: 0 0 auto;
+            padding: 0 14px;
+        }
+        .my-action-btn.query-primary .my-action-ico { font-size: 22px; }
+        .my-action-btn.query-primary {
+            box-shadow:
+                0 16px 30px rgba(212,175,55,0.40),
+                0 2px 8px rgba(212,175,55,0.34),
+                inset 0 1px 0 rgba(255,255,255,0.82),
+                inset 0 -2px 0 rgba(140,100,10,0.40);
+            filter: drop-shadow(0 4px 14px rgba(212,175,55,0.52));
+        }
 
         /* 我的页：先锋档案查询 · 方形卡 */
         .my-query-card {
@@ -3338,22 +3426,24 @@
                 <input type="text" class="my-input" id="myQName" maxlength="32" autocomplete="name"
                        data-i18n-ph="my_q_nm" placeholder="请输入姓名" />
             </label>
-            <button class="my-action-btn primary full" id="myBtnQuery" style="margin-top:6px;">
-                <span class="my-action-ico">🔍</span>
-                <span class="my-action-label" data-i18n="my_q_btn">确认查询</span>
+            <button class="my-action-btn primary query-primary full" id="myBtnQuery" style="margin-top:8px;">
+                <span class="my-btn-shine"></span>
+                <span class="my-action-ico">⚡</span>
+                <span class="my-action-label" data-i18n="my_q_btn">一键查询</span>
             </button>
         </div>
 
         <!-- 中间留白（把帮助中心自然推到底部附近） -->
         <div class="my-spacer small"></div>
 
-        <!-- 两个按钮改竖排：上面邀请好友，下面帮助中心 -->
+        <!-- 两个按钮改竖排：上面邀请好友，下面帮助中心；都升级为更高质感 -->
         <div class="my-bottom-actions column">
             <button class="my-action-btn outline full" id="myBtnInvite">
                 <span class="my-action-ico">🎯</span>
                 <span class="my-action-label" data-i18n="menu_invite">邀请好友</span>
             </button>
             <button class="my-action-btn primary full" id="myBtnHelp">
+                <span class="my-btn-shine"></span>
                 <span class="my-action-ico">❓</span>
                 <span class="my-action-label" data-i18n="menu_help">帮助中心</span>
             </button>
@@ -3811,7 +3901,7 @@ const I18N = {
         'my_query_title': '先锋档案查询',
         'my_q_ph':        '请输入手机号',
         'my_q_nm':        '请输入姓名',
-        'my_q_btn':       '确认查询',
+        'my_q_btn':       '一键查询',
         'my_q_err_phone': '请输入手机号',
         'my_q_err_name':  '请输入姓名',
         'my_q_ok':        '查询已提交，先锋档案匹配中…',
@@ -4048,7 +4138,7 @@ const I18N = {
         'my_query_title': 'Pioneer Profile Query',
         'my_q_ph':        'Enter mobile number',
         'my_q_nm':        'Enter your name',
-        'my_q_btn':       'Confirm Query',
+        'my_q_btn':       'One-Tap Query',
         'my_q_err_phone': 'Please enter mobile number',
         'my_q_err_name':  'Please enter your name',
         'my_q_ok':        'Query submitted · matching Pioneer profile…',
