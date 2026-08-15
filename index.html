@@ -2061,18 +2061,18 @@
         .cg-step {
             display: grid;
             grid-template-columns: 34px 1fr;
-            gap: 10px;
-            padding: 12px 0;
+            gap: 12px;
+            padding: 14px 0;
             position: relative;
-            align-items: flex-start;
+            align-items: center;
         }
         .cg-step + .cg-step {
             border-top: 1px dashed rgba(255,255,255,0.06);
         }
         .cg-step-num {
-            width: 30px; height: 30px; border-radius: 50%;
+            width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 900;
+            font-size: 14px; font-weight: 900;
             background: linear-gradient(135deg, #fff4c8 0%, var(--accent-gold) 60%, #a77e1f 100%);
             color: #3b2c06;
             box-shadow: 0 3px 8px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
@@ -2081,15 +2081,16 @@
         }
         .cg-step + .cg-step::before {
             content: ''; position: absolute;
-            left: 15px; top: -4px;
+            left: 16px; top: -4px;
             width: 2px; height: 10px;
             background: linear-gradient(180deg, rgba(212,175,55,0.4), rgba(212,175,55,0.1));
             z-index: 0;
         }
         .cg-step-title {
-            font-size: 12.5px; font-weight: 800;
+            font-size: 14px; font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 3px;
+            margin-bottom: 0;
+            line-height: 1.4;
         }
         .cg-step-title .accent { color: var(--accent-gold-2); }
         .cg-step-desc {
@@ -4043,30 +4044,18 @@
                 <div class="cg-step-num">1</div>
                 <div>
                     <div class="cg-step-title"><span data-i18n="cg_s1_title">找到下列任意一个<span class="accent">官方群聊</span></span></div>
-                    <div class="cg-step-desc" data-i18n="cg_s1_desc_v2">
-                        选择下方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。
-                    </div>
-                    <div class="cg-step-tag"><span>🔽 向下滑动找到群聊</span></div>
                 </div>
             </div>
             <div class="cg-step">
                 <div class="cg-step-num">2</div>
                 <div>
                     <div class="cg-step-title"><span data-i18n="cg_s2_title"><span class="accent">申请加入</span>并查看群公告</span></div>
-                    <div class="cg-step-desc" data-i18n="cg_s2_desc">
-                        入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。
-                    </div>
-                    <div class="cg-step-tag gold"><span>📢 先读公告 · 防诈骗</span></div>
                 </div>
             </div>
             <div class="cg-step">
                 <div class="cg-step-num">3</div>
                 <div>
                     <div class="cg-step-title"><span data-i18n="cg_s3_title">提交<span class="accent">账号 · 收款方式 · 密语</span></span></div>
-                    <div class="cg-step-desc" data-i18n="cg_s3_desc">
-                        向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。
-                    </div>
-                    <div class="cg-step-tag purple"><span>🔐 端对端加密提交</span></div>
                 </div>
             </div>
             <div class="cg-step">
@@ -4344,12 +4333,8 @@ const I18N = {
         'cg_c_tk_name':      'Teletalk 群',
         'cg_steps_title':    '🧾 兑换申请 · 4 步流程',
         'cg_s1_title':       '找到下列任意一个<span class="accent">官方群聊</span>',
-        'cg_s1_desc':        '选择上方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。',
-        'cg_s1_desc_v2':     '选择下方的 <span class="strong">邮箱 / Telegram / QQ / Teletalk</span> 任一通道，进入群聊或发送邮件。',
         'cg_s2_title':       '<span class="accent">申请加入</span>并查看群公告',
-        'cg_s2_desc':        '入群后<span class="strong">务必先阅读置顶公告</span>，所有兑换操作均需按公告要求，联系群内认证客服。',
         'cg_s3_title':       '提交<span class="accent">账号 · 收款方式 · 密语</span>',
-        'cg_s3_desc':        '向客服提供：① 您的<span class="strong">派币账号昵称</span>；② 收款方式（<span class="strong">银行卡 / 支付宝 / 微信</span> 三选一）及真实姓名；③ 兑换<span class="strong">密语</span>，用于核验身份。',
         'cg_s4_title':       '提交申请，<span class="accent">坐等到账</span>',
         'cg_s4_desc':        '客服汇总后统一向公司提交，审批通过后直接打款到您的 <span class="strong">支付宝 / 微信 / 银行卡</span>，您无需承担任何变现风险。',
         'cg_s4_timing':      '快则 24h · 慢则 72h 到账',
@@ -4597,12 +4582,8 @@ const I18N = {
         'cg_c_tk_name':      'Teletalk Group',
         'cg_steps_title':    '🧾 Redemption · 4-Step Process',
         'cg_s1_title':       'Join any <span class="accent">official group chat</span>',
-        'cg_s1_desc':        'Pick one channel above: <span class="strong">Email / Telegram / QQ / Teletalk</span>, join the group or send an email.',
-        'cg_s1_desc_v2':     'Pick one channel below: <span class="strong">Email / Telegram / QQ / Teletalk</span>, join the group or send an email.',
         'cg_s2_title':       '<span class="accent">Apply to join</span> and read pinned rules',
-        'cg_s2_desc':        'After joining, <span class="strong">read the pinned announcement first</span>. All redemptions must follow the rules and reach out to verified customer support.',
         'cg_s3_title':       'Submit <span class="accent">Account · Payee · Passphrase</span>',
-        'cg_s3_desc':        'Provide support with: ① your <span class="strong">Pi account nickname</span>; ② Payee method — <span class="strong">Bank / Alipay / WeChat</span> — plus real name; ③ your <span class="strong">redeem passphrase</span> for identity verification.',
         'cg_s4_title':       'Submit & <span class="accent">wait for payout</span>',
         'cg_s4_desc':        'Support submits your application to the company. Approved funds are sent directly to your <span class="strong">Alipay / WeChat / Bank</span>. No cash-out risk on your side.',
         'cg_s4_timing':      'Fast 24h · Slow 72h to receive',
