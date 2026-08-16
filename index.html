@@ -3342,15 +3342,15 @@
                     <div class="eco-btn" id="btnEcoPeople">
                         <div class="eco-btn-icon team">👥</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">58</div>
-                            <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
+                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">18</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_people_l">AI股东卡</div>
                         </div>
                     </div>
                     <div class="eco-btn" id="btnEcoDividend">
                         <div class="eco-btn-icon reward">🎁</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">286.52</div>
-                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
+                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">1,000.00</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">累计分红派币</div>
                         </div>
                     </div>
                 </div>
@@ -4408,10 +4408,10 @@ const I18N = {
         'eco_pool_title': '生态分红池',
         'eco_pool_label': '派币分红总值',
         'eco_total_v':    '1,200',
-        'eco_people_v':   '58',
-        'eco_people_l':   '分红人数',
-        'eco_divi_v':     '286.52',
-        'eco_divi_l':     '分红派币',
+        'eco_people_v':   '18',
+        'eco_people_l':   'AI股东卡',
+        'eco_divi_v':     '1,000.00',
+        'eco_divi_l':     '累计分红派币',
 
         // 市场标题
         'mk_title_full': '派友 AI 卡 · 派友股东卡',
@@ -5864,22 +5864,23 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
      *   每 8 秒 +0.01~0.03（均值0.02 / 8s ≈ 0.0025 / s），00:00清零
      */
     const BASE = {
-        ecoTotal: 1200, ecoPeople: 58, ecoDivi: 286.52,
+        ecoTotal: 1200, ecoPeople: 18, ecoDivi: 1000,
         aiEco: 1, aiHour: 0, aiPi: 0,           // 规则18：今日派币0起步
         shApp: 1, shPi: 0,                      // 规则18：股东卡今日派币0起步
     };
     const PER_SEC = {
         ecoTotal: 0.625,                        // 规则17净均值 0.625/s（4分钟循环：+1~5/-1~3/+1~6/-1~3）
-        ecoPeople: 2 / (3600 * 3),
-        ecoDivi: 1.22505,
+        ecoPeople: 0.5 / 3600,                  // AI股东卡：2小时净均值 +0.5（+1~3 / -1~2 交替）
+        ecoDivi: 0.06 / 3,                      // 累计分红派币：平均每3秒 +0.06（间隔1~10秒随机）
         aiEco: 3 / 10,                          // 0.3 每 10s rint(1,5) 均值 = 3
         aiHour: 0.3 / 5,                        // 0.06 每 5s rfloat(0.1,0.5) 均值 = 0.3
         aiPi: 1.15,                             // 规则18：0.1~2.2 均值
         shApp: 3 / 3600,                        // 每 1h rint(1,5) 均值 = 3
         shPi: 0.02 / 8,                         // 规则18：0.01~0.03 均值0.02 / 8s
     };
+    // AI股东卡阶段控制：奇小时 +1~3；偶小时 -1~2；维持90~190
     const PEOPLE_STAGE_MS = 60 * 60 * 1000;
-    const PEOPLE_MIN = 50, PEOPLE_MAX = 1000;
+    const PEOPLE_MIN = 90, PEOPLE_MAX = 190;
 
     /* ========== 3. 状态对象 ========== */
     const S = {
@@ -5900,15 +5901,25 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         /* (a) 生态 3 项：以 2026-08-15 00:30 为基准，永不重置 */
         const ecoElapsedSec = Math.max(0, (nMs - ECO_ANCHOR_MS) / 1000);
         S.ecoTotal   = BASE.ecoTotal + Math.floor(ecoElapsedSec * PER_SEC.ecoTotal);
-        S.ecoDivi    = BASE.ecoDivi    + ecoElapsedSec * PER_SEC.ecoDivi;
+        // 累计分红派币：持续单调累加，从1000开始，每1~10秒 +0.06（均值3秒一次 → 0.06/3 /s）
+        S.ecoDivi    = BASE.ecoDivi + ecoElapsedSec * PER_SEC.ecoDivi;
+        // AI股东卡：阶段循环。奇小时 +1~3；偶小时 -1~2。净均值 +0.5 / 2h。维持 90~190
         const totalStage = Math.max(0, Math.floor(ecoElapsedSec * 1000 / PEOPLE_STAGE_MS));
         S.ecoPeople = BASE.ecoPeople;
         for (let k = 0; k < totalStage; k++){
-            if      ((k % 3) === 0) S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
-            else if ((k % 3) === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-            else                   S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+            if (S.ecoPeople < PEOPLE_MIN) {
+                S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+            } else if (S.ecoPeople > PEOPLE_MAX) {
+                S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+            } else if ((k % 2) === 0) {
+                // 奇阶段：+1~3
+                S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+            } else {
+                // 偶阶段：-1~2
+                S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+            }
         }
-        S.ecoPeopleStage = totalStage % 3;
+        S.ecoPeopleStage = totalStage % 2;
 
         /* (b) AI / 股东今日字段：以当天 00:00:00 为基准 */
         const today0 = startOfDayMs(nMs);
@@ -6008,18 +6019,42 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('eco_v_total', fmtInt(S.ecoTotal));
     }, 1000);
     function runPeopleStageOnce(){
-        if (S.ecoPeopleStage === 0)      S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
-        else if (S.ecoPeopleStage === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-        else                             S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 3;
+        // AI股东卡：阶段交替。奇小时 +1~3；偶小时 -1~2。碰到边界反向。
+        if (S.ecoPeople <= PEOPLE_MIN + 5) {
+            S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+        } else if (S.ecoPeople >= PEOPLE_MAX - 5) {
+            S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+        } else if (S.ecoPeopleStage === 0) {
+            S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+        } else {
+            S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+        }
+        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 2;
         setHtml('eco_v_people', fmtInt(S.ecoPeople));
     }
     const tmrEcoPeople = setInterval(runPeopleStageOnce, PEOPLE_STAGE_MS);
     window.__debugPeopleStage = runPeopleStageOnce;
-    const tmrEcoDivi = setInterval(function(){
-        S.ecoDivi += (Math.random() < 0.25 ? rfloat(0.01, 0.2) : rfloat(0.2, 3.0));
+
+    /* 累计分红派币：单调累加。1~10 秒随机间隔，每次 +0.06 */
+    function scheduleEcoDiviTick(){
+        const waitSec = rint(1, 10); // 1~10秒随机间隔
+        setTimeout(function(){
+            try {
+                S.ecoDivi += 0.06;
+                setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+            } finally {
+                scheduleEcoDiviTick();
+            }
+        }, waitSec * 1000);
+    }
+    scheduleEcoDiviTick();
+    // 打开页面立即给一下视觉反馈
+    setTimeout(function(){
+        S.ecoDivi += 0.06;
         setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
-    }, 1000);
+    }, 700);
+    // 占位，不影响旧 stopAll 逻辑（原 tmrEcoDivi 被下面 stopAll 数组引用→设为null）
+    var tmrEcoDivi = null;
 
     /* ========== 8. AI 卡 3 项 ticker（新规格） ==========
      * aiEco ：每 10 秒 +rint(1,5)（不再是每秒爆发）
