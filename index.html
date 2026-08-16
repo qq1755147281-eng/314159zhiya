@@ -3496,14 +3496,13 @@
             </div>
             <!-- 表头 + 数据表格（7 列：序号 / 姓名 / 手机号 / 持有时间 / 类型 / 数量 / 派币分红） -->
             <div class="apply-tbl-wrap">
-                <table class="apply-tbl tbl-7col">
+                <table class="apply-tbl tbl-6col">
                     <thead>
                         <tr>
-                            <th class="col-i" data-i18n="apply_th_id">#</th>
+                            <th class="col-i" data-i18n="apply_th_id">序号</th>
                             <th class="col-n" data-i18n="apply_th_name">姓名</th>
-                            <th class="col-p" data-i18n="apply_th_phone">手机号</th>
                             <th class="col-t" data-i18n="apply_th_time">持有时间</th>
-                            <th class="col-y" data-i18n="apply_th_type">类型</th>
+                            <th class="col-y" data-i18n="apply_th_type">卡的类型</th>
                             <th class="col-q" data-i18n="apply_th_qty">数量</th>
                             <th class="col-d" data-i18n="apply_th_divi">派币分红</th>
                         </tr>
@@ -4500,10 +4499,10 @@ const I18N = {
         'apply_s_sh_v':  '442',
         'apply_s_u':     '张',
         'apply_th_id':   '序号',
-        'apply_th_name': '名称',
+        'apply_th_name': '姓名',
         'apply_th_time': '持有时间',
-        'apply_th_type': '类型',
-        'apply_th_qty':  '持有张数',
+        'apply_th_type': '卡的类型',
+        'apply_th_qty':  '数量',
         'apply_th_divi': '派币分红',
         'apply_type_ai': '派友AI卡·二级',
         'apply_type_sh': '派友股东卡·二级',
@@ -5825,7 +5824,6 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 tr.innerHTML = `
                     <td class="col-i">${idStr}</td>
                     <td class="col-n">${pName}</td>
-                    <td class="col-p">${pPhone}</td>
                     <td class="col-t">${pDate}</td>
                     <td class="col-y"><span class="type-pill pending">${pType}</span></td>
                     <td class="col-q"><span class="qty-card"><span class="q-n">${pQty}</span><span class="q-u"></span></span></td>
@@ -5843,7 +5841,6 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 tr.innerHTML = `
                     <td class="col-i">${idStr}</td>
                     <td class="col-n">${m.name}</td>
-                    <td class="col-p">${m.phone}</td>
                     <td class="col-t">${holdDate}</td>
                     <td class="col-y"><span class="${pilCls}">${typeLblRaw}</span></td>
                     <td class="col-q"><span class="qty-card"><span class="q-n">${qtyStr}</span><span class="q-u">${uCard}</span></span></td>
