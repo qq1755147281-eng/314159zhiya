@@ -1752,6 +1752,13 @@
             color: #fecaca;
             filter: drop-shadow(0 1px 3px rgba(248,113,113,0.4));
         }
+        /* 规则8：未匹配时的红色警告字体 */
+        .qp-none-text.err-red {
+            color: #ef4444;
+            text-shadow: 0 0 6px rgba(239,68,68,0.55), 0 0 12px rgba(239,68,68,0.3);
+            filter: drop-shadow(0 1px 3px rgba(239,68,68,0.55));
+            font-weight: 900;
+        }
 
         .qp-foot { position: relative; z-index: 1; padding: 12px 18px calc(16px + env(safe-area-inset-bottom)); }
         .qp-back-btn {
@@ -2817,6 +2824,14 @@
         .apply-tbl.tbl-6col th.col-y { width: 20%; }
         .apply-tbl.tbl-6col th.col-q { width: 13%; }
         .apply-tbl.tbl-6col th.col-d { width: 14%; }
+        /* 7 列宽度分配（规则3：序号 / 姓名 / 手机号 / 持有时间 / 类型 / 数量 / 派币分红） */
+        .apply-tbl.tbl-7col th.col-i { width: 8%; }
+        .apply-tbl.tbl-7col th.col-n { width: 18%; }
+        .apply-tbl.tbl-7col th.col-p { width: 19%; }
+        .apply-tbl.tbl-7col th.col-t { width: 16%; }
+        .apply-tbl.tbl-7col th.col-y { width: 16%; }
+        .apply-tbl.tbl-7col th.col-q { width: 11%; }
+        .apply-tbl.tbl-7col th.col-d { width: 12%; }
 
         .apply-tbl tbody {
             display: block;  /* 允许 tbody 滚动 */
@@ -2849,6 +2864,7 @@
         }
         .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
         .apply-tbl td.col-n { font-weight: 800; color: var(--text-primary); line-height: 1.2; padding-left: 6px; }
+        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.4px; }
         .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.2px; }
         .apply-tbl td.col-y { /* type pill 容器 */ }
         .apply-tbl td.col-q { text-align: right; font-weight: 900; letter-spacing: -0.01em; }
@@ -2898,6 +2914,7 @@
         .apply-tbl tbody tr.row-pending td { color: var(--text-tertiary); }
         .apply-tbl tbody tr.row-pending td.col-i { color: rgba(148,163,184,0.8); }
         .apply-tbl tbody tr.row-pending td.col-n { font-weight: 700; color: rgba(203,213,225,0.92); letter-spacing: 0.04em; }
+        .apply-tbl tbody tr.row-pending td.col-p { color: rgba(148,163,184,0.7); }
         .apply-tbl tbody tr.row-pending td.col-t { color: rgba(148,163,184,0.7); }
         .apply-tbl tbody tr.row-pending td.col-q .qty-card { color: rgba(148,163,184,0.8); }
         .apply-tbl tbody tr.row-pending td.col-q .qty-card .q-u { color: rgba(148,163,184,0.65); }
@@ -3325,15 +3342,15 @@
                     <div class="eco-btn" id="btnEcoPeople">
                         <div class="eco-btn-icon team">👥</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">58</div>
-                            <div class="eco-btn-lbl" data-i18n="eco_people_l">分红人数</div>
+                            <div class="eco-btn-val" data-i18n="eco_people_v" id="eco_v_people">18</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_people_l">AI股东卡</div>
                         </div>
                     </div>
                     <div class="eco-btn" id="btnEcoDividend">
                         <div class="eco-btn-icon reward">🎁</div>
                         <div class="eco-btn-body">
-                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">286.52</div>
-                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">分红派币</div>
+                            <div class="eco-btn-val" data-i18n="eco_divi_v" id="eco_v_divi">1,000.00</div>
+                            <div class="eco-btn-lbl" data-i18n="eco_divi_l">累计分红派币</div>
                         </div>
                     </div>
                 </div>
@@ -3399,12 +3416,12 @@
                             <div class="s" data-i18n="hs_sh_sub">Shareholder Card</div>
                         </div>
                     </div>
-                    <!-- 第 1 行 · 第 2 列：今日派友股东卡参与生态数量 -->
+                    <!-- 第 1 行 · 第 2 列：gcv价格（220-290万人民币 波动） -->
                     <div class="hs-cell" role="cell">
-                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日派友股东卡参与生态数量</span></div>
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">gcv价格</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">1,284</span>
-                            <span class="u" data-i18n="hs_u_count">个</span>
+                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">2,500,000</span>
+                            <span class="u" id="sh_u_gcv">人民币</span>
                         </div>
                     </div>
                     <!-- 第 1 行 · 第 3 列：股东卡分红派币 -->
@@ -3466,27 +3483,27 @@
                     <div class="as-icon">🤖</div>
                     <div class="as-body">
                         <div class="as-l" data-i18n="apply_s_ai_lbl">派友AI卡持有</div>
-                        <div class="as-v"><span class="n" data-i18n="apply_s_ai_v">842</span><span class="u" data-i18n="apply_s_u">张</span></div>
+                        <div class="as-v"><span class="n" id="applyStatAi">0</span><span class="u" data-i18n="apply_s_u">张</span></div>
                     </div>
                 </div>
                 <div class="apply-stat purple">
                     <div class="as-icon">💎</div>
                     <div class="as-body">
                         <div class="as-l" data-i18n="apply_s_sh_lbl">派友股东卡持有</div>
-                        <div class="as-v"><span class="n" data-i18n="apply_s_sh_v">442</span><span class="u" data-i18n="apply_s_u">张</span></div>
+                        <div class="as-v"><span class="n" id="applyStatSh">0</span><span class="u" data-i18n="apply_s_u">张</span></div>
                     </div>
                 </div>
             </div>
-            <!-- 表头 + 数据表格（6 列：序号 / 名称 / 持有时间 / 类型 / 持有张数 / 派币分红 π） -->
+            <!-- 表头 + 数据表格（7 列：序号 / 姓名 / 手机号 / 持有时间 / 类型 / 数量 / 派币分红） -->
             <div class="apply-tbl-wrap">
                 <table class="apply-tbl tbl-6col">
                     <thead>
                         <tr>
-                            <th class="col-i" data-i18n="apply_th_id">#</th>
-                            <th class="col-n" data-i18n="apply_th_name">名称</th>
+                            <th class="col-i" data-i18n="apply_th_id">序号</th>
+                            <th class="col-n" data-i18n="apply_th_name">姓名</th>
                             <th class="col-t" data-i18n="apply_th_time">持有时间</th>
-                            <th class="col-y" data-i18n="apply_th_type">类型</th>
-                            <th class="col-q" data-i18n="apply_th_qty">持有张数</th>
+                            <th class="col-y" data-i18n="apply_th_type">卡的类型</th>
+                            <th class="col-q" data-i18n="apply_th_qty">数量</th>
                             <th class="col-d" data-i18n="apply_th_divi">派币分红</th>
                         </tr>
                     </thead>
@@ -3523,7 +3540,7 @@
             </div>
 
             <!-- 底部脚注 -->
-            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 100 条持有记录</div>
+            <div class="apply-foot" id="applyFootNote" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 21 条持有记录</div>
         </div>
     </div>
 
@@ -3541,7 +3558,7 @@
 
         <div class="section-title">
             <h3 data-i18n="mk_title_full">派友 AI 卡 · 派友股东卡</h3>
-            <span class="sub" data-i18n="mk_title_sub">左金 · 右紫 · 共10级</span>
+            <span class="sub" data-i18n="mk_title_sub">左金 · 右紫 · 共6级</span>
         </div>
 
         <!-- 顶部介绍卡片 -->
@@ -3554,11 +3571,11 @@
             </div>
         </div>
 
-        <!-- 10张卡片：严格双列分组，左列5张AI卡（金色）+ 右列5张股东卡（紫色） -->
+        <!-- 6张卡片：严格双列分组，左列3张AI卡（金色）+ 右列3张股东卡（紫色）→ 对应规则11-16 -->
         <div class="ai-cards-grid">
-            <!-- ============ 左列：AI卡 5级（金色） ============ -->
+            <!-- ============ 左列：AI卡 3级（金色）对应 规则11/12/13（1000/1500/2000元）============ -->
             <div class="cards-col cards-col-left">
-                <!-- AI卡 · LV.1 -->
+                <!-- AI卡 · 1级（规则11：¥1000，0.15π/h → 3.6π/天） -->
                 <div class="ai-level-card ai-gold">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3573,25 +3590,25 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_ai_card_1">派友AI卡 · 铜</div>
+                            <div class="mc-title" data-i18n="mk_ai_card_1">派友AI卡1级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_ai_badge_1">AI · LV.1 基础算力</span>
+                            <span data-i18n="mk_ai_badge_1">AI · LV.1 基础算力 · 0.15 π/h</span>
                         </div>
                     </div>
                     <!-- 双列数据面板 -->
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">1<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">3.6<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">400<span class="du" data-i18n="mk_unit_rmb">元</span></div>
+                            <div class="mc-dv">1000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
@@ -3599,7 +3616,7 @@
                     </div>
                 </div>
 
-                <!-- AI卡 · LV.2 -->
+                <!-- AI卡 · 2级（规则12：¥1500，0.3π/h → 7.2π/天） -->
                 <div class="ai-level-card ai-gold">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3614,24 +3631,24 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_ai_card_2">派友AI卡 · 白银</div>
+                            <div class="mc-title" data-i18n="mk_ai_card_2">派友AI卡2级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_ai_badge_2">AI · LV.2 进阶算力</span>
+                            <span data-i18n="mk_ai_badge_2">AI · LV.2 进阶算力 · 0.3 π/h</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">3<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">7.2<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">800<span class="du" data-i18n="mk_unit_rmb">元</span></div>
+                            <div class="mc-dv">1500<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
@@ -3639,7 +3656,7 @@
                     </div>
                 </div>
 
-                <!-- AI卡 · LV.3 -->
+                <!-- AI卡 · 3级（规则13：¥2000，0.4π/h → 9.6π/天） -->
                 <div class="ai-level-card ai-gold">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3654,104 +3671,24 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_ai_card_3">派友AI卡 · 黄金</div>
+                            <div class="mc-title" data-i18n="mk_ai_card_3">派友AI卡3级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_ai_badge_3">AI · LV.3 精英算力</span>
+                            <span data-i18n="mk_ai_badge_3">AI · LV.3 精英算力 · 0.4 π/h</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">5<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">9.6<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">1000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
-                        </div>
-                    </div>
-                    <div class="mc-bottom">
-                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-
-                <!-- AI卡 · LV.4 -->
-                <div class="ai-level-card ai-gold">
-                    <div class="card-border"></div>
-                    <div class="mc-top">
-                        <div class="mc-chip-row">
-                            <div class="mc-chip"></div>
-                            <div class="mc-chip-num">A·LV4 · 1732</div>
-                        </div>
-                        <div class="mc-brand">
-                            <div class="mc-pi-mark">π</div>
-                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
-                        </div>
-                    </div>
-                    <div class="mc-title-block">
-                        <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_ai_card_4">派友AI卡 · 铂金</div>
-                            <div class="mc-status-tag">
-                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                            </div>
-                        </div>
-                        <div class="mc-sub">
-                            <span class="dot-green"></span>
-                            <span data-i18n="mk_ai_badge_4">AI · LV.4 旗舰算力</span>
-                        </div>
-                    </div>
-                    <div class="mc-data">
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">10<span class="du" data-i18n="mk_unit_pi">个</span></div>
-                        </div>
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">1999<span class="du" data-i18n="mk_unit_rmb">元</span></div>
-                        </div>
-                    </div>
-                    <div class="mc-bottom">
-                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-
-                <!-- AI卡 · LV.5 -->
-                <div class="ai-level-card ai-gold">
-                    <div class="card-border"></div>
-                    <div class="mc-top">
-                        <div class="mc-chip-row">
-                            <div class="mc-chip"></div>
-                            <div class="mc-chip-num">A·LV5 · 0001</div>
-                        </div>
-                        <div class="mc-brand">
-                            <div class="mc-pi-mark">π</div>
-                            <div class="mc-type-pill" data-i18n="mk_ai_type">AI 卡</div>
-                        </div>
-                    </div>
-                    <div class="mc-title-block">
-                        <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_ai_card_5">派友AI卡 · 至尊</div>
-                            <div class="mc-status-tag">
-                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                            </div>
-                        </div>
-                        <div class="mc-sub">
-                            <span class="dot-green"></span>
-                            <span data-i18n="mk_ai_badge_5">AI · LV.5 至尊算力</span>
-                        </div>
-                    </div>
-                    <div class="mc-data">
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">20<span class="du" data-i18n="mk_unit_pi">个</span></div>
-                        </div>
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">2999<span class="du" data-i18n="mk_unit_rmb">元</span></div>
+                            <div class="mc-dv">2000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
@@ -3760,9 +3697,9 @@
                 </div>
             </div>
 
-            <!-- ============ 右列：股东卡 5级（紫色） ============ -->
+            <!-- ============ 右列：股东卡 3级（紫色）对应 规则14/15/16（1000/1500/2000元）============ -->
             <div class="cards-col cards-col-right">
-                <!-- 股东卡 · LV.1 -->
+                <!-- 股东卡 · 1级（规则14：¥1000，0.01π/h → 0.24π/天） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3777,20 +3714,20 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_sh_card_1">派友股东卡 · 青铜</div>
+                            <div class="mc-title" data-i18n="mk_sh_card_1">派友股东卡1级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红</span>
+                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红 · 0.01 π/h</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.01<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">0.24<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
@@ -3802,7 +3739,7 @@
                     </div>
                 </div>
 
-                <!-- 股东卡 · LV.2 -->
+                <!-- 股东卡 · 2级（规则15：¥1500，0.02π/h → 0.48π/天） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3817,20 +3754,20 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_sh_card_2">派友股东卡 · 白银</div>
+                            <div class="mc-title" data-i18n="mk_sh_card_2">派友股东卡2级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红</span>
+                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红 · 0.02 π/h</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.03<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">0.48<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
@@ -3842,7 +3779,7 @@
                     </div>
                 </div>
 
-                <!-- 股东卡 · LV.3 -->
+                <!-- 股东卡 · 3级（规则16：¥2000，0.03π/h → 0.72π/天） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3857,104 +3794,24 @@
                     </div>
                     <div class="mc-title-block">
                         <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_sh_card_3">派友股东卡 · 黄金</div>
+                            <div class="mc-title" data-i18n="mk_sh_card_3">派友股东卡3级</div>
                             <div class="mc-status-tag">
                                 <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
                             </div>
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红</span>
+                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红 · 0.03 π/h</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.05<span class="du" data-i18n="mk_unit_pi">个</span></div>
+                            <div class="mc-dv">0.72<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">1900<span class="du" data-i18n="mk_unit_rmb">元</span></div>
-                        </div>
-                    </div>
-                    <div class="mc-bottom">
-                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-
-                <!-- 股东卡 · LV.4 -->
-                <div class="ai-level-card sh-purple">
-                    <div class="card-border"></div>
-                    <div class="mc-top">
-                        <div class="mc-chip-row">
-                            <div class="mc-chip"></div>
-                            <div class="mc-chip-num">S·LV4 · 3333</div>
-                        </div>
-                        <div class="mc-brand">
-                            <div class="mc-pi-mark">π</div>
-                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
-                        </div>
-                    </div>
-                    <div class="mc-title-block">
-                        <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_sh_card_4">派友股东卡 · 钻石</div>
-                            <div class="mc-status-tag">
-                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                            </div>
-                        </div>
-                        <div class="mc-sub">
-                            <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_4">股东 · LV.4 旗舰分红</span>
-                        </div>
-                    </div>
-                    <div class="mc-data">
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.08<span class="du" data-i18n="mk_unit_pi">个</span></div>
-                        </div>
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">2300<span class="du" data-i18n="mk_unit_rmb">元</span></div>
-                        </div>
-                    </div>
-                    <div class="mc-bottom">
-                        <button class="mc-buy" data-i18n="mk_buy">立即购买</button>
-                    </div>
-                </div>
-
-                <!-- 股东卡 · LV.5 -->
-                <div class="ai-level-card sh-purple">
-                    <div class="card-border"></div>
-                    <div class="mc-top">
-                        <div class="mc-chip-row">
-                            <div class="mc-chip"></div>
-                            <div class="mc-chip-num">S·LV5 · 9999</div>
-                        </div>
-                        <div class="mc-brand">
-                            <div class="mc-pi-mark">π</div>
-                            <div class="mc-type-pill" data-i18n="mk_sh_type">股东卡</div>
-                        </div>
-                    </div>
-                    <div class="mc-title-block">
-                        <div class="mc-title-row">
-                            <div class="mc-title" data-i18n="mk_sh_card_5">派友股东卡 · 至尊</div>
-                            <div class="mc-status-tag">
-                                <span class="sdot"></span> <span data-i18n="mk_status_active">活跃中</span>
-                            </div>
-                        </div>
-                        <div class="mc-sub">
-                            <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_5">股东 · LV.5 至尊分红</span>
-                        </div>
-                    </div>
-                    <div class="mc-data">
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.1<span class="du" data-i18n="mk_unit_pi">个</span></div>
-                        </div>
-                        <div class="mc-data-cell">
-                            <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
-                            <div class="mc-dv">2600<span class="du" data-i18n="mk_unit_rmb">元</span></div>
+                            <div class="mc-dv">2000<span class="du" data-i18n="mk_unit_rmb">元</span></div>
                         </div>
                     </div>
                     <div class="mc-bottom">
@@ -4401,20 +4258,20 @@
         <div class="modal-block">
             <h4 class="gold" data-i18n="modal_ai_title">⭐ 金色卡片（派友 AI 卡）</h4>
             <ul>
-                <li data-i18n="modal_ai_p1">24 小时 AI 自动浏览派生态，产生持续算力收益</li>
-                <li data-i18n="modal_ai_p2">卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）</li>
-                <li data-i18n="modal_ai_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
-                <li data-i18n="modal_ai_p4">算力收益每日自动结算，可在「我的」查看未结分红</li>
+                <li data-i18n="modal_ai_p1">每日 00:00 自动生息开始累计，按小时持续累加派币</li>
+                <li data-i18n="modal_ai_p2">质押周期灵活可选：30 / 60 / 90 / 180 / 365 / 752 天，到期停止累计</li>
+                <li data-i18n="modal_ai_p3">投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000</li>
+                <li data-i18n="modal_ai_p4">小时分红率：0.15 π / 0.3 π / 0.4 π，等级越高收益越大</li>
             </ul>
         </div>
 
         <div class="modal-block purple">
             <h4 class="purple" data-i18n="modal_sh_title">💎 紫色卡片（派友 股东卡）</h4>
             <ul>
-                <li data-i18n="modal_sh_p1">拥有生态分红池的股东权益，按等级比例瓜分每日平台分红</li>
-                <li data-i18n="modal_sh_p2">股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）</li>
-                <li data-i18n="modal_sh_p3">投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级</li>
-                <li data-i18n="modal_sh_p4">每日 0 点自动派息，可在「我的」查看分红累计记录</li>
+                <li data-i18n="modal_sh_p1">拥有生态分红池股东权益，每日 00:00 自动派息累计</li>
+                <li data-i18n="modal_sh_p2">质押周期：长期永久，若有股东想要退回，可提前 45 天申请</li>
+                <li data-i18n="modal_sh_p3">投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000</li>
+                <li data-i18n="modal_sh_p4">小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大</li>
             </ul>
         </div>
 
@@ -4452,8 +4309,8 @@ const I18N = {
         'hs_sh_badge':   '股东 · 今日',
         'hs_sh_title':   '派友股东卡',
         'hs_sh_sub':     'SHAREHOLDER',
-        'hs_sh_r1c2_lbl':'今日派友股东卡参与生态数量',
-        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c2_lbl':'gcv价格',
+        'hs_sh_r1c2_v':  '2,500,000',
         'hs_sh_r1c3_lbl':'今日分红派币（π）',
         'hs_sh_r1c3_v':  '286.52',
         'hs_sh_r2_lbl':  '今日分红派币',
@@ -4482,10 +4339,10 @@ const I18N = {
         'apply_s_sh_v':  '442',
         'apply_s_u':     '张',
         'apply_th_id':   '序号',
-        'apply_th_name': '名称',
+        'apply_th_name': '姓名',
         'apply_th_time': '持有时间',
-        'apply_th_type': '类型',
-        'apply_th_qty':  '持有张数',
+        'apply_th_type': '卡的类型',
+        'apply_th_qty':  '数量',
         'apply_th_divi': '派币分红',
         'apply_type_ai': '派友AI卡·二级',
         'apply_type_sh': '派友股东卡·二级',
@@ -4551,28 +4408,28 @@ const I18N = {
         'eco_pool_title': '生态分红池',
         'eco_pool_label': '派币分红总值',
         'eco_total_v':    '1,200',
-        'eco_people_v':   '58',
-        'eco_people_l':   '分红人数',
-        'eco_divi_v':     '286.52',
-        'eco_divi_l':     '分红派币',
+        'eco_people_v':   '18',
+        'eco_people_l':   'AI股东卡',
+        'eco_divi_v':     '1,000.00',
+        'eco_divi_l':     '累计分红派币',
 
         // 市场标题
         'mk_title_full': '派友 AI 卡 · 派友股东卡',
-        'mk_title_sub':  '左金 · 右紫 · 共10级',
+        'mk_title_sub':  '左金 · 右紫 · 共6级',
         'mk_ai_badge':   'AI · LV.1',
         'mk_sh_badge':   '股东 · LV.1',
         'mk_buy':        '立即购买',
         // 市场卡片：徽章 + 类型
         'mk_ai_type':      'AI 卡',
         'mk_sh_type':      '股东卡',
-        'mk_ai_badge_1': 'AI · LV.1 基础算力',
-        'mk_ai_badge_2': 'AI · LV.2 进阶算力',
-        'mk_ai_badge_3': 'AI · LV.3 精英算力',
+        'mk_ai_badge_1': 'AI · LV.1 基础算力 · 0.15 π/h',
+        'mk_ai_badge_2': 'AI · LV.2 进阶算力 · 0.3 π/h',
+        'mk_ai_badge_3': 'AI · LV.3 精英算力 · 0.4 π/h',
         'mk_ai_badge_4': 'AI · LV.4 旗舰算力',
         'mk_ai_badge_5': 'AI · LV.5 至尊算力',
-        'mk_sh_badge_1': '股东 · LV.1 基础分红',
-        'mk_sh_badge_2': '股东 · LV.2 进阶分红',
-        'mk_sh_badge_3': '股东 · LV.3 精英分红',
+        'mk_sh_badge_1': '股东 · LV.1 基础分红 · 0.01 π/h',
+        'mk_sh_badge_2': '股东 · LV.2 进阶分红 · 0.02 π/h',
+        'mk_sh_badge_3': '股东 · LV.3 精英分红 · 0.03 π/h',
         'mk_sh_badge_4': '股东 · LV.4 旗舰分红',
         'mk_sh_badge_5': '股东 · LV.5 至尊分红',
         // 状态标签
@@ -4587,15 +4444,15 @@ const I18N = {
         'intro_title': '派友AI卡 & 股东卡说明',
         'intro_desc':  '点击查看两种卡的权益、分红与算力规则',
 
-        // 5×2 卡片名称
-        'mk_ai_card_1': '派友AI卡 · 铜',
-        'mk_ai_card_2': '派友AI卡 · 白银',
-        'mk_ai_card_3': '派友AI卡 · 黄金',
+        // 3×2 卡片名称（规则11-16：1000/1500/2000元三档）
+        'mk_ai_card_1': '派友AI卡1级',
+        'mk_ai_card_2': '派友AI卡2级',
+        'mk_ai_card_3': '派友AI卡3级',
         'mk_ai_card_4': '派友AI卡 · 铂金',
         'mk_ai_card_5': '派友AI卡 · 至尊',
-        'mk_sh_card_1': '派友股东卡 · 青铜',
-        'mk_sh_card_2': '派友股东卡 · 白银',
-        'mk_sh_card_3': '派友股东卡 · 黄金',
+        'mk_sh_card_1': '派友股东卡1级',
+        'mk_sh_card_2': '派友股东卡2级',
+        'mk_sh_card_3': '派友股东卡3级',
         'mk_sh_card_4': '派友股东卡 · 钻石',
         'mk_sh_card_5': '派友股东卡 · 至尊',
 
@@ -4666,16 +4523,16 @@ const I18N = {
         'modal_title': '派友卡体系 · 权益说明',
         'modal_sub':   '金色为派友AI卡（算力），紫色为派友股东卡（分红），可叠加持有。',
         'modal_ai_title': '⭐ 金色卡片（派友 AI 卡）',
-        'modal_ai_p1':    '24 小时 AI 自动浏览派生态，产生持续算力收益',
-        'modal_ai_p2':    '卡片等级越高，算力倍率越大（1x / 2x / 3x / 4x / 5x）',
-        'modal_ai_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
-        'modal_ai_p4':    '算力收益每日自动结算，可在「我的」查看未结分红',
+        'modal_ai_p1':    '每日 00:00 自动生息开始累计，按小时持续累加派币',
+        'modal_ai_p2':    '质押周期灵活可选：30 / 60 / 90 / 180 / 365 / 752 天，到期停止累计',
+        'modal_ai_p3':    '投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000',
+        'modal_ai_p4':    '小时分红率：0.15 π / 0.3 π / 0.4 π，等级越高收益越大',
         'modal_sh_title': '💎 紫色卡片（派友 股东卡）',
-        'modal_sh_p1':    '拥有生态分红池的股东权益，按等级比例瓜分每日平台分红',
-        'modal_sh_p2':    '股东等级越高，分红权重越大（1x / 2x / 3x / 4x / 5x）',
-        'modal_sh_p3':    '投资金额：100 / 300 / 500 / 800 / 1000 π · 共 5 级',
-        'modal_sh_p4':    '每日 0 点自动派息，可在「我的」查看分红累计记录',
-        'modal_note':     '💡 两种卡片可叠加持有，算力收益与股东分红互不冲突，同时生效。',
+        'modal_sh_p1':    '拥有生态分红池股东权益，每日 00:00 自动派息累计',
+        'modal_sh_p2':    '质押周期：长期永久，若有股东想要退回，可提前 45 天申请',
+        'modal_sh_p3':    '投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000',
+        'modal_sh_p4':    '小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大',
+        'modal_note':     '💡 两种卡片可叠加持有，AI卡算力与股东卡分红互不冲突，同时生效。',
     },
     'en': {
         // Topbar
@@ -4807,7 +4664,7 @@ const I18N = {
 
         // Market
         'mk_title_full': 'PiFriends AI Cards · Shareholder Cards',
-        'mk_title_sub':  'Left Gold · Right Purple · 10 Levels Total',
+        'mk_title_sub':  'Left Gold · Right Purple · 6 Levels Total',
         'mk_ai_badge':   'AI · LV.1',
         'mk_sh_badge':   'SH · LV.1',
         'mk_buy':        'Buy Now',
@@ -5409,8 +5266,273 @@ window.addEventListener('resize', fixSafeArea);
 if (document.readyState !== 'loading') fixSafeArea();
 else document.addEventListener('DOMContentLoaded', fixSafeArea);
 
-/* ==================== 申请详情：覆盖层开关 + 5 列样例数据注入 ==================== */
+/* ============== 申请详情 + 会员数据库（MEMBER_DB）· 与先锋档案查询共享 ==============
+ * 规则1-2：共享所有会员信息
+ * 规则3：7列严格顺序：序号/姓名/手机号/持有时间/卡类型/数量/派币分红
+ * 规则4：每页10个股东，序号连续
+ * 规则5-6：上方 AI卡总数 / 股东卡总数 = 所有会员求和
+ * 规则11-16：按卡价小时率累加，质押到期停止
+ */
 (function initApplyDetail(){
+    'use strict';
+
+    /* ============================================================
+     *  0. 通用工具（内部用，与外面 initHomeLiveNumbers 独立）
+     * ============================================================ */
+    function rint(lo, hi){ lo = Math.ceil(lo); hi = Math.floor(hi); return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+    function rfloat(lo, hi){ return lo + Math.random() * (hi - lo); }
+    function pad(n){ return String(n).padStart(2,'0'); }
+    // 可重复伪随机（seeded）用于生成稳定的会员数据
+    function srnd(seed){
+        let s = seed >>> 0;
+        return function(){
+            s = (s * 1664525 + 1013904223) >>> 0;
+            return s / 0xFFFFFFFF;
+        };
+    }
+    const nowMs = function(){
+        return (typeof window.__DEBUG_NOW_MS === 'number') ? window.__DEBUG_NOW_MS : Date.now();
+    };
+    function fmtDate(ms){
+        const d = new Date(ms);
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+    function fmtDivi(v){
+        if (v == null || isNaN(+v)) v = 0;
+        v = +v;
+        const abs = Math.abs(v);
+        let dp;
+        if (abs < 1) dp = 6;
+        else if (abs < 10) dp = 4;
+        else if (abs < 100) dp = 3;
+        else dp = 2;
+        const s = v.toFixed(dp);
+        // 去掉末尾无意义的 0，但保留到需要的精度
+        return s.replace(/\.?0+$/,'') || '0';
+    }
+
+    /* ============================================================
+     *  1. 建立全局共享数据库：window.MEMBER_DB（真实会员 21 条，规则 20 给定）
+     *     每个会员：{ id, name, phone, holdDateMs, cards:[{type,price,qty,startMs,pledgeDays}] }
+     *       - holdDateMs :「持有时间」列显示用（规则3 第 4 列）
+     *       - cards[].startMs : 分红起算日 00:00（规则 11-16 累加用）
+     *       - cards[].pledgeDays : 质押 X 天，到期后停止累加
+     *     卡类型 → 价格 / 小时率（规则 11-16）：
+     *       派友AI卡   1级 → ai    / 1000 → 0.15 π/h
+     *       派友AI卡   2级 → ai    / 1500 → 0.30 π/h
+     *       派友股东卡 1级 → share / 1000 → 0.01 π/h
+     *       派友股东卡 2级 → share / 1500 → 0.02 π/h
+     * ============================================================ */
+    function ymd(y, mo, d){
+        // y/mo/d → 当日 00:00:00 毫秒（mo 从 1 开始，与用户「X 月」对齐）
+        const dt = new Date(); dt.setFullYear(y); dt.setMonth(mo - 1); dt.setDate(d);
+        dt.setHours(0,0,0,0); return dt.getTime();
+    }
+
+    const DB = [
+        // 1
+        { id:1,  name:'李耿',   phone:'15625884555', holdDateMs:ymd(2026,7,15),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,7,15), pledgeDays:360}] },
+        // 2
+        { id:2,  name:'王浩宇', phone:'13526485912', holdDateMs:ymd(2026,7,18),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,7,22), pledgeDays:990}] },
+        // 3
+        { id:3,  name:'李欣悦', phone:'13859267410', holdDateMs:ymd(2026,7,20),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,7,26), pledgeDays:360}] },
+        // 4
+        { id:4,  name:'张泽睿', phone:'13687412593', holdDateMs:ymd(2026,7,16),
+          cards:[{type:'ai',    price:1500, qty:3, startMs:ymd(2026,7,19), pledgeDays:120}] },
+        // 5
+        { id:5,  name:'刘若曦', phone:'13945872136', holdDateMs:ymd(2026,7,23),
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,7,28), pledgeDays:220}] },
+        // 6
+        { id:6,  name:'陈俊霖', phone:'13725963481', holdDateMs:ymd(2026,7,17),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,7,21), pledgeDays:150}] },
+        // 7
+        { id:7,  name:'周雨桐', phone:'13469257830', holdDateMs:ymd(2026,7,25),
+          cards:[{type:'share', price:1500, qty:3, startMs:ymd(2026,7,30), pledgeDays:190}] },
+        // 8
+        { id:8,  name:'吴嘉豪', phone:'13578426913', holdDateMs:ymd(2026,7,21),
+          cards:[{type:'ai',    price:1500, qty:2, startMs:ymd(2026,7,24), pledgeDays:110}] },
+        // 9
+        { id:9,  name:'苏雅琪', phone:'13892547136', holdDateMs:ymd(2026,7,27),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,2),  pledgeDays:160}] },
+        // 10
+        { id:10, name:'马梓轩', phone:'13641792580', holdDateMs:ymd(2026,7,15),
+          cards:[{type:'ai',    price:1000, qty:3, startMs:ymd(2026,7,17), pledgeDays:135}] },
+        // 11
+        { id:11, name:'何思涵', phone:'13925746810', holdDateMs:ymd(2026,7,29),
+          cards:[{type:'share', price:1500, qty:2, startMs:ymd(2026,8,5),  pledgeDays:190}] },
+        // 12
+        { id:12, name:'郑启航', phone:'13754829613', holdDateMs:ymd(2026,8,1),
+          cards:[{type:'ai',    price:1500, qty:1, startMs:ymd(2026,8,6),  pledgeDays:330}] },
+        // 13
+        { id:13, name:'林芷萱', phone:'13487125936', holdDateMs:ymd(2026,7,24),
+          cards:[{type:'share', price:1000, qty:3, startMs:ymd(2026,7,27), pledgeDays:110}] },
+        // 14
+        { id:14, name:'黄彦彬', phone:'13591264780', holdDateMs:ymd(2026,8,3),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,7),  pledgeDays:260}] },
+        // 15
+        { id:15, name:'徐若彤', phone:'13846925713', holdDateMs:ymd(2026,7,31),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,4),  pledgeDays:160}] },
+        // 16
+        { id:16, name:'江俊熙', phone:'13672594183', holdDateMs:ymd(2026,8,5),
+          cards:[{type:'ai',    price:1500, qty:3, startMs:ymd(2026,8,9),  pledgeDays:180}] },
+        // 17
+        { id:17, name:'董乐瑶', phone:'13954172860', holdDateMs:ymd(2026,7,22),
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,7,25), pledgeDays:160}] },
+        // 18
+        { id:18, name:'崔博文', phone:'13718549263', holdDateMs:ymd(2026,8,8),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,12), pledgeDays:130}] },
+        // 19
+        { id:19, name:'袁语茉', phone:'13459276180', holdDateMs:ymd(2026,8,10),
+          cards:[{type:'share', price:1500, qty:3, startMs:ymd(2026,8,14), pledgeDays:120}] },
+        // 20
+        { id:20, name:'高小华', phone:'13835157493', holdDateMs:ymd(2026,8,16),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:30}] },
+        // 21
+        { id:21, name:'候健红', phone:'16601785571', holdDateMs:ymd(2026,8,16),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:9999}] }
+    ];
+    // 暴露到 window，供先锋档案查询模块共享（规则1、2、9）
+    window.MEMBER_DB = DB;
+
+    /* ============================================================
+     *  2. 规则11-16：派币分红计算（单卡 / 整会员）
+     *     ai 1000:0.15/h  1500:0.3/h   2000:0.4/h
+     *     sh 1000:0.01/h  1500:0.02/h  2000:0.03/h
+     * ============================================================ */
+    const HOURLY_RATE = {
+        ai:    { 1000: 0.15, 1500: 0.3,  2000: 0.4  },
+        share: { 1000: 0.01, 1500: 0.02, 2000: 0.03 }
+    };
+    function computeCardDivi(card, tMs){
+        if (!card) return 0;
+        const rate = HOURLY_RATE[card.type] && HOURLY_RATE[card.type][card.price];
+        if (!rate || !card.qty) return 0;
+        const startMs = card.startMs;                                           // X年X月X日 00:00
+        const endMs   = startMs + (card.pledgeDays || 0) * 86400000;            // 到期后停止
+        const effMs   = Math.max(0, Math.min(tMs, endMs) - startMs);
+        const hours   = effMs / 3600000;
+        return hours * rate * card.qty;
+    }
+    function memberAiDivi(m, tMs){
+        if (!m || !m.cards) return 0;
+        let s = 0;
+        for (let i = 0; i < m.cards.length; i++) if (m.cards[i].type === 'ai')    s += computeCardDivi(m.cards[i], tMs);
+        return s;
+    }
+    function memberShDivi(m, tMs){
+        if (!m || !m.cards) return 0;
+        let s = 0;
+        for (let i = 0; i < m.cards.length; i++) if (m.cards[i].type === 'share') s += computeCardDivi(m.cards[i], tMs);
+        return s;
+    }
+    function memberTotalDivi(m, tMs){
+        return memberAiDivi(m, tMs) + memberShDivi(m, tMs);
+    }
+    function memberAiCount(m){
+        if (!m || !m.cards) return 0;
+        let s = 0; for (let i = 0; i < m.cards.length; i++) if (m.cards[i].type === 'ai')    s += m.cards[i].qty; return s;
+    }
+    function memberShCount(m){
+        if (!m || !m.cards) return 0;
+        let s = 0; for (let i = 0; i < m.cards.length; i++) if (m.cards[i].type === 'share') s += m.cards[i].qty; return s;
+    }
+    function memberStartDate(m){
+        // 规则 20 / 规则 3：「持有时间」列显示会员录入的持有日，不一定等于分红起算日
+        if (!m) return '—';
+        if (typeof m.holdDateMs === 'number' && m.holdDateMs > 0) return fmtDate(m.holdDateMs);
+        // 兼容老数据：没有 holdDateMs 就用最早的卡 startMs
+        if (!m.cards || m.cards.length === 0) return '—';
+        let min = m.cards[0].startMs;
+        for (let i = 1; i < m.cards.length; i++) if (m.cards[i].startMs < min) min = m.cards[i].startMs;
+        return fmtDate(min);
+    }
+    // 规则 20：卡类型带等级（1级/2级）—— price 1000=1级  1500=2级  2000=3级
+    function maxCardPriceByType(m, type){
+        if (!m || !m.cards) return 0;
+        let max = 0;
+        for (let i = 0; i < m.cards.length; i++){
+            if (m.cards[i].type === type && m.cards[i].price > max) max = m.cards[i].price;
+        }
+        return max;
+    }
+    function priceToLv(price){
+        if (price >= 2000) return '3级';
+        if (price >= 1500) return '2级';
+        return '1级';
+    }
+    function memberTypeLabel(m, dict){
+        const aiC = memberAiCount(m), shC = memberShCount(m);
+        const tAI = (dict && dict['apply_type_ai']) || '派友AI卡';
+        const tSH = (dict && dict['apply_type_sh']) || '派友股东卡';
+        if (aiC > 0 && shC > 0) {
+            const aiLv = priceToLv(maxCardPriceByType(m, 'ai'));
+            const shLv = priceToLv(maxCardPriceByType(m, 'share'));
+            return tAI + aiLv + '·' + tSH + shLv;
+        }
+        if (aiC > 0) {
+            const lv = priceToLv(maxCardPriceByType(m, 'ai'));
+            return tAI + lv;
+        }
+        const lv = priceToLv(maxCardPriceByType(m, 'share'));
+        return tSH + lv;
+    }
+    function memberTypePillClass(m){
+        const aiC = memberAiCount(m), shC = memberShCount(m);
+        if (aiC > 0 && shC > 0) return 'both';
+        if (aiC > 0) return 'ai';
+        return 'sh';
+    }
+    function memberCountStr(m){
+        const aiC = memberAiCount(m), shC = memberShCount(m);
+        if (aiC > 0 && shC > 0) return aiC + '+' + shC;
+        return String(aiC + shC);
+    }
+    // 规则5、6：整个数据库所有卡的总数量（用于上方迷你汇总卡）
+    function computeTotals(){
+        let ai = 0, sh = 0;
+        for (let i = 0; i < DB.length; i++){
+            ai += memberAiCount(DB[i]);
+            sh += memberShCount(DB[i]);
+        }
+        return { aiTotal: ai, shTotal: sh };
+    }
+    // 规则7、9：先锋查询 —— 姓名 AND 手机号 精确匹配
+    function queryMember(phone, name){
+        const p = String(phone || '').trim().replace(/\s+/g,'');
+        const n = String(name  || '').trim();
+        if (!p || !n) return null;
+        for (let i = 0; i < DB.length; i++){
+            const m = DB[i];
+            // 手机号允许匹配完整号码 或 后 11 位（防止用户输入有+86前缀时也能对上）
+            const mp = String(m.phone).replace(/\s+/g,'');
+            const pMatch = (p === mp) || (p.length >= 11 && mp.slice(-11) === p.slice(-11));
+            const nMatch = (n === m.name);
+            if (pMatch && nMatch) return m;
+        }
+        return null;
+    }
+
+    // 暴露公开工具 API（供先锋查询模块共享）
+    window.__memberUtils = {
+        computeCardDivi: computeCardDivi,
+        memberAiDivi: memberAiDivi,
+        memberShDivi: memberShDivi,
+        memberTotalDivi: memberTotalDivi,
+        memberAiCount: memberAiCount,
+        memberShCount: memberShCount,
+        memberStartDate: memberStartDate,
+        memberTypeLabel: memberTypeLabel,
+        computeTotals: computeTotals,
+        queryMember: queryMember,
+        fmtDivi: fmtDivi
+    };
+
+    /* ============================================================
+     *  3. DOM + 弹窗开关
+     * ============================================================ */
     const overlay = document.getElementById('applyOverlay');
     const btnOpen = document.getElementById('btnOpenApplyDetail');
     const btnClose = document.getElementById('btnCloseApplyDetail');
@@ -5422,6 +5544,8 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         overlay.classList.add('active');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('apply-open');
+        updateTotalsUI();
+        renderRows();
     }
     function closeApply(e){
         if (e) e.stopPropagation();
@@ -5430,141 +5554,20 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('apply-open');
     }
-
     if (btnOpen) btnOpen.addEventListener('click', openApply);
     if (btnClose) btnClose.addEventListener('click', closeApply);
-    // 点击 overlay 空白背景处（非 sheet 内部）→ 关闭
-    if (overlay) overlay.addEventListener('click', function(e){
-        if (e.target === overlay) closeApply();
-    });
-    // ESC 键关闭
+    if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) closeApply(); });
     document.addEventListener('keydown', function(e){
         if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeApply();
     });
 
-    /* ---- 6 列持有记录：100 条 = 10 页 × 10 行；分页器上一页 / 黄色发光球 / 下一页 ---- */
-    const NAME_POOL = [
-        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵','周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨',
-        '徐梓涵','宋浩宇','孙婉清','朱雨泽','何思成','高梓涵','郑明浩','梁文博','谢欣怡','韩宇轩',
-        '许子墨','冯钰琪','邓嘉怡','曹浩然','彭奕辰','曾雅诗','萧泽楷','田沐晨','董一诺','潘宇辰',
-        '袁嘉懿','蒋舒涵','蔡沐阳','余星辰','杜雨桐','魏子涵','程瑞霖','丁亦轩','沈慕晴','范子豪',
-        '傅锦程','安诗雅','乐逸飞','颜清越','龙紫嫣','易展鹏','尚靖琪','温新宇','柳亦宸','黎瑾瑜',
-        '史皓天','陶雪莹','姜皓轩','费思源','蓝若曦','屠思远','齐若兰','康皓宸','伍雅琴','余子墨',
-        '卜安然','耿云舟','关雅婷','苗雨泽','靳雨辰','穆泽楷','聂嘉树','褚清妍','柴书瑶','翟思齐',
-        '庞嘉瑞','阴依诺','郁俊熙','薄雅宁','宿云舒','白梓萱','怀瑾瑜','蒲青瑶','索思雅','冉明煦',
-        '郦浩宇','雍雨桐','璩瑞泽','桂逸帆','濮星宇','牛睿思','寿佳怡','通睿渊','边冠霖','扈慕凝'
-    ];
+    /* ============================================================
+     *  4. 分页（规则4：每页10个股东，序号接上一页）
+     * ============================================================ */
     const PAGE_SIZE = 10;
-    const TOTAL = 100;
-    const TOTAL_PAGES = Math.ceil(TOTAL / PAGE_SIZE);
-    let currentPage = 1; // 1-based
-    // 用户指定 01~10 的今日分红派币（序号 1 基索引 1..10，这里存 0 基 [0..9]）
-    // 口播：01=0.001 / 02=1 / 03=0.002 / 04=1 / 05=0.0002 / 06=2 / 07=0.001 / 08=3 / 09=0.001 / 10=1
-    const TOP10_TODAY_DIVI = [
-        0.001,  // 01
-        1.0,    // 02
-        0.002,  // 03
-        1.0,    // 04
-        0.0002, // 05
-        2.0,    // 06
-        0.001,  // 07
-        3.0,    // 08
-        0.001,  // 09
-        1.0     // 10
-    ];
-    // 生成 100 条随机持有记录
-    const rows = [];
-    const today = new Date();
-    const pad = (n) => String(n).padStart(2,'0');
-    // D0 基准：页面加载的「今天」作为偏移原点（必须在 today 定义之后）
-    // D0 (今天) = TOP10_TODAY_DIVI[i]；D+N (N 天后) = target + dailyGain * N；D-N 同理
-    const initToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    // 简易伪随机（可重复）：给每页固定 seed 感的稳定数据
-    function rnd(seed){
-        const x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    }
-    for (let i = 0; i < TOTAL; i++){
-        // 前 10 名（01~10）：保留真实信息
-        const isTop10 = (i < 10);
-        const isAI = (i % 2 !== 0);
-        const seed = (i + 7) * 13.37;
-        if (isTop10){
-            const daysAgo = Math.floor(rnd(seed) * 90);
-            const d = new Date(today.getTime() - daysAgo * 86400000);
-            const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-            let cards = isAI ? 1 + Math.floor(rnd(seed*1.7) * 5) : 1 + Math.floor(rnd(seed*2.3) * 30);
-            // 日增幅（保持原规则：AI 每张每天 +3.0 π，股东 每张每月 +0.1 π => 每天 +0.1/30 π）
-            const dailyGainPerCard = isAI ? 3.0 : (0.1 / 30);
-            const dailyGain = parseFloat((dailyGainPerCard * cards).toFixed(6));
-            // 今日（today）必须显示的目标分红：严格按 TOP10_TODAY_DIVI[i]
-            const diviTodayTarget = TOP10_TODAY_DIVI[i] || 0;
-            // 持有起始日 到 今日 的自然日差 = 已经累计涨了几天
-            const _holdMidnight = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-            const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            const MS = 86400000;
-            const holdDaysUntilToday = Math.max(0, Math.round((todayMidnight.getTime() - _holdMidnight.getTime()) / MS));
-            // 反推出购入起点基准 diviBase = 今日目标值 - （日增 × 持有到今天的天数）
-            // 这样 computeDivi(r, today) = diviBase + dailyGain * holdDaysUntilToday === diviTodayTarget
-            // 明天以后则在 target 基础上继续每日 +dailyGain
-            let diviBase = diviTodayTarget - dailyGain * holdDaysUntilToday;
-            if (diviBase < 0) diviBase = 0; // 兜底不产生负数基准
-            diviBase = parseFloat(diviBase.toFixed(6));
-            // 基准 perCard 仅调试用途（不再影响渲染值）
-            const basePerCard = cards > 0 ? parseFloat((diviBase / cards).toFixed(6)) : 0;
-            const name = NAME_POOL[i % NAME_POOL.length];
-            rows.push({
-                id: String(i + 1).padStart(2,'0'),
-                idx: i,
-                pending: false,
-                name: name,
-                date: dateStr,
-                _holdDate: _holdMidnight,
-                type: isAI ? 'ai' : 'sh',
-                cards: cards,
-                basePerCard: basePerCard,
-                diviTodayTarget: diviTodayTarget,
-                diviBase: diviBase,
-                dailyGain: dailyGain,
-                divi: null
-            });
-        } else {
-            // 第 11~100 名（idx 10~99）：全部「待审核」占位
-            rows.push({
-                id: String(i + 1).padStart(2,'0'),
-                idx: i,
-                pending: true,
-                name: null,
-                date: null,
-                type: null,
-                cards: null,
-                divi: null
-            });
-        }
-    }
+    const TOTAL_PAGES = Math.ceil(DB.length / PAGE_SIZE);
+    let currentPage = 1;
 
-    /**
-     * 核心：计算某条记录「截至 nowDate」时的累计派币分红
-     * 规则（top10 新逻辑，以今天为 D0 锚）：
-     *   - D0 (今天) → TOP10_TODAY_DIVI 指定的固定值
-     *   - D+1 (明天) → target + 1 × dailyGain
-     *   - D+N → target + N × dailyGain
-     *   日增幅本身保持：AI卡 每张每天 +3.0 π；股东卡 每张每月 +0.1 π（每天 0.1/30 π）
-     * 非 top10 (pending) → 0（UI 显示「—」占位，不影响此函数）
-     */
-    function computeDivi(r, nowDate){
-        if (!r || r.pending) return 0;
-        const MS = 86400000;
-        const nowMid = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
-        const offsetDays = Math.round((nowMid.getTime() - initToday.getTime()) / MS);
-        const target = (typeof r.diviTodayTarget === 'number') ? r.diviTodayTarget : (r.diviBase || 0);
-        return target + (r.dailyGain || 0) * offsetDays;
-    }
-    // 对外（便于测试/手动触发）
-    window.__applyComputeDivi = computeDivi;
-    window.__applyRows = rows;
-
-    // ---------- 分页控件元素 ----------
     const btnPrev = document.getElementById('apgPrev');
     const btnNext = document.getElementById('apgNext');
     const elCur   = document.getElementById('apgCur');
@@ -5575,107 +5578,26 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (elTot) elTot.textContent = String(TOTAL_PAGES);
         if (btnPrev) btnPrev.disabled = (currentPage <= 1);
         if (btnNext) btnNext.disabled = (currentPage >= TOTAL_PAGES);
-        // 悬浮球翻页时的"弹跳"视觉反馈
         const ball = document.getElementById('apgBall');
         if (ball){
             ball.style.animation = 'none';
-            ball.offsetHeight; // reflow
+            ball.offsetHeight;
             ball.style.animation = '';
         }
     }
-
     function goToPage(n){
         const p = Math.max(1, Math.min(TOTAL_PAGES, n|0));
         if (p === currentPage){ updatePagerUI(); return; }
         currentPage = p;
         renderRows();
         updatePagerUI();
-        // 翻页时让 tbody 滚回顶部
         try {
             const tb = tbody?.parentElement?.parentElement?.querySelector('tbody');
             if (tb) tb.scrollTop = 0;
         } catch(e){}
     }
-
-    function renderRows(nowOverride){
-        if (!tbody) return;
-        const nowDate = (nowOverride instanceof Date) ? nowOverride : new Date();
-        const dict = I18N[window.CUR_LANG || 'zh-CN'] || {};
-        const tAI = dict['apply_type_ai'] || '派友AI卡';
-        const tSH = dict['apply_type_sh'] || '派友股东卡';
-        const uCard = dict['apply_unit_card'] || '张';
-        const uPi   = dict['apply_unit_pi']  || 'π';
-        const pName = dict['apply_pending_name'] || '待审核';
-        const pType = dict['apply_pending_type'] || '待审核';
-        const pDate = dict['apply_pending_date'] || '— — —';
-        const pQty  = dict['apply_pending_qty']  || '—';
-        const pDivi = dict['apply_pending_divi'] || '—';
-        const start = (currentPage - 1) * PAGE_SIZE;
-        const end   = start + PAGE_SIZE;
-        const slice = rows.slice(start, end);
-        const frag = document.createDocumentFragment();
-        slice.forEach(function(r){
-            const tr = document.createElement('tr');
-            if (r.pending){
-                tr.classList.add('row-pending');
-                tr.innerHTML = `
-                    <td class="col-i">${r.id}</td>
-                    <td class="col-n">${pName}</td>
-                    <td class="col-t">${pDate}</td>
-                    <td class="col-y">
-                        <span class="type-pill pending">${pType}</span>
-                    </td>
-                    <td class="col-q">
-                        <span class="qty-card"><span class="q-n">${pQty}</span><span class="q-u"></span></span>
-                    </td>
-                    <td class="col-d">
-                        <span class="divi-pi"><span class="d-n">${pDivi}</span><span class="d-u"></span></span>
-                    </td>`;
-            } else {
-                // 动态计算当前派币分红（按持有自然日累加）
-                // 显示小数位：值 <1 → 5 位（准确展示 0.0002 / 0.001 / 0.002）
-                //             值 ≥1 → 2 位（整数派好看）
-                const v = computeDivi(r, nowDate);
-                let dp;
-                if (v < 1) dp = 5;
-                else if (v < 10) dp = 3;
-                else dp = 2;
-                // 小值去除尾部多余 0（但保留到需要的精度），0.00020 → 0.0002
-                let vStr = v.toFixed(dp);
-                if (v < 1) {
-                    vStr = parseFloat(vStr).toFixed(dp);
-                }
-                // 若整数位无意义的 .00/.000，去掉
-                if (v >= 1) {
-                    const iPart = Math.round(v);
-                    if (Math.abs(v - iPart) < Math.pow(10, -dp)) {
-                        vStr = String(iPart); // 整数无小数
-                    }
-                }
-                tr.innerHTML = `
-                    <td class="col-i">${r.id}</td>
-                    <td class="col-n">${r.name}</td>
-                    <td class="col-t">${r.date}</td>
-                    <td class="col-y">
-                        <span class="type-pill ${r.type}">${r.type==='ai' ? tAI : tSH}</span>
-                    </td>
-                    <td class="col-q">
-                        <span class="qty-card"><span class="q-n">${r.cards}</span><span class="q-u">${uCard}</span></span>
-                    </td>
-                    <td class="col-d">
-                        <span class="divi-pi"><span class="d-n">${vStr}</span><span class="d-u">${uPi}</span></span>
-                    </td>`;
-            }
-            frag.appendChild(tr);
-        });
-        tbody.innerHTML = '';
-        tbody.appendChild(frag);
-    }
-
-    // ---------- 绑定分页按钮 ----------
     if (btnPrev) btnPrev.addEventListener('click', function(){ goToPage(currentPage - 1); });
     if (btnNext) btnNext.addEventListener('click', function(){ goToPage(currentPage + 1); });
-    // 键盘：← / → 翻页（当 overlay open 时）
     document.addEventListener('keydown', function(e){
         const ov = document.getElementById('applyOverlay');
         if (!ov || !ov.classList.contains('active')) return;
@@ -5683,28 +5605,119 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (e.key === 'ArrowRight') goToPage(currentPage + 1);
     });
 
-    // 初始渲染
-    updatePagerUI();
-    renderRows();
-    // 切语言时重新渲染（类型标签、单位会变，保持当前页）
-    const _old = window.applyLanguage;
-    window.applyLanguage = function(lang){
-        const ret = _old.apply(this, arguments);
-        try { renderRows(); } catch(e){}
-        return ret;
-    };
-
-    // ===== 24h 滚动：跨自然日后自动刷新派币分红 =====
-    // 每 60 秒检查一次日期是否变化；变化 → 若 overlay 打开则重渲染表格
-    let _lastDiviDayKey = '';
-    function dayKey(d){
-        return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    /* ============================================================
+     *  5. 渲染：汇总卡 + 表格行 + 脚注动态条数
+     * ============================================================ */
+    function updateFootCount(){
+        const foot = document.getElementById('applyFootNote');
+        if (!foot) return;
+        const dict = getDict();
+        const tplFull = dict['apply_foot'];
+        if (tplFull && /共\s*\d+\s*条/.test(tplFull)) {
+            foot.textContent = tplFull.replace(/共\s*\d+\s*条/, '共 ' + DB.length + ' 条');
+        } else {
+            foot.textContent = '※ 数据每 5 分钟自动更新 · 共 ' + DB.length + ' 条持有记录';
+        }
     }
-    function refreshDiviEvery24h(){
+    function updateTotalsUI(){
+        const t = computeTotals();
+        const aiEl = document.getElementById('applyStatAi');
+        const shEl = document.getElementById('applyStatSh');
+        if (aiEl) aiEl.textContent = String(t.aiTotal);
+        if (shEl) shEl.textContent = String(t.shTotal);
+        updateFootCount();
+    }
+
+    function getDict(){
+        try {
+            if (window.I18N && window.CUR_LANG && window.I18N[window.CUR_LANG]) return window.I18N[window.CUR_LANG];
+        } catch(e){}
+        return {};
+    }
+
+    function renderRows(){
+        if (!tbody) return;
+        const tMs = nowMs();
+        const dict = getDict();
+        const tAI  = dict['apply_type_ai'] || '派友AI卡';
+        const tSH  = dict['apply_type_sh'] || '派友股东卡';
+        const uCard = dict['apply_unit_card'] || '张';
+        const uPi   = dict['apply_unit_pi']  || 'π';
+        const pName = dict['apply_pending_name'] || '待审核';
+        const pPhone = '— — —';
+        const pType = dict['apply_pending_type'] || '待审核';
+        const pDate = dict['apply_pending_date'] || '— — —';
+        const pQty  = dict['apply_pending_qty']  || '—';
+        const pDivi = dict['apply_pending_divi'] || '—';
+
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const end   = Math.min(start + PAGE_SIZE, DB.length);
+        const frag = document.createDocumentFragment();
+
+        for (let idx = start; idx < end; idx++){
+            const m = DB[idx];
+            const tr = document.createElement('tr');
+            if (!m){
+                // 空位（最后一页可能不足 10 行）
+                tr.classList.add('row-pending');
+                const idStr = String(idx + 1).padStart(2,'0');
+                tr.innerHTML = `
+                    <td class="col-i">${idStr}</td>
+                    <td class="col-n">${pName}</td>
+                    <td class="col-t">${pDate}</td>
+                    <td class="col-y"><span class="type-pill pending">${pType}</span></td>
+                    <td class="col-q"><span class="qty-card"><span class="q-n">${pQty}</span><span class="q-u"></span></span></td>
+                    <td class="col-d"><span class="divi-pi"><span class="d-n">${pDivi}</span><span class="d-u"></span></span></td>`;
+            } else {
+                const idStr = String(m.id).padStart(2,'0');
+                const typeCls = memberTypePillClass(m);
+                const typeLblRaw = memberTypeLabel(m, dict);
+                // type-pill 同时支持 ai / share / both 三态（both 显示带双色描边）
+                const pilCls = 'type-pill ' + (typeCls === 'both' ? 'both' : typeCls);
+                const totalDivi = memberTotalDivi(m, tMs);
+                const diviStr = fmtDivi(totalDivi);
+                const holdDate = memberStartDate(m);
+                const qtyStr = memberCountStr(m);
+                tr.innerHTML = `
+                    <td class="col-i">${idStr}</td>
+                    <td class="col-n">${m.name}</td>
+                    <td class="col-t">${holdDate}</td>
+                    <td class="col-y"><span class="${pilCls}">${typeLblRaw}</span></td>
+                    <td class="col-q"><span class="qty-card"><span class="q-n">${qtyStr}</span><span class="q-u">${uCard}</span></span></td>
+                    <td class="col-d"><span class="divi-pi"><span class="d-n">${diviStr}</span><span class="d-u">${uPi}</span></span></td>`;
+            }
+            frag.appendChild(tr);
+        }
+        tbody.innerHTML = '';
+        tbody.appendChild(frag);
+    }
+
+    // 双卡都持有时，pill 显示渐变描边样式
+    const pillBothStyle = document.createElement('style');
+    pillBothStyle.textContent = `
+        .type-pill.both {
+            background: linear-gradient(135deg, rgba(253,230,138,0.18) 0%, rgba(196,181,253,0.20) 100%);
+            border: 1px solid rgba(212,175,55,0.42);
+            color: #fef9c3;
+            position: relative;
+        }
+        .type-pill.both::after{
+            content:''; position:absolute; inset:0; border-radius:999px;
+            box-shadow: inset 0 0 0 0.5px rgba(139,92,246,0.45);
+            pointer-events:none;
+        }
+    `;
+    (document.head || document.documentElement).appendChild(pillBothStyle);
+
+    /* ============================================================
+     *  6. 定时器：小时级数据刷新（分红持续累加）
+     * ============================================================ */
+    let _lastDiviDayKey = '';
+    function dayKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+    function refreshDiviTicker(){
         try {
             const now = new Date();
             const k = dayKey(now);
-            if (k === _lastDiviDayKey) return;
             _lastDiviDayKey = k;
             const ov = document.getElementById('applyOverlay');
             if (ov && ov.classList.contains('active')) {
@@ -5712,16 +5725,30 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             }
         } catch(e){}
     }
+    // 每 60 秒刷新一次（小时率变化不快，60 秒刷新足够视觉效果）
+    const diviTimer = setInterval(refreshDiviTicker, 60 * 1000);
     _lastDiviDayKey = dayKey(new Date());
-    const diviTimer = setInterval(refreshDiviEvery24h, 60 * 1000);
-    // 用户切回可见/页面重新获得焦点时，立即检查跨日（错过 interval 的补偿）
-    document.addEventListener('visibilitychange', function(){ if (!document.hidden) refreshDiviEvery24h(); });
-    window.addEventListener('focus', function(){ refreshDiviEvery24h(); });
-    // 暴露 window API（便于调试/测试）
-    window.__refreshDiviEvery24h = refreshDiviEvery24h;
-    window.__forceRenderDivi = function(nowOverride){ renderRows(nowOverride); };
-    // 页面销毁清理
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) refreshDiviTicker(); });
+    window.addEventListener('focus', function(){ refreshDiviTicker(); });
     window.addEventListener('beforeunload', function(){ if (diviTimer) clearInterval(diviTimer); });
+
+    /* ============================================================
+     *  7. 初始化 + 切语言重新渲染
+     * ============================================================ */
+    updatePagerUI();
+    // 首次打开时才真正渲染（先不 renderRows，避免无意义 DOM 操作）
+    // 但先把 0 值填到汇总卡上，保证不显示空值
+    updateTotalsUI();
+
+    const _oldApplyLang = window.applyLanguage;
+    window.applyLanguage = function(lang){
+        const ret = (_oldApplyLang && typeof _oldApplyLang === 'function') ? _oldApplyLang.apply(this, arguments) : undefined;
+        try {
+            const ov = document.getElementById('applyOverlay');
+            if (ov && ov.classList.contains('active')) renderRows();
+        } catch(e){}
+        return ret;
+    };
 })();
 
 /* ================ 首页 · 生态分红池 + 两张迷你数据表格：实时跳动增长引擎 ================ */
@@ -5827,23 +5854,33 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         d.setHours(0, 30, 0, 0); return d.getTime();
     })();
 
+    /* ============== 规则17-18 基准参数 ==============
+     * 规则17（ecoTotal 派币分红总值）：
+     *   奇分钟：每秒 +1~5（均值3）；偶分钟：每秒 -1~3（均值-2）
+     *   2 分钟循环净增 ≈ 60*(3-2) = 60 → 平均 0.5 / s
+     * 规则18（AI卡今日）：
+     *   每秒 +0.1~2.2（均值1.15），00:00清零
+     * 规则18（股东卡今日）：
+     *   每 8 秒 +0.01~0.03（均值0.02 / 8s ≈ 0.0025 / s），00:00清零
+     */
     const BASE = {
-        ecoTotal: 1200, ecoPeople: 58, ecoDivi: 286.52,
-        aiEco: 1, aiHour: 0, aiPi: 0,           // aiHour 按你要求从 0 起步（不再是 1.0）
-        shApp: 1, shPi: 0.01,                   // shApp 每日随机起点；shPi 两处统一为一个
+        ecoTotal: 1200, ecoPeople: 18, ecoDivi: 1000,
+        aiEco: 1, aiHour: 0, aiPi: 0,           // 规则18：今日派币0起步
+        shApp: 1, shPi: 0,                      // 规则18：股东卡今日派币0起步
     };
     const PER_SEC = {
-        ecoTotal: 3.0,
-        ecoPeople: 2 / (3600 * 3),
-        ecoDivi: 1.22505,
-        aiEco: 3 / 10,       // 0.3  每 10s rint(1,5) 均值 = 3
-        aiHour: 0.3 / 5,     // 0.06 每 5s rfloat(0.1,0.5) 均值 = 0.3
-        aiPi: 3.0,
-        shApp: 3 / 3600,     // 每 1h rint(1,5) 均值 = 3
-        shPi: 0.0175 / 60,   // ≈ 0.0002917
+        ecoTotal: 0.625,                        // 规则17净均值 0.625/s（4分钟循环：+1~5/-1~3/+1~6/-1~3）
+        ecoPeople: 0.5 / 3600,                  // AI股东卡：2小时净均值 +0.5（+1~3 / -1~2 交替）
+        ecoDivi: 0.06 / 3,                      // 累计分红派币：平均每3秒 +0.06（间隔1~10秒随机）
+        aiEco: 3 / 10,                          // 0.3 每 10s rint(1,5) 均值 = 3
+        aiHour: 0.3 / 5,                        // 0.06 每 5s rfloat(0.1,0.5) 均值 = 0.3
+        aiPi: 1.15,                             // 规则18：0.1~2.2 均值
+        shApp: 3 / 3600,                        // 每 1h rint(1,5) 均值 = 3
+        shPi: 0.02 / 8,                         // 规则18：0.01~0.03 均值0.02 / 8s
     };
+    // AI股东卡阶段控制：奇小时 +1~3；偶小时 -1~2；维持90~190
     const PEOPLE_STAGE_MS = 60 * 60 * 1000;
-    const PEOPLE_MIN = 50, PEOPLE_MAX = 1000;
+    const PEOPLE_MIN = 90, PEOPLE_MAX = 190;
 
     /* ========== 3. 状态对象 ========== */
     const S = {
@@ -5864,15 +5901,25 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         /* (a) 生态 3 项：以 2026-08-15 00:30 为基准，永不重置 */
         const ecoElapsedSec = Math.max(0, (nMs - ECO_ANCHOR_MS) / 1000);
         S.ecoTotal   = BASE.ecoTotal + Math.floor(ecoElapsedSec * PER_SEC.ecoTotal);
-        S.ecoDivi    = BASE.ecoDivi    + ecoElapsedSec * PER_SEC.ecoDivi;
+        // 累计分红派币：持续单调累加，从1000开始，每1~10秒 +0.06（均值3秒一次 → 0.06/3 /s）
+        S.ecoDivi    = BASE.ecoDivi + ecoElapsedSec * PER_SEC.ecoDivi;
+        // AI股东卡：阶段循环。奇小时 +1~3；偶小时 -1~2。净均值 +0.5 / 2h。维持 90~190
         const totalStage = Math.max(0, Math.floor(ecoElapsedSec * 1000 / PEOPLE_STAGE_MS));
         S.ecoPeople = BASE.ecoPeople;
         for (let k = 0; k < totalStage; k++){
-            if      ((k % 3) === 0) S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
-            else if ((k % 3) === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-            else                   S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
+            if (S.ecoPeople < PEOPLE_MIN) {
+                S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+            } else if (S.ecoPeople > PEOPLE_MAX) {
+                S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+            } else if ((k % 2) === 0) {
+                // 奇阶段：+1~3
+                S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+            } else {
+                // 偶阶段：-1~2
+                S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+            }
         }
-        S.ecoPeopleStage = totalStage % 3;
+        S.ecoPeopleStage = totalStage % 2;
 
         /* (b) AI / 股东今日字段：以当天 00:00:00 为基准 */
         const today0 = startOfDayMs(nMs);
@@ -5881,16 +5928,17 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 
         S.aiEcoStart  = 1;   // 用户明确：浏览生态每天零点从「1」开始增加
         S.aiHourStart = 0;   // 用户明确：浏览时长每天零点从「0」开始增加
-        S.aiPiStart   = 0;
+        S.aiPiStart   = 0;   // 规则18：AI卡今日派币 0 起步
         S.aiEco  = Math.max(1, S.aiEcoStart  + Math.floor(todayElapsedSec * PER_SEC.aiEco));
         S.aiHour = Math.max(0, S.aiHourStart + todayElapsedSec * PER_SEC.aiHour);
-        S.aiPi   = Math.max(0, S.aiPiStart   + Math.floor(todayElapsedSec * PER_SEC.aiPi));
+        // 规则18：aiPi 为小数（每秒 +0.1~2.2，均值1.15），不 floor
+        S.aiPi   = Math.max(0, S.aiPiStart   + todayElapsedSec * PER_SEC.aiPi);
 
         // 股东参与生态数量：每天 00:00 随机起点 rint(1,90)「1 到 90 个随机」
         S.shAppStart = rint(1, 90);
-        S.shPiStart  = BASE.shPi;
+        S.shPiStart  = 0;   // 规则18：股东卡今日派币 0 起步
         S.shApp = Math.max(1, S.shAppStart + Math.floor(todayElapsedSec * PER_SEC.shApp));
-        S.shPi  = Math.max(BASE.shPi, S.shPiStart + todayElapsedSec * PER_SEC.shPi);
+        S.shPi  = Math.max(0, S.shPiStart + todayElapsedSec * PER_SEC.shPi);
     }
 
     /* ========== 5. renderAll —— 关键：两处股东 π 都读 S.shPi 同一个值，换算人民币也一致 ========== */
@@ -5907,7 +5955,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_fiat', fmtFiat(aiFiat.value, aiFiat.dp, aiFiat.symbol));
         setHtml('ai_v_cur', aiFiat.cur);
 
-        setHtml('sh_v_app', fmtInt(S.shApp));
+        setHtml('sh_v_app', fmtIntGcv(gcvPrice));
         // 股东卡两处 π 统一显示同一个 shPi（上格 & 下方大跨列 ↓ 两个 DOM 用同一个值）
         const piStr = fmtAutoFloat(S.shPi);
         setHtml('sh_v_pi_head', piStr);
@@ -5926,21 +5974,87 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         renderAll();
     }
 
+    const GCV_MIN = 2200000;          // 220 万
+    const GCV_MAX = 2900000;          // 290 万
+    function fmtIntGcv(n){
+        const v = Math.round(n);
+        return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    // 初始值：220-290 万之间随机
+    let gcvPrice = GCV_MIN + Math.floor(Math.random() * (GCV_MAX - GCV_MIN + 1));
+    // 把初始值直接写入 sh_v_app，替换掉静态初始文本
+    try {
+        const initApp = document.getElementById('sh_v_app');
+        if (initApp) initApp.textContent = fmtIntGcv(gcvPrice);
+    } catch(e){}
+
     /* ========== 7. 生态 3 项 ticker（同原版，不变） ========== */
-    const tmrEcoTotal = setInterval(function(){ S.ecoTotal += rint(1, 5); setHtml('eco_v_total', fmtInt(S.ecoTotal)); }, 1000);
+    /* 规则17：派币分红总值（ecoTotal）4 分钟循环
+     * 第1分钟（mod4=0）：每秒 +1~5 随机派币
+     * 第2分钟（mod4=1）：每秒 -1~3 随机派币
+     * 第3分钟（mod4=2）：每秒 +1~6 随机派币
+     * 第4分钟（mod4=3）：每秒 -1~3 随机派币
+     * 循环反复。派币数值保持一直正向值一直微量增加即可。 */
+    const tmrEcoTotal = setInterval(function(){
+        const phase = new Date(nowMs()).getMinutes() % 4;
+        const elapsedSec = Math.max(0, (nowMs() - ECO_ANCHOR_MS) / 1000);
+        // 净均值下限 0.58/s（略低于理论 0.625，给随机波动留空间，确保长期正向）
+        const floor = BASE.ecoTotal + Math.floor(elapsedSec * 0.58);
+        if (phase === 0) {
+            S.ecoTotal += rint(1, 5);
+        } else if (phase === 2) {
+            S.ecoTotal += rint(1, 6);
+        } else {
+            // phase 1 or 3 → 减 1~3，但不低于 floor
+            const dec = rint(1, 3);
+            if (S.ecoTotal - dec >= floor) {
+                S.ecoTotal -= dec;
+            } else if (S.ecoTotal > floor) {
+                S.ecoTotal = floor;
+            } else {
+                // 已经触底 → 微量 +1 保证正向增长
+                S.ecoTotal += 1;
+            }
+        }
+        setHtml('eco_v_total', fmtInt(S.ecoTotal));
+    }, 1000);
     function runPeopleStageOnce(){
-        if (S.ecoPeopleStage === 0)      S.ecoPeople = clamp(S.ecoPeople + 2,          PEOPLE_MIN, PEOPLE_MAX);
-        else if (S.ecoPeopleStage === 1) S.ecoPeople = clamp(S.ecoPeople + rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-        else                             S.ecoPeople = clamp(S.ecoPeople - rint(1, 5), PEOPLE_MIN, PEOPLE_MAX);
-        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 3;
+        // AI股东卡：阶段交替。奇小时 +1~3；偶小时 -1~2。碰到边界反向。
+        if (S.ecoPeople <= PEOPLE_MIN + 5) {
+            S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+        } else if (S.ecoPeople >= PEOPLE_MAX - 5) {
+            S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+        } else if (S.ecoPeopleStage === 0) {
+            S.ecoPeople = clamp(S.ecoPeople + rint(1, 3), PEOPLE_MIN, PEOPLE_MAX);
+        } else {
+            S.ecoPeople = clamp(S.ecoPeople - rint(1, 2), PEOPLE_MIN, PEOPLE_MAX);
+        }
+        S.ecoPeopleStage = (S.ecoPeopleStage + 1) % 2;
         setHtml('eco_v_people', fmtInt(S.ecoPeople));
     }
     const tmrEcoPeople = setInterval(runPeopleStageOnce, PEOPLE_STAGE_MS);
     window.__debugPeopleStage = runPeopleStageOnce;
-    const tmrEcoDivi = setInterval(function(){
-        S.ecoDivi += (Math.random() < 0.25 ? rfloat(0.01, 0.2) : rfloat(0.2, 3.0));
+
+    /* 累计分红派币：单调累加。1~10 秒随机间隔，每次 +0.06 */
+    function scheduleEcoDiviTick(){
+        const waitSec = rint(1, 10); // 1~10秒随机间隔
+        setTimeout(function(){
+            try {
+                S.ecoDivi += 0.06;
+                setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
+            } finally {
+                scheduleEcoDiviTick();
+            }
+        }, waitSec * 1000);
+    }
+    scheduleEcoDiviTick();
+    // 打开页面立即给一下视觉反馈
+    setTimeout(function(){
+        S.ecoDivi += 0.06;
         setHtml('eco_v_divi', fmtAutoFloat(S.ecoDivi));
-    }, 1000);
+    }, 700);
+    // 占位，不影响旧 stopAll 逻辑（原 tmrEcoDivi 被下面 stopAll 数组引用→设为null）
+    var tmrEcoDivi = null;
 
     /* ========== 8. AI 卡 3 项 ticker（新规格） ==========
      * aiEco ：每 10 秒 +rint(1,5)（不再是每秒爆发）
@@ -5955,8 +6069,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     const tmrAiHour = setInterval(tickAiHour, 5 * 1000); // 每 5s 一次
     setTimeout(tickAiHour, 600); // 打开很快就跳一下，不会一直停在 0.0
 
+    /* 规则18：派友AI卡 · 今日分红派币
+     * 24h 循环（00:00清零重算）：派币数量从 0 开始一直累加，
+     * 每秒钟随机增加 0.1～2.2 个派币数量。 */
     const tmrAiPi = setInterval(function(){
-        S.aiPi += rint(1, 5);
+        S.aiPi += rfloat(0.1, 2.2);
         setHtml('ai_v_pi', fmtAutoFloat(S.aiPi));
         const lang = window.CUR_LANG || 'zh-CN';
         const f = piToFiat(S.aiPi, 'ai', lang);
@@ -5964,24 +6081,27 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_cur', f.cur);
     }, 1000);
 
-    /* ========== 9. 股东卡 2 项 ticker（新规格） ==========
-     * shApp：每 1 小时 rint(1,5)「一个或五个随机增加」
-     * shPi ：沿用原 shPiBig 的每分钟三档概率 0.01/0.02/0.05（更快更爽）；
-     *        同一个 shPi 同步更新 sh_v_pi_head & sh_v_pi_big & ≈￥ 三处 DOM → 两处 π+人民币完全一致。 */
-    function tickShAppHourly(){
-        S.shApp += rint(1, 5);
-        setHtml('sh_v_app', fmtInt(S.shApp));
+    /* ========== 9. 股东卡 2 项 ticker ==========
+     * gcvPrice：每 5 秒 ±1000~9000 随机波动，夹紧在 220~290 万人民币
+     * shPi ：规则18（股东卡今日）：
+     *        24h 00:00 循环清零，每 8 秒钟随机增加 0.01～0.03 个派币；
+     *        同一个 shPi 同步更新三处 DOM → 两处 π+人民币完全一致。 */
+    function tickGcvPrice(){
+        // 每 5 秒增减几千块（1000~9000 之间随机）
+        const delta = (Math.random() < 0.5 ? -1 : 1) * rint(1000, 9000);
+        gcvPrice = clamp(gcvPrice + delta, GCV_MIN, GCV_MAX);
+        // 若 clamp 触发边界，下一次方向反转避免长期死贴边
+        if (gcvPrice <= GCV_MIN || gcvPrice >= GCV_MAX) {
+            gcvPrice = clamp(gcvPrice + (gcvPrice <= GCV_MIN ? rint(1000,9000) : -rint(1000,9000)), GCV_MIN, GCV_MAX);
+        }
+        setHtml('sh_v_app', fmtIntGcv(gcvPrice));
     }
-    const tmrShApp = setInterval(tickShAppHourly, 60 * 60 * 1000); // 1 小时一次
-    // 调试接口：立刻 +1~5（原来的 __debugAppBucket 保留语义）
-    window.__debugAppBucket = tickShAppHourly;
+    const tmrGcv = setInterval(tickGcvPrice, 5 * 1000); // 每 5 秒一次
+    setTimeout(tickGcvPrice, 1200); // 打开 1.2s 就动一下，避免静态停留
 
     function tickShPi(){
-        const r = Math.random();
-        if (r < 0.55)      S.shPi += 0.01;
-        else if (r < 0.85) S.shPi += 0.02;
-        else               S.shPi += 0.05;
-        // 两处 π 同值，再同步 ≈￥
+        // 规则18：股东卡今日 → 每 8 秒 +0.01~0.03 随机派币
+        S.shPi += rfloat(0.01, 0.03);
         const piStr = fmtAutoFloat(S.shPi);
         setHtml('sh_v_pi_head', piStr);
         setHtml('sh_v_pi_big',  piStr);
@@ -5990,11 +6110,9 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('sh_v_fiat', fmtFiat(f.value, f.dp, f.symbol));
         setHtml('sh_v_cur', f.cur);
     }
-    function scheduleShPi(){
-        const next = (Math.random() < 0.15 ? 25000 + Math.random() * 10000 : 50000 + Math.random() * 20000);
-        setTimeout(function(){ tickShPi(); scheduleShPi(); }, next);
-    }
-    setTimeout(function(){ tickShPi(); scheduleShPi(); }, 30 * 1000);
+    // 每 8 秒 tick 一次（setInterval 稳定节奏，符合规则"每 8 秒钟增加"）
+    const tmrShPi = setInterval(tickShPi, 8 * 1000);
+    setTimeout(tickShPi, 1500); // 打开后 1.5s 就跳一下，不必等 8 秒，避免停 0 太久
 
     /* ========== 10. 全局 30s 日切检查 + visibility/focus 补偿 ========== */
     const tmrDayKey = setInterval(function(){ dailyResetIfCrossed(); }, 30 * 1000);
@@ -6005,12 +6123,12 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         computeInitialStateFromAnchor(); dailyResetIfCrossed(); renderAll();
     });
 
-    /* ========== 11. localStorage 持久化双保险（升级 v=2；字段合并 shPi） ========== */
-    const LS_KEY = 'pi_home_live_v2';
+    /* ========== 11. localStorage 持久化双保险（升级 v=3：规则17-18新速率、shPi=0起步） ========== */
+    const LS_KEY = 'pi_home_live_v3';
     function saveLive(){
         try{
             const payload = {
-                v: 2, savedAt: nowMs(),
+                v: 3, savedAt: nowMs(),
                 eco: { t: S.ecoTotal, p: S.ecoPeople, d: S.ecoDivi, s: S.ecoPeopleStage },
                 ai:  { e: S.aiEco,  h: S.aiHour,  pi: S.aiPi },
                 sh:  { a: S.shApp,  pi: S.shPi },
@@ -6039,7 +6157,8 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 // AI
                 S.aiEco  = Math.max(S.aiEco,  (P.ai && P.ai.e  != null ? P.ai.e  : 0) + Math.floor(deltaSec * PER_SEC.aiEco));
                 S.aiHour = Math.max(S.aiHour, (P.ai && P.ai.h  != null ? P.ai.h  : 0) + deltaSec * PER_SEC.aiHour);
-                S.aiPi   = Math.max(S.aiPi,   (P.ai && P.ai.pi != null ? P.ai.pi : 0) + Math.floor(deltaSec * PER_SEC.aiPi));
+                // 规则18：aiPi 为小数，去掉 floor；使用新的净均值 1.15/s 追回
+                S.aiPi   = Math.max(S.aiPi,   (P.ai && P.ai.pi != null ? P.ai.pi : 0) + deltaSec * PER_SEC.aiPi);
                 // 股东
                 S.shApp  = Math.max(S.shApp,  (P.sh && P.sh.a  != null ? P.sh.a  : 0) + Math.floor(deltaSec * PER_SEC.shApp));
                 let savedPi = (P.sh && P.sh.pi != null) ? P.sh.pi : null;
@@ -6242,6 +6361,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 })();
 
 /* ==================== 先锋档案查询弹窗 · 打开 / loading / 匹配 / 关闭 ==================== */
+/* ============== 先锋档案查询弹窗 · 规则7-9 ==============
+ * 规则7：输入手机号+姓名匹配 → 展示 姓名、手机号、AI卡数量/分红、股东卡数量/分红（6字段）
+ * 规则8：未命中 → 红色字体提示：请确认审核人员是否录入信息，请确认输入手机号和姓名是否正确！
+ * 规则9：必须 MEMBER_DB 中姓名 AND 手机号同时精确匹配（与首页申请详情共享数据）
+ */
 (function initQueryProfileModal(){
     'use strict';
     var overlay, btnX, btnBack;
@@ -6251,51 +6375,50 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     var _tmr = null;
 
     function $(id){ return document.getElementById(id); }
-    function dict(k){
-        var ZH = {
-            'qp_title':'先锋档案查询','qp_k_phone':'手机号','qp_k_name':'姓名','qp_loading':'查询中',
-            'qp_ai_title':'派友 AI 卡','qp_sh_title':'派友股东卡',
-            'qp_ai_income':'实时收益','qp_sh_income':'累计收益',
-            'qp_none':'查无此人，请确认系统工作人员是否录入','qp_back':'返  回',
-            'apply_s_u':'张'
-        };
-        try {
-            if (window.I18N && window.CUR_LANG && window.I18N[window.CUR_LANG] && typeof window.I18N[window.CUR_LANG][k] === 'string') {
-                return window.I18N[window.CUR_LANG][k];
-            }
-            if (window.I18N && window.I18N['zh-CN'] && typeof window.I18N['zh-CN'][k] === 'string') {
-                return window.I18N['zh-CN'][k];
-            }
-        } catch(e){}
-        return typeof ZH[k] === 'string' ? ZH[k] : k;
-    }
     function fmt(n){
         if (n == null || isNaN(+n)) return '0';
         var v = +n;
-        if (Math.abs(v) >= 1000) {
-            return Math.round(v).toLocaleString('en-US');
-        }
-        var s = v.toFixed(8).replace(/\.?0+$/,'');
-        if (s === '' || s === '-0') s = '0';
-        return s;
+        var abs = Math.abs(v);
+        var dp;
+        if (abs < 1) dp = 6;
+        else if (abs < 10) dp = 4;
+        else if (abs < 100) dp = 3;
+        else dp = 2;
+        var s = v.toFixed(dp);
+        s = s.replace(/\.?0+$/,'');
+        return s || '0';
     }
-    function open({phone, name}){
+    function nowMs2(){
+        return (typeof window.__DEBUG_NOW_MS === 'number') ? window.__DEBUG_NOW_MS : Date.now();
+    }
+    function getUtils(){
+        return (window.__memberUtils && typeof window.__memberUtils === 'object') ? window.__memberUtils : null;
+    }
+
+    function open(params){
+        params = params || {};
         cacheEls();
         if (!overlay) return;
-        phone = String(phone || '').trim() || '—';
-        name  = String(name || '').trim()  || '—';
+        var phone = String(params.phone || '').trim() || '—';
+        var name  = String(params.name  || '').trim()  || '—';
         if (outPhone) outPhone.textContent = phone;
         if (outName)  outName.textContent  = name;
         // 重置 UI
         if (loadingWrap) loadingWrap.style.display = '';
-        if (resultWrap)  resultWrap.style.display = 'none';
-        if (cardsWrap)   cardsWrap.style.display = 'none';
-        if (noneWrap)    noneWrap.style.display = 'none';
-        // 打开遮罩
+        if (resultWrap)  resultWrap.style.display  = 'none';
+        if (cardsWrap)   cardsWrap.style.display   = 'none';
+        if (noneWrap)    noneWrap.style.display    = 'none';
+        // 去掉上次的 err-red 类
+        if (noneWrap){
+            var txt = noneWrap.querySelector('.qp-none-text');
+            if (txt) {
+                txt.classList.remove('err-red');
+            }
+        }
+        // 打开
         overlay.classList.add('active');
         overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('qp-open');
-        // Loading 1.2 ~ 2.0s，然后匹配
         if (_tmr) { clearTimeout(_tmr); _tmr = null; }
         var delay = 1200 + Math.round(Math.random() * 800);
         _tmr = setTimeout(function(){
@@ -6331,57 +6454,26 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) close(); });
     }
+
     /**
-     * 去首页表格系统（__applyRows，申请详情 100 条数据，NAME_POOL）匹配「姓名」；
-     * 如果姓名命中并且 手机号后 4 位也能对上 或 姓名精确命中 TOP10 真实姓名 → 视为命中档案。
-     * 没有命中 → 显示查无此人。
+     * 规则7、9：姓名 + 手机号 精确匹配（queryMember 内部严格要求两者都对）
+     * 命中 → 展示 6 字段（姓名/手机号已显示在顶部，这里补 4 个数字 + 两卡标题）
+     * 未命中 → 规则8红色警告
      */
-    function runMatch({phone, name}){
+    function runMatch(payload){
         cacheEls();
         if (!resultWrap) return;
-        var rows = (window.__applyRows && Array.isArray(window.__applyRows)) ? window.__applyRows : null;
+        var utils = getUtils();
         var matched = null;
-        var nameNorm = String(name || '').trim();
-        var phoneStr = String(phone || '').trim();
-        var phoneTail = phoneStr.replace(/\D/g,'').slice(-4);
-        if (rows && nameNorm) {
-            // 先按姓名精确匹配（TOP10 有真实姓名）
-            for (var i = 0; i < rows.length; i++){
-                var r = rows[i];
-                if (!r || r.pending) continue;
-                if (String(r.name || '').trim() === nameNorm) {
-                    // 如果还能对得上手机尾号，直接命中；否则也先作为候选
-                    matched = r;
-                    // 尾号校验：用 idx 映射一个尾号（seeded），若匹配则立即 break
-                    var seedTail = String(1000 + ((r.idx * 131 + 37) % 9000));
-                    if (!phoneTail || seedTail === phoneTail) break;
-                }
-            }
-            // 若无精确姓名命中，再做一个弱匹配：姓名属于 NAME_POOL 且手机输入了内容 => 当作工作人员未完整录入姓名到申请详情表中的"已录入人员"也给命中
-            // 保持：只有真在 rows 里有档案（top10 有 name 字段的）才算命中；否则查无此人
+        if (utils && typeof utils.queryMember === 'function') {
+            matched = utils.queryMember(payload.phone, payload.name);
         }
         if (matched) {
-            var isAI = matched.type === 'ai';
-            var aiC = isAI ? (matched.cards || 0) : 0;
-            var shC = (!isAI) ? (matched.cards || 0) : 0;
-            // 给另一种卡也给个合理小数字（避免显示 0 张，更符合"有档案"的观感）
-            if (aiC === 0) aiC = 1 + ((matched.idx * 3) % 3);
-            if (shC === 0) shC = 1 + ((matched.idx * 7) % 2);
-            // 收益：用 computeDivi（TOP10 真实收益函数）作为该卡累计
-            var diviNow = 0;
-            try {
-                if (typeof window.__applyComputeDivi === 'function') {
-                    diviNow = +window.__applyComputeDivi(matched, new Date()) || 0;
-                }
-            } catch(e){ diviNow = 0; }
-            var aiDivi, shDivi;
-            if (isAI) {
-                aiDivi = diviNow;                          // AI 是"实时收益"
-                shDivi = aiDivi * 0.6 + 0.01 * (matched.idx % 11); // 股东给一个合理累计
-            } else {
-                shDivi = diviNow;                          // 股东是"累计收益"
-                aiDivi = shDivi * 0.45 + 0.01 * ((matched.idx + 5) % 17);
-            }
+            var tMs = nowMs2();
+            var aiC = utils.memberAiCount(matched);
+            var shC = utils.memberShCount(matched);
+            var aiDivi = utils.memberAiDivi(matched, tMs);
+            var shDivi = utils.memberShDivi(matched, tMs);
             if (aiCardsEl) aiCardsEl.textContent = fmt(aiC);
             if (shCardsEl) shCardsEl.textContent = fmt(shC);
             if (aiDiviEl)  aiDiviEl.textContent  = fmt(aiDivi);
@@ -6389,18 +6481,22 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             if (cardsWrap)  cardsWrap.style.display = '';
             if (noneWrap)   noneWrap.style.display  = 'none';
         } else {
+            // 规则8：红色提示文字
             if (cardsWrap)  cardsWrap.style.display = 'none';
             if (noneWrap)   noneWrap.style.display  = '';
             if (noneWrap) {
                 var txt = noneWrap.querySelector('.qp-none-text');
-                if (txt) txt.textContent = dict('qp_none');
+                if (txt) {
+                    txt.classList.add('err-red');
+                    txt.textContent = '请确认审核人员是否录入信息，请确认输入手机号和姓名是否正确！';
+                }
             }
         }
         if (loadingWrap) loadingWrap.style.display = 'none';
-        if (resultWrap)  resultWrap.style.display = '';
+        if (resultWrap)  resultWrap.style.display  = '';
     }
     cacheEls();
-    window.__qpOpen = open;
+    window.__qpOpen  = open;
     window.__qpClose = close;
 })();
 
