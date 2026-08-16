@@ -3416,12 +3416,12 @@
                             <div class="s" data-i18n="hs_sh_sub">Shareholder Card</div>
                         </div>
                     </div>
-                    <!-- 第 1 行 · 第 2 列：今日派友股东卡参与生态数量 -->
+                    <!-- 第 1 行 · 第 2 列：gcv价格（220-290万人民币 波动） -->
                     <div class="hs-cell" role="cell">
-                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">今日派友股东卡参与生态数量</span></div>
+                        <div class="hs-cell-label"><span class="dot"></span><span data-i18n="hs_sh_r1c2_lbl">gcv价格</span></div>
                         <div class="hs-cell-value">
-                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">1,284</span>
-                            <span class="u" data-i18n="hs_u_count">个</span>
+                            <span class="n" data-i18n="hs_sh_r1c2_v" id="sh_v_app">2,500,000</span>
+                            <span class="u" id="sh_u_gcv">人民币</span>
                         </div>
                     </div>
                     <!-- 第 1 行 · 第 3 列：股东卡分红派币 -->
@@ -4469,8 +4469,8 @@ const I18N = {
         'hs_sh_badge':   '股东 · 今日',
         'hs_sh_title':   '派友股东卡',
         'hs_sh_sub':     'SHAREHOLDER',
-        'hs_sh_r1c2_lbl':'今日派友股东卡参与生态数量',
-        'hs_sh_r1c2_v':  '1,284',
+        'hs_sh_r1c2_lbl':'gcv价格',
+        'hs_sh_r1c2_v':  '2,500,000',
         'hs_sh_r1c3_lbl':'今日分红派币（π）',
         'hs_sh_r1c3_v':  '286.52',
         'hs_sh_r2_lbl':  '今日分红派币',
@@ -6104,7 +6104,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_fiat', fmtFiat(aiFiat.value, aiFiat.dp, aiFiat.symbol));
         setHtml('ai_v_cur', aiFiat.cur);
 
-        setHtml('sh_v_app', fmtInt(S.shApp));
+        setHtml('sh_v_app', fmtIntGcv(gcvPrice));
         // 股东卡两处 π 统一显示同一个 shPi（上格 & 下方大跨列 ↓ 两个 DOM 用同一个值）
         const piStr = fmtAutoFloat(S.shPi);
         setHtml('sh_v_pi_head', piStr);
@@ -6122,6 +6122,20 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         computeInitialStateFromAnchor();
         renderAll();
     }
+
+    const GCV_MIN = 2200000;          // 220 万
+    const GCV_MAX = 2900000;          // 290 万
+    function fmtIntGcv(n){
+        const v = Math.round(n);
+        return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    // 初始值：220-290 万之间随机
+    let gcvPrice = GCV_MIN + Math.floor(Math.random() * (GCV_MAX - GCV_MIN + 1));
+    // 把初始值直接写入 sh_v_app，替换掉静态初始文本
+    try {
+        const initApp = document.getElementById('sh_v_app');
+        if (initApp) initApp.textContent = fmtIntGcv(gcvPrice);
+    } catch(e){}
 
     /* ========== 7. 生态 3 项 ticker（同原版，不变） ========== */
     /* 规则17：派币分红总值（ecoTotal）4 分钟循环
@@ -6192,17 +6206,23 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         setHtml('ai_v_cur', f.cur);
     }, 1000);
 
-    /* ========== 9. 股东卡 2 项 ticker（规则18） ==========
-     * shApp：每 1 小时 rint(1,5)「一个或五个随机增加」
+    /* ========== 9. 股东卡 2 项 ticker ==========
+     * gcvPrice：每 5 秒 ±1000~9000 随机波动，夹紧在 220~290 万人民币
      * shPi ：规则18（股东卡今日）：
      *        24h 00:00 循环清零，每 8 秒钟随机增加 0.01～0.03 个派币；
      *        同一个 shPi 同步更新三处 DOM → 两处 π+人民币完全一致。 */
-    function tickShAppHourly(){
-        S.shApp += rint(1, 5);
-        setHtml('sh_v_app', fmtInt(S.shApp));
+    function tickGcvPrice(){
+        // 每 5 秒增减几千块（1000~9000 之间随机）
+        const delta = (Math.random() < 0.5 ? -1 : 1) * rint(1000, 9000);
+        gcvPrice = clamp(gcvPrice + delta, GCV_MIN, GCV_MAX);
+        // 若 clamp 触发边界，下一次方向反转避免长期死贴边
+        if (gcvPrice <= GCV_MIN || gcvPrice >= GCV_MAX) {
+            gcvPrice = clamp(gcvPrice + (gcvPrice <= GCV_MIN ? rint(1000,9000) : -rint(1000,9000)), GCV_MIN, GCV_MAX);
+        }
+        setHtml('sh_v_app', fmtIntGcv(gcvPrice));
     }
-    const tmrShApp = setInterval(tickShAppHourly, 60 * 60 * 1000); // 1 小时一次
-    window.__debugAppBucket = tickShAppHourly;
+    const tmrGcv = setInterval(tickGcvPrice, 5 * 1000); // 每 5 秒一次
+    setTimeout(tickGcvPrice, 1200); // 打开 1.2s 就动一下，避免静态停留
 
     function tickShPi(){
         // 规则18：股东卡今日 → 每 8 秒 +0.01~0.03 随机派币
