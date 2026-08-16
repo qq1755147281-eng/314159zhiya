@@ -3541,7 +3541,7 @@
             </div>
 
             <!-- 底部脚注 -->
-            <div class="apply-foot" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 100 条持有记录</div>
+            <div class="apply-foot" id="applyFootNote" data-i18n="apply_foot">※ 数据每 5 分钟自动更新 · 共 21 条持有记录</div>
         </div>
     </div>
 
@@ -5473,101 +5473,88 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     }
 
     /* ============================================================
-     *  1. 建立全局共享数据库：window.MEMBER_DB
-     *     每个会员：{ id, name, phone, cards:[{type,price,qty,startMs,pledgeDays}] }
+     *  1. 建立全局共享数据库：window.MEMBER_DB（真实会员 21 条，规则 20 给定）
+     *     每个会员：{ id, name, phone, holdDateMs, cards:[{type,price,qty,startMs,pledgeDays}] }
+     *       - holdDateMs :「持有时间」列显示用（规则3 第 4 列）
+     *       - cards[].startMs : 分红起算日 00:00（规则 11-16 累加用）
+     *       - cards[].pledgeDays : 质押 X 天，到期后停止累加
+     *     卡类型 → 价格 / 小时率（规则 11-16）：
+     *       派友AI卡   1级 → ai    / 1000 → 0.15 π/h
+     *       派友AI卡   2级 → ai    / 1500 → 0.30 π/h
+     *       派友股东卡 1级 → share / 1000 → 0.01 π/h
+     *       派友股东卡 2级 → share / 1500 → 0.02 π/h
      * ============================================================ */
-    const NAME_POOL = [
-        '王星辰','李泽洋','张雨桐','刘逸凡','陈诗涵','周浩然','吴瑞雪','赵佳怡','黄俊杰','林诗雨',
-        '徐梓涵','宋浩宇','孙婉清','朱雨泽','何思成','高梓涵','郑明浩','梁文博','谢欣怡','韩宇轩',
-        '许子墨','冯钰琪','邓嘉怡','曹浩然','彭奕辰','曾雅诗','萧泽楷','田沐晨','董一诺','潘宇辰',
-        '袁嘉懿','蒋舒涵','蔡沐阳','余星辰','杜雨桐','魏子涵','程瑞霖','丁亦轩','沈慕晴','范子豪',
-        '傅锦程','安诗雅','乐逸飞','颜清越','龙紫嫣','易展鹏','尚靖琪','温新宇','柳亦宸','黎瑾瑜',
-        '史皓天','陶雪莹','姜皓轩','费思源','蓝若曦','屠思远','齐若兰','康皓宸','伍雅琴','余子墨',
-        '卜安然','耿云舟','关雅婷','苗雨泽','靳雨辰','穆泽楷','聂嘉树','褚清妍','柴书瑶','翟思齐',
-        '庞嘉瑞','阴依诺','郁俊熙','薄雅宁','宿云舒','白梓萱','怀瑾瑜','蒲青瑶','索思雅','冉明煦',
-        '郦浩宇','雍雨桐','璩瑞泽','桂逸帆','濮星宇','牛睿思','寿佳怡','通睿渊','边冠霖','扈慕凝'
+    function ymd(y, mo, d){
+        // y/mo/d → 当日 00:00:00 毫秒（mo 从 1 开始，与用户「X 月」对齐）
+        const dt = new Date(); dt.setFullYear(y); dt.setMonth(mo - 1); dt.setDate(d);
+        dt.setHours(0,0,0,0); return dt.getTime();
+    }
+
+    const DB = [
+        // 1
+        { id:1,  name:'李耿',   phone:'15625884555', holdDateMs:ymd(2026,7,15),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,7,15), pledgeDays:360}] },
+        // 2
+        { id:2,  name:'王浩宇', phone:'13526485912', holdDateMs:ymd(2026,7,18),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,7,22), pledgeDays:990}] },
+        // 3
+        { id:3,  name:'李欣悦', phone:'13859267410', holdDateMs:ymd(2026,7,20),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,7,26), pledgeDays:360}] },
+        // 4
+        { id:4,  name:'张泽睿', phone:'13687412593', holdDateMs:ymd(2026,7,16),
+          cards:[{type:'ai',    price:1500, qty:3, startMs:ymd(2026,7,19), pledgeDays:120}] },
+        // 5
+        { id:5,  name:'刘若曦', phone:'13945872136', holdDateMs:ymd(2026,7,23),
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,7,28), pledgeDays:220}] },
+        // 6
+        { id:6,  name:'陈俊霖', phone:'13725963481', holdDateMs:ymd(2026,7,17),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,7,21), pledgeDays:150}] },
+        // 7
+        { id:7,  name:'周雨桐', phone:'13469257830', holdDateMs:ymd(2026,7,25),
+          cards:[{type:'share', price:1500, qty:3, startMs:ymd(2026,7,30), pledgeDays:190}] },
+        // 8
+        { id:8,  name:'吴嘉豪', phone:'13578426913', holdDateMs:ymd(2026,7,21),
+          cards:[{type:'ai',    price:1500, qty:2, startMs:ymd(2026,7,24), pledgeDays:110}] },
+        // 9
+        { id:9,  name:'苏雅琪', phone:'13892547136', holdDateMs:ymd(2026,7,27),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,2),  pledgeDays:160}] },
+        // 10
+        { id:10, name:'马梓轩', phone:'13641792580', holdDateMs:ymd(2026,7,15),
+          cards:[{type:'ai',    price:1000, qty:3, startMs:ymd(2026,7,17), pledgeDays:135}] },
+        // 11
+        { id:11, name:'何思涵', phone:'13925746810', holdDateMs:ymd(2026,7,29),
+          cards:[{type:'share', price:1500, qty:2, startMs:ymd(2026,8,5),  pledgeDays:190}] },
+        // 12
+        { id:12, name:'郑启航', phone:'13754829613', holdDateMs:ymd(2026,8,1),
+          cards:[{type:'ai',    price:1500, qty:1, startMs:ymd(2026,8,6),  pledgeDays:330}] },
+        // 13
+        { id:13, name:'林芷萱', phone:'13487125936', holdDateMs:ymd(2026,7,24),
+          cards:[{type:'share', price:1000, qty:3, startMs:ymd(2026,7,27), pledgeDays:110}] },
+        // 14
+        { id:14, name:'黄彦彬', phone:'13591264780', holdDateMs:ymd(2026,8,3),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,7),  pledgeDays:260}] },
+        // 15
+        { id:15, name:'徐若彤', phone:'13846925713', holdDateMs:ymd(2026,7,31),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,4),  pledgeDays:160}] },
+        // 16
+        { id:16, name:'江俊熙', phone:'13672594183', holdDateMs:ymd(2026,8,5),
+          cards:[{type:'ai',    price:1500, qty:3, startMs:ymd(2026,8,9),  pledgeDays:180}] },
+        // 17
+        { id:17, name:'董乐瑶', phone:'13954172860', holdDateMs:ymd(2026,7,22),
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,7,25), pledgeDays:160}] },
+        // 18
+        { id:18, name:'崔博文', phone:'13718549263', holdDateMs:ymd(2026,8,8),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,12), pledgeDays:130}] },
+        // 19
+        { id:19, name:'袁语茉', phone:'13459276180', holdDateMs:ymd(2026,8,10),
+          cards:[{type:'share', price:1500, qty:3, startMs:ymd(2026,8,14), pledgeDays:120}] },
+        // 20
+        { id:20, name:'高小华', phone:'13835157493', holdDateMs:ymd(2026,8,16),
+          cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:30}] },
+        // 21
+        { id:21, name:'候健红', phone:'16601785571', holdDateMs:ymd(2026,8,16),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:9999}] }
     ];
-    // 手机号段：1[3-9]开头，生成稳定且唯一的 100 个手机号
-    const PHONE_PREFIXES = ['138','139','150','151','152','158','159','188','186','135','136','137','182','187','156','155'];
-    const CARD_PRICES = [1000, 1500, 2000];
-    const PLEDGE_DAYS = [30, 60, 90, 180, 365, 752];
-    const rand0 = srnd(20260815);
-    const BASE_START_MS = (function(){
-        // 基准：2026-06-01 00:00:00 作为最早可能的起算日
-        const d = new Date(); d.setFullYear(2026); d.setMonth(5); d.setDate(1);
-        d.setHours(0,0,0,0); return d.getTime();
-    })();
-    const TODAY_0_MS = (function(){
-        const d = new Date(nowMs()); d.setHours(0,0,0,0); return d.getTime();
-    })();
-
-    function generatePhone(seedIdx){
-        // 稳定、不重复：pre + 8 位数字
-        const pre = PHONE_PREFIXES[seedIdx % PHONE_PREFIXES.length];
-        const r = srnd(314159 + seedIdx);
-        let tail = '';
-        for (let i = 0; i < 8; i++) tail += String(Math.floor(r() * 10));
-        return pre + tail;
-    }
-    function generateCards(seedIdx){
-        const r = srnd(271828 + seedIdx);
-        const cards = [];
-        // 1~3 张卡
-        const nCards = 1 + Math.floor(r() * 3);
-        const usedTypePrice = {}; // 避免同类型+价格重复
-        for (let i = 0; i < nCards; i++){
-            let type, price;
-            // 前 70 个会员：AI卡偏多；后 30 个：股东卡偏多
-            let rType = r();
-            if (seedIdx < 70) type = (rType < 0.62) ? 'ai' : 'share';
-            else              type = (rType < 0.38) ? 'ai' : 'share';
-            price = CARD_PRICES[Math.floor(r() * CARD_PRICES.length)];
-            const key = type + '_' + price;
-            if (usedTypePrice[key]) continue; // 同价格同类型不重复
-            usedTypePrice[key] = true;
-            // 起算日：2026-06-01 至 今天（2026-08-15 基准）之间随机（00:00:00）
-            const maxSpanDays = Math.max(1, Math.floor((TODAY_0_MS - BASE_START_MS) / 86400000));
-            const daysAgo = Math.floor(r() * (maxSpanDays + 1));
-            const startMs = TODAY_0_MS - daysAgo * 86400000;
-            // 质押天数：从 PLEDGE_DAYS 中选（小价格更可能短期）
-            let pledgePool;
-            if (price === 1000)      pledgePool = [30, 60, 90, 180];
-            else if (price === 1500) pledgePool = [60, 90, 180, 365];
-            else                     pledgePool = [90, 180, 365, 752];
-            const pledgeDays = pledgePool[Math.floor(r() * pledgePool.length)];
-            // 数量：1~3 张
-            const qty = 1 + Math.floor(r() * 3);
-            cards.push({
-                type: type,         // 'ai' or 'share'
-                price: price,       // 1000/1500/2000
-                qty: qty,           // 持有张数
-                startMs: startMs,   // 起算日 00:00:00
-                pledgeDays: pledgeDays
-            });
-        }
-        if (cards.length === 0){
-            // 保证每个人至少有 1 张卡
-            cards.push({
-                type: (seedIdx % 2 === 0 ? 'ai' : 'share'),
-                price: CARD_PRICES[seedIdx % 3],
-                qty: 1,
-                startMs: TODAY_0_MS - 30 * 86400000,
-                pledgeDays: 90
-            });
-        }
-        return cards;
-    }
-
-    const DB = [];
-    const TOTAL_MEMBERS = 100;
-    for (let i = 0; i < TOTAL_MEMBERS; i++){
-        DB.push({
-            id: i + 1,                          // 1-100 顺序号（表格序号直接用 id）
-            name: NAME_POOL[i % NAME_POOL.length],
-            phone: generatePhone(i),
-            cards: generateCards(i)
-        });
-    }
     // 暴露到 window，供先锋档案查询模块共享（规则1、2、9）
     window.MEMBER_DB = DB;
 
@@ -5614,18 +5601,44 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         let s = 0; for (let i = 0; i < m.cards.length; i++) if (m.cards[i].type === 'share') s += m.cards[i].qty; return s;
     }
     function memberStartDate(m){
-        if (!m || !m.cards || m.cards.length === 0) return '—';
+        // 规则 20 / 规则 3：「持有时间」列显示会员录入的持有日，不一定等于分红起算日
+        if (!m) return '—';
+        if (typeof m.holdDateMs === 'number' && m.holdDateMs > 0) return fmtDate(m.holdDateMs);
+        // 兼容老数据：没有 holdDateMs 就用最早的卡 startMs
+        if (!m.cards || m.cards.length === 0) return '—';
         let min = m.cards[0].startMs;
         for (let i = 1; i < m.cards.length; i++) if (m.cards[i].startMs < min) min = m.cards[i].startMs;
         return fmtDate(min);
+    }
+    // 规则 20：卡类型带等级（1级/2级）—— price 1000=1级  1500=2级  2000=3级
+    function maxCardPriceByType(m, type){
+        if (!m || !m.cards) return 0;
+        let max = 0;
+        for (let i = 0; i < m.cards.length; i++){
+            if (m.cards[i].type === type && m.cards[i].price > max) max = m.cards[i].price;
+        }
+        return max;
+    }
+    function priceToLv(price){
+        if (price >= 2000) return '3级';
+        if (price >= 1500) return '2级';
+        return '1级';
     }
     function memberTypeLabel(m, dict){
         const aiC = memberAiCount(m), shC = memberShCount(m);
         const tAI = (dict && dict['apply_type_ai']) || '派友AI卡';
         const tSH = (dict && dict['apply_type_sh']) || '派友股东卡';
-        if (aiC > 0 && shC > 0) return tAI + '·' + tSH;
-        if (aiC > 0) return tAI;
-        return tSH;
+        if (aiC > 0 && shC > 0) {
+            const aiLv = priceToLv(maxCardPriceByType(m, 'ai'));
+            const shLv = priceToLv(maxCardPriceByType(m, 'share'));
+            return tAI + aiLv + '·' + tSH + shLv;
+        }
+        if (aiC > 0) {
+            const lv = priceToLv(maxCardPriceByType(m, 'ai'));
+            return tAI + lv;
+        }
+        const lv = priceToLv(maxCardPriceByType(m, 'share'));
+        return tSH + lv;
     }
     function memberTypePillClass(m){
         const aiC = memberAiCount(m), shC = memberShCount(m);
@@ -5754,14 +5767,26 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     });
 
     /* ============================================================
-     *  5. 渲染：汇总卡 + 表格行
+     *  5. 渲染：汇总卡 + 表格行 + 脚注动态条数
      * ============================================================ */
+    function updateFootCount(){
+        const foot = document.getElementById('applyFootNote');
+        if (!foot) return;
+        const dict = getDict();
+        const tplFull = dict['apply_foot'];
+        if (tplFull && /共\s*\d+\s*条/.test(tplFull)) {
+            foot.textContent = tplFull.replace(/共\s*\d+\s*条/, '共 ' + DB.length + ' 条');
+        } else {
+            foot.textContent = '※ 数据每 5 分钟自动更新 · 共 ' + DB.length + ' 条持有记录';
+        }
+    }
     function updateTotalsUI(){
         const t = computeTotals();
         const aiEl = document.getElementById('applyStatAi');
         const shEl = document.getElementById('applyStatSh');
         if (aiEl) aiEl.textContent = String(t.aiTotal);
         if (shEl) shEl.textContent = String(t.shTotal);
+        updateFootCount();
     }
 
     function getDict(){
