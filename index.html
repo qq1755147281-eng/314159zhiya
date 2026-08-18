@@ -1704,7 +1704,7 @@
             background: linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid rgba(255,255,255,0.06);
             display: flex; flex-direction: column; gap: 8px;
-            min-height: 152px;
+            min-height: 216px;
         }
         .qp-card::before {
             content: ''; position: absolute; inset: 0; padding: 1px; border-radius: 16px;
@@ -1738,6 +1738,72 @@
         .qp-v.pi .u { font-size: 12px; font-weight: 800; opacity: 0.78; }
         .qp-card.qp-gold .qp-v.pi .n { color: #fde68a; }
         .qp-card.qp-purple .qp-v.pi .n { color: #e9d5ff; }
+
+        /* ===== 卡底部新增：价格展示（AI卡=全球交易所实时价，股东卡=GCV价） ===== */
+        .qp-card-price {
+            position: relative; z-index: 1;
+            margin-top: 8px;
+            padding: 9px 10px;
+            border-radius: 11px;
+            display: flex; flex-direction: column; gap: 4px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .qp-card.qp-gold .qp-card-price {
+            background: linear-gradient(145deg, rgba(212,175,55,0.10) 0%, rgba(212,175,55,0.02) 100%);
+            border: 1px solid rgba(212,175,55,0.18);
+        }
+        .qp-card.qp-purple .qp-card-price {
+            background: linear-gradient(145deg, rgba(139,92,246,0.10) 0%, rgba(139,92,246,0.02) 100%);
+            border: 1px solid rgba(139,92,246,0.18);
+        }
+        .qp-price-lbl {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+            color: var(--text-tertiary);
+        }
+        .qp-price-val {
+            display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+        }
+        .qp-price-num {
+            font-size: 16px; font-weight: 950; letter-spacing: -0.01em; line-height: 1.1;
+        }
+        .qp-price-sub {
+            font-size: 10px; font-weight: 700; opacity: 0.82;
+        }
+        /* 金色（AI卡）：全球交易所价格 —— 金色渐变 + 发光 */
+        .qp-card.qp-gold .qp-price-num {
+            background: linear-gradient(135deg, #fff4c8 0%, #fde68a 35%, #d4af37 75%, #9a7113 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(212,175,55,0.5));
+        }
+        .qp-card.qp-gold .qp-price-sub { color: var(--accent-gold-2); }
+        /* 紫色（股东卡）：GCV价格 —— 紫白渐变 + 发光 */
+        .qp-card.qp-purple .qp-price-num {
+            background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 35%, #8b5cf6 75%, #4c1d95 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(139,92,246,0.55));
+        }
+        .qp-card.qp-purple .qp-price-sub { color: #e9d5ff; }
+        /* 实时小圆点（AI卡用）：翠绿闪烁呼吸 */
+        .qp-price-dot {
+            width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+            background: radial-gradient(circle at 30% 30%, #dcfce7 0%, #4ade80 45%, #16a34a 100%);
+            box-shadow: 0 0 0 1px rgba(74,222,128,0.6), 0 0 6px rgba(74,222,128,0.85), 0 0 12px rgba(34,197,94,0.55);
+            animation: qpPriceDotPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes qpPriceDotPulse {
+            0%, 100% { transform: scale(1);   opacity: 0.85; }
+            50%      { transform: scale(1.3); opacity: 1; }
+        }
+        .qp-price-live .qp-price-num {
+            animation: qpPriceLiveShimmer 3s ease-in-out infinite;
+        }
+        @keyframes qpPriceLiveShimmer {
+            0%, 100% { filter: drop-shadow(0 1px 3px rgba(212,175,55,0.45)); }
+            50%      { filter: drop-shadow(0 1px 6px rgba(253,230,138,0.85)); }
+        }
 
         .qp-none {
             margin-top: 10px; padding: 24px 18px;
@@ -2006,44 +2072,49 @@
         }
         .modal-mask.active { display: flex; }
         .modal-sheet {
-            width: 100%; max-width: 480px;
-            border-radius: 22px 22px 0 0;
+            width: 100%; max-width: 440px;
+            border-radius: 20px 20px 0 0;
             background:
                 radial-gradient(500px 260px at 10% 0%, rgba(212,175,55,0.12) 0%, transparent 60%),
                 radial-gradient(500px 260px at 100% 0%, rgba(139,92,246,0.14) 0%, transparent 60%),
                 linear-gradient(180deg, #131a2e 0%, #0c1223 100%);
             border-top: 1px solid var(--glass-border-strong);
-            padding: 10px 18px 26px;
+            padding: 8px 14px 20px;
             position: relative;
             animation: sheetUp 0.26s cubic-bezier(.2,.8,.2,1);
             box-shadow: 0 -20px 60px rgba(0,0,0,0.55);
         }
         @keyframes sheetUp { from { transform: translateY(30px); opacity: 0.6;} to {transform:none; opacity:1;} }
         .modal-grip {
-            width: 42px; height: 4px; border-radius: 999px;
-            background: rgba(148,163,184,0.35);
-            margin: 6px auto 14px;
+            width: 38px; height: 3px; border-radius: 999px;
+            background: rgba(148,163,184,0.30);
+            margin: 4px auto 10px;
         }
         .modal-x {
-            position: absolute; top: 14px; right: 16px;
-            width: 30px; height: 30px; border-radius: 50%;
+            position: absolute; top: 10px; right: 12px;
+            width: 28px; height: 28px; border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--glass-border);
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; color: var(--text-secondary);
+            font-size: 13px; color: var(--text-secondary);
             cursor: pointer;
+            transition: background .15s ease, transform .15s ease, color .15s ease;
         }
+        .modal-x:hover { background: rgba(255,255,255,0.10); color: #fff; transform: scale(1.05); }
+        .modal-x:active { transform: scale(0.94); }
         .modal-title {
-            font-size: 18px; font-weight: 800; letter-spacing: 0.05em;
+            font-size: 16px; font-weight: 850; letter-spacing: 0.04em;
             background: linear-gradient(90deg, var(--accent-gold-2) 0%, #e9d5ff 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
+            padding-right: 38px; /* 给右上角关闭按钮留空，避免标题遮挡 */
         }
-        .modal-sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 14px; }
-        .modal-block { margin-top: 12px; }
+        .modal-sub { font-size: 11px; color: var(--text-tertiary); margin-bottom: 10px; line-height: 1.55; padding-right: 38px; }
+        .modal-block { margin-top: 9px; }
         .modal-block h4 {
-            font-size: 13.5px; font-weight: 800; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 6px;
+            font-size: 12.5px; font-weight: 850; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 5px;
+            letter-spacing: 0.01em;
         }
         .modal-block h4.gold   { color: var(--accent-gold-2); }
         .modal-block h4.purple { color: #e9d5ff; }
@@ -2051,25 +2122,140 @@
             list-style: none;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 4px 10px;
+            border-radius: 12px;
+            padding: 3px 9px;
         }
         .modal-block li {
-            padding: 10px 4px;
-            font-size: 12.5px; color: var(--text-secondary);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            line-height: 1.55;
-            display: flex; align-items: flex-start; gap: 8px;
+            padding: 7px 3px;
+            font-size: 11.5px; color: var(--text-secondary);
+            border-top: 1px solid rgba(255,255,255,0.045);
+            line-height: 1.50;
+            display: flex; align-items: flex-start; gap: 6px;
         }
         .modal-block li:first-child { border-top: none; }
-        .modal-block li::before { content: '·'; color: var(--accent-gold); font-weight: 900; font-size: 16px; line-height: 1; margin-top: 2px; }
+        .modal-block li::before { content: '·'; color: var(--accent-gold); font-weight: 900; font-size: 14px; line-height: 1.1; margin-top: 2px; }
         .modal-block.purple li::before { color: var(--accent-purple-2); }
-        .modal-note {
-            margin-top: 16px; padding: 10px 12px;
+
+        /* ===== 结算方式模块（金/紫两色主题） ===== */
+        .modal-settle {
+            margin-top: 7px;
             border-radius: 12px;
+            padding: 8px 10px 9px;
+            position: relative;
+            overflow: hidden;
+        }
+        /* 金色AI卡：结算框 */
+        .modal-settle.settle-gold {
+            background: linear-gradient(145deg, rgba(212,175,55,0.16) 0%, rgba(253,230,138,0.04) 60%, rgba(212,175,55,0.08) 100%);
+            border: 1px solid rgba(212,175,55,0.35);
+            box-shadow: 0 1px 6px rgba(212,175,55,0.10), inset 0 0 0 1px rgba(255,255,255,0.02);
+        }
+        /* 紫色股东卡：结算框 */
+        .modal-settle.settle-purple {
+            background: linear-gradient(145deg, rgba(139,92,246,0.16) 0%, rgba(221,214,254,0.04) 60%, rgba(139,92,246,0.08) 100%);
+            border: 1px solid rgba(139,92,246,0.35);
+            box-shadow: 0 1px 6px rgba(139,92,246,0.10), inset 0 0 0 1px rgba(255,255,255,0.02);
+        }
+        .settle-head {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 11.5px; font-weight: 900; letter-spacing: 0.03em;
+            margin-bottom: 5px;
+        }
+        .settle-pin { font-size: 12px; }
+        .settle-gold   .settle-head { color: #fde68a; text-shadow: 0 0 6px rgba(212,175,55,0.35); }
+        .settle-purple .settle-head { color: #ddd6fe; text-shadow: 0 0 6px rgba(139,92,246,0.35); }
+        .settle-body { font-size: 11px; line-height: 1.55; color: var(--text-secondary); }
+        .settle-desc { margin-bottom: 6px; color: var(--text-tertiary); }
+
+        /* 两 pill + 一个 or 的水平行，窄屏自动堆叠 */
+        .settle-opt {
+            display: flex; align-items: stretch; gap: 5px; flex-wrap: wrap;
+        }
+        .settle-pill {
+            flex: 1 1 120px;
+            min-height: 30px;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 8px;
+            border-radius: 9px;
+            font-size: 10.5px; font-weight: 750; line-height: 1.30;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+        }
+        .pill-ico {
+            width: 18px; height: 18px; flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 10.5px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .pill-txt { flex: 1; min-width: 0; }
+        /* 「派币 π 结算」通用：灰色调 */
+        .settle-pill.pill-pi {
+            background: linear-gradient(145deg, rgba(148,163,184,0.12), rgba(148,163,184,0.02));
+            border: 1px solid rgba(148,163,184,0.25);
+            color: #e2e8f0;
+        }
+        .settle-pill.pill-pi .pill-ico {
+            background: radial-gradient(circle at 30% 30%, #fff7b3 0%, #fcd34d 60%, #d97706 100%);
+            box-shadow: 0 0 6px rgba(251,191,36,0.45);
+        }
+        /* 金色卡：全球交易所 —— 金色高亮 */
+        .settle-gold .pill-ex {
+            background: linear-gradient(145deg, rgba(212,175,55,0.22) 0%, rgba(253,230,138,0.05) 100%);
+            border: 1px solid rgba(253,230,138,0.5);
+            color: #fff4c8;
+            text-shadow: 0 0 4px rgba(212,175,55,0.35);
+        }
+        .settle-gold .pill-ex .pill-ico.pill-dot {
+            background: radial-gradient(circle at 30% 30%, #dcfce7 0%, #4ade80 45%, #16a34a 100%);
+            box-shadow: 0 0 0 1px rgba(74,222,128,0.6), 0 0 6px rgba(74,222,128,0.85);
+        }
+        .settle-gold .pill-ex .pill-ico.pill-dot.live {
+            animation: settleDotPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes settleDotPulse {
+            0%, 100% { transform: scale(1);   opacity: 0.85; }
+            50%      { transform: scale(1.3); opacity: 1; }
+        }
+        /* 紫色卡：GCV 结算 —— 紫色高亮 */
+        .settle-purple .pill-gcv {
+            background: linear-gradient(145deg, rgba(139,92,246,0.22) 0%, rgba(221,214,254,0.05) 100%);
+            border: 1px solid rgba(221,214,254,0.5);
+            color: #ede9fe;
+            text-shadow: 0 0 4px rgba(139,92,246,0.35);
+        }
+        .settle-purple .pill-gcv .pill-ico {
+            background: radial-gradient(circle at 30% 30%, #f3e8ff 0%, #c4b5fd 50%, #7c3aed 100%);
+            box-shadow: 0 0 6px rgba(168,85,247,0.5);
+        }
+        .gcv-num {
+            display: inline-block;
+            font-weight: 950;
+            padding: 0 4px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #ffffff 0%, #ddd6fe 35%, #8b5cf6 75%, #4c1d95 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 2px rgba(139,92,246,0.45));
+        }
+        /* 「或」分隔 */
+        .settle-or {
+            align-self: center;
+            flex-shrink: 0;
+            font-size: 10px; font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 999px;
+            color: var(--text-tertiary);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .modal-note {
+            margin-top: 12px; padding: 8px 10px;
+            border-radius: 10px;
             background: rgba(253,230,138,0.06);
             border: 1px dashed rgba(253,230,138,0.25);
-            font-size: 12px; color: var(--text-tertiary); line-height: 1.6;
+            font-size: 11px; color: var(--text-tertiary); line-height: 1.55;
         }
 
         /* ========== 对话页：兑换区域（加密合规声明 + 群聊通道 + 4步流程） ========== */
@@ -2678,15 +2864,15 @@
             transform: translateY(-0.5px);
         }
 
-        /* ========== 申请详情覆盖层（90% 高，不遮挡 tab-bar） ========== */
+        /* ========== 申请详情覆盖层（92% 高 · 更贴近全屏，给 10 条数据充足空间） ========== */
         .apply-overlay {
             position: absolute; left: 0; right: 0;
-            top: 0; height: 90%;
+            top: 0; height: 92%;
             z-index: 80;   /* 比 tab-bar(50) 高，比 modal-mask(100) 低；保证底部 tab 看得见 */
             background: linear-gradient(180deg, rgba(4,8,16,0.0) 0%, rgba(4,8,16,0.56) 10%);
             pointer-events: none;  /* 关闭时不拦截点击 */
             opacity: 0;
-            transition: opacity .22s ease;
+            transition: opacity .28s ease;
         }
         .apply-overlay.active {
             opacity: 1;
@@ -2694,16 +2880,16 @@
         }
         .apply-sheet {
             position: absolute; left: 0; right: 0; bottom: 0;
-            height: calc(100% - 36px);
-            border-radius: 24px 24px 0 0;
+            height: calc(100% - 14px);
+            border-radius: 26px 26px 0 0;
             background:
-                radial-gradient(520px 240px at 15% 0%, rgba(212,175,55,0.16), transparent 60%),
-                radial-gradient(520px 240px at 85% 0%, rgba(139,92,246,0.16), transparent 60%),
+                radial-gradient(560px 260px at 15% 0%, rgba(212,175,55,0.16), transparent 60%),
+                radial-gradient(560px 260px at 85% 0%, rgba(139,92,246,0.16), transparent 60%),
                 linear-gradient(180deg, #131a2e 0%, #0c1223 60%, #0a0f1f 100%);
             border-top: 1px solid var(--glass-border-strong);
-            box-shadow: 0 -24px 70px rgba(0,0,0,0.55);
-            transform: translateY(14px);
-            transition: transform .26s cubic-bezier(.2,.82,.2,1);
+            box-shadow: 0 -28px 80px rgba(0,0,0,0.62);
+            transform: translateY(18px);
+            transition: transform .28s cubic-bezier(.2,.82,.2,1);
             display: flex; flex-direction: column;
             overflow: hidden;
             padding: 0 0 calc(env(safe-area-inset-bottom) + 4px);
@@ -2711,17 +2897,17 @@
         .apply-overlay.active .apply-sheet { transform: translateY(0); }
         .apply-top {
             position: relative;
-            padding: 8px 16px 10px;
+            padding: 8px 20px 10px;
             flex-shrink: 0;
         }
         .apply-grip {
-            width: 44px; height: 4px; border-radius: 999px;
-            background: rgba(148,163,184,0.35);
-            margin: 4px auto 10px;
+            width: 48px; height: 4px; border-radius: 999px;
+            background: rgba(148,163,184,0.34);
+            margin: 2px auto 10px;
         }
         .apply-x {
-            position: absolute; top: 12px; right: 14px;
-            width: 28px; height: 28px; border-radius: 50%;
+            position: absolute; top: 10px; right: 18px;
+            width: 30px; height: 30px; border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--glass-border);
             color: var(--text-secondary);
@@ -2736,25 +2922,25 @@
             font-size: 19px; font-weight: 900; letter-spacing: 0.02em;
             background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            filter: drop-shadow(0 0 6px rgba(253,230,138,0.3));
-            line-height: 1.2;
+            filter: drop-shadow(0 0 5px rgba(253,230,138,0.28));
+            line-height: 1.18;
         }
         .apply-sub {
             margin: 3px 0 0;
-            font-size: 10.5px; color: var(--text-tertiary);
-            font-weight: 600; letter-spacing: 0.12em;
+            font-size: 11px; color: var(--text-tertiary);
+            font-weight: 600; letter-spacing: 0.10em;
         }
         /* 汇总两小卡 */
         .apply-stat-row {
-            padding: 6px 16px 10px;
+            padding: 6px 20px 8px;
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 8px;
             flex-shrink: 0;
         }
         .apply-stat {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 10px;
-            border-radius: 11px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.045);
             position: relative; overflow: hidden;
@@ -2768,23 +2954,23 @@
             border-color: rgba(196,181,253,0.2);
         }
         .as-icon {
-            width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+            width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
+            font-size: 15px;
         }
         .apply-stat.gold   .as-icon { background: linear-gradient(135deg, rgba(253,230,138,0.28), rgba(212,175,55,0.08)); color: #fff7d6; }
         .apply-stat.purple .as-icon { background: linear-gradient(135deg, rgba(233,213,255,0.28), rgba(139,92,246,0.08)); color: #f5f3ff; }
         .as-body { flex: 1; min-width: 0; }
-        .as-l { font-size: 9.2px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
-        .as-v { margin-top: 3.5px; display: flex; align-items: baseline; gap: 2px; line-height: 1; }
-        .as-v .n { font-size: 14px; font-weight: 900; letter-spacing: -0.01em; }
-        .as-v .u { font-size: 9px; color: var(--text-quaternary); font-weight: 700; }
+        .as-l { font-size: 10px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
+        .as-v { margin-top: 4px; display: flex; align-items: baseline; gap: 3px; line-height: 1; }
+        .as-v .n { font-size: 16px; font-weight: 900; letter-spacing: -0.01em; }
+        .as-v .u { font-size: 10px; color: var(--text-quaternary); font-weight: 700; }
         .apply-stat.gold   .as-v .n { color: var(--accent-gold-2); }
         .apply-stat.purple .as-v .n { color: #e9d5ff; }
 
         /* ========== 申请详情·6列表格（金边玻璃态）：序号 / 名称 / 时间 / 类型 / 张数 / 分红派币 ========== */
         .apply-tbl-wrap {
-            padding: 4px 14px 0;
+            padding: 6px 20px 0;
             flex: 1;
             min-height: 0;
             overflow: hidden;
@@ -2793,37 +2979,37 @@
         .apply-tbl {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 5px;
+            border-spacing: 0 4px;
             flex-shrink: 0;
             table-layout: fixed;
         }
         .apply-tbl thead th {
             position: sticky; top: 0; z-index: 2;
-            padding: 7px 5px;
-            font-size: 8.6px; font-weight: 800; letter-spacing: 0.04em;
-            color: #c9b27a;
-            background: linear-gradient(180deg, rgba(212,175,55,0.10), rgba(212,175,55,0.02));
-            border-top: 1px solid rgba(253,230,138,0.22);
-            border-bottom: 1px solid rgba(253,230,138,0.18);
+            padding: 8px 7px;
+            font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
+            color: #d6bd80;
+            background: linear-gradient(180deg, rgba(212,175,55,0.12), rgba(212,175,55,0.03));
+            border-top: 1px solid rgba(253,230,138,0.25);
+            border-bottom: 1px solid rgba(253,230,138,0.20);
             text-align: left;
         }
         .apply-tbl thead th:first-child {
-            border-radius: 9px 0 0 9px;
-            border-left: 1px solid rgba(253,230,138,0.22);
+            border-radius: 10px 0 0 10px;
+            border-left: 1px solid rgba(253,230,138,0.25);
             text-align: center;
         }
         .apply-tbl thead th:last-child {
-            border-radius: 0 9px 9px 0;
-            border-right: 1px solid rgba(253,230,138,0.22);
+            border-radius: 0 10px 10px 0;
+            border-right: 1px solid rgba(253,230,138,0.25);
             text-align: right;
         }
-        /* 6 列宽度分配 */
-        .apply-tbl.tbl-6col th.col-i { width: 9%; }
-        .apply-tbl.tbl-6col th.col-n { width: 24%; }
-        .apply-tbl.tbl-6col th.col-t { width: 20%; }
-        .apply-tbl.tbl-6col th.col-y { width: 20%; }
-        .apply-tbl.tbl-6col th.col-q { width: 13%; }
-        .apply-tbl.tbl-6col th.col-d { width: 14%; }
+        /* 6 列宽度分配（左收窄，给派币分红列完整显示） */
+        .apply-tbl.tbl-6col th.col-i { width: 7%; }
+        .apply-tbl.tbl-6col th.col-n { width: 22%; }
+        .apply-tbl.tbl-6col th.col-t { width: 18%; }
+        .apply-tbl.tbl-6col th.col-y { width: 18%; }
+        .apply-tbl.tbl-6col th.col-q { width: 7%; }
+        .apply-tbl.tbl-6col th.col-d { width: 28%; }
         /* 7 列宽度分配（规则3：序号 / 姓名 / 手机号 / 持有时间 / 类型 / 数量 / 派币分红） */
         .apply-tbl.tbl-7col th.col-i { width: 8%; }
         .apply-tbl.tbl-7col th.col-n { width: 18%; }
@@ -2834,10 +3020,10 @@
         .apply-tbl.tbl-7col th.col-d { width: 12%; }
 
         .apply-tbl tbody {
-            display: block;  /* 允许 tbody 滚动 */
+            display: block;
             max-height: 100%;
-            overflow-y: auto;
-            padding-bottom: 4px;
+            overflow-y: hidden;   /* 固定 10 条/页，不允许滚动，一屏收齐 */
+            padding-bottom: 0;
         }
         .apply-tbl thead,
         .apply-tbl tbody tr {
@@ -2847,25 +3033,30 @@
         }
         .apply-tbl tbody tr {
             position: relative;
-            background: linear-gradient(145deg, rgba(255,255,255,0.022), rgba(255,255,255,0.008));
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 9px;
-            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+            background: linear-gradient(145deg, rgba(255,255,255,0.030), rgba(255,255,255,0.010));
+            border: 1px solid rgba(255,255,255,0.055);
+            border-radius: 10px;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
         }
-        .apply-tbl tbody tr:hover { border-color: rgba(253,230,138,0.22); background: linear-gradient(145deg, rgba(253,230,138,0.06), rgba(255,255,255,0.01)); }
+        .apply-tbl tbody tr:hover {
+            border-color: rgba(253,230,138,0.25);
+            background: linear-gradient(145deg, rgba(253,230,138,0.07), rgba(255,255,255,0.012));
+            box-shadow: 0 4px 12px rgba(0,0,0,0.20), 0 0 0 1px rgba(253,230,138,0.08);
+        }
         .apply-tbl tbody td {
-            padding: 7px 5px;
-            font-size: 10px;
-            line-height: 1.25;
+            padding: 8px 7px;
+            font-size: 9.5px;
+            line-height: 1.22;
             color: var(--text-primary);
             border: none;
             word-break: break-word;
             vertical-align: middle;
         }
-        .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; }
-        .apply-tbl td.col-n { font-weight: 800; color: var(--text-primary); line-height: 1.2; padding-left: 6px; }
-        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.4px; }
-        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.2px; }
+        .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 10px; }
+        .apply-tbl td.col-n { font-weight: 900; color: var(--text-primary); line-height: 1.22; padding-left: 8px; font-size: 10px; letter-spacing: 0.02em; }
+        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.6px; }
+        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.6px; }
         .apply-tbl td.col-y { /* type pill 容器 */ }
         .apply-tbl td.col-q { text-align: right; font-weight: 900; letter-spacing: -0.01em; }
         .apply-tbl th.col-q { text-align: right; }
@@ -2875,12 +3066,12 @@
         /* 类型标签：AI 金卡 / 股东紫卡 · 严格单行不换行，超长截断 */
         .type-pill {
             display: inline-flex; align-items: center; justify-content: center;
-            gap: 2px;
-            padding: 2px 5.5px;
+            gap: 3px;
+            padding: 3px 6px;
             border-radius: 999px;
-            font-size: 7.8px;
+            font-size: 8.2px;
             font-weight: 800;
-            letter-spacing: 0;
+            letter-spacing: 0.01em;
             line-height: 1;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             max-width: 100%;
@@ -2922,16 +3113,16 @@
         .apply-tbl tbody tr.row-pending td.col-d .divi-pi { color: rgba(148,163,184,0.8); }
         .apply-tbl tbody tr.row-pending td.col-d .divi-pi .d-u { color: rgba(148,163,184,0.65); }
         /* 持有张数：紫色强调 */
-        .qty-card { color: #e9d5ff; }
-        .qty-card .q-u { font-size: 8.2px; color: #e9d5ff; opacity: .85; margin-left: 1.5px; font-weight: 700; }
+        .qty-card { color: #e9d5ff; display: inline-flex; align-items: baseline; gap: 2px; }
+        .qty-card .q-u { font-size: 8.6px; color: #e9d5ff; opacity: .85; margin-left: 2px; font-weight: 700; }
         /* 分红派币：金色强调 */
-        .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 1.5px; }
-        .divi-pi .d-u { font-size: 8.2px; color: var(--accent-gold-2); opacity: .85; margin-left: 1.5px; font-weight: 700; }
+        .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 2px; }
+        .divi-pi .d-u { font-size: 8.6px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
 
         /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
         .apply-pager {
             flex-shrink: 0;
-            padding: 12px 18px 10px;
+            padding: 12px 20px 10px;
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
@@ -2940,13 +3131,13 @@
         }
         /* 左右两按钮 */
         .apg-btn {
-            display: inline-flex; align-items: center; gap: 4px;
-            padding: 7px 11px;
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 7px 13px;
             border-radius: 999px;
             border: 1px solid rgba(255,255,255,0.055);
             background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
             color: var(--text-secondary);
-            font-size: 9.6px; font-weight: 700; letter-spacing: 0.04em;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
             cursor: pointer;
             transition: transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
             white-space: nowrap;
@@ -2962,7 +3153,7 @@
 
         /* ====== 圆形图标重做：上一页（蓝色多层光芒） / 下一页（紫色多层光芒） ====== */
         .apg-ic {
-            width: 28px; height: 28px; border-radius: 999px;
+            width: 26px; height: 26px; border-radius: 999px;
             position: relative;
             display: inline-flex; align-items: center; justify-content: center;
             color: #ffffff; /* SVG 箭头强制白色 */
@@ -3074,7 +3265,7 @@
         /* 中：黄色发光悬浮球 */
         .apg-ball {
             position: relative;
-            width: 64px; height: 64px;
+            width: 60px; height: 60px;
             border-radius: 999px;
             justify-self: center;
             display: flex; align-items: center; justify-content: center;
@@ -3085,7 +3276,7 @@
             box-shadow:
                 0 0 0 1px rgba(253,230,138,0.35),
                 0 0 18px 2px rgba(253,230,138,0.45),
-                0 0 42px 6px rgba(212,175,55,0.38),
+                0 0 40px 6px rgba(212,175,55,0.38),
                 0 8px 22px rgba(0,0,0,0.42),
                 inset 0 1px 0 rgba(255,255,255,0.85),
                 inset 0 -8px 12px rgba(212,175,55,0.45);
@@ -3111,12 +3302,12 @@
         /* 内部页码文字 1/10 */
         .apg-ball-page {
             position: relative; z-index: 2;
-            display: flex; align-items: baseline; gap: 1.5px;
+            display: flex; align-items: baseline; gap: 2px;
             line-height: 1;
             margin-top: 2px;
         }
         .apg-ball-page .apg-cur {
-            font-size: 17px; font-weight: 900; letter-spacing: -0.02em;
+            font-size: 16px; font-weight: 900; letter-spacing: -0.02em;
             color: #3a2708;
             text-shadow: 0 1px 0 rgba(255,250,210,0.6);
         }
@@ -3131,7 +3322,7 @@
         .apg-ball-tip {
             position: relative; z-index: 2;
             margin-top: 3px;
-            font-size: 7.6px; font-weight: 700; letter-spacing: 0.1em;
+            font-size: 7.8px; font-weight: 700; letter-spacing: 0.1em;
             color: #4d390a;
             opacity: .85;
         }
@@ -3174,13 +3365,13 @@
         /* 脚注 */
         .apply-foot {
             flex-shrink: 0;
-            padding: 8px 16px 12px;
-            font-size: 8.8px; color: var(--text-quaternary);
+            padding: 8px 20px 10px;
+            font-size: 9px; color: var(--text-quaternary);
             text-align: center;
             letter-spacing: 0.06em;
             font-weight: 600;
             border-top: 1px solid rgba(255,255,255,0.03);
-            margin-top: 2px;
+            margin-top: 0;
         }
 
         /* 响应式（更窄屏） */
@@ -3189,12 +3380,44 @@
             .eco-circle { width: 148px; height: 148px; }
             .eco-circle-amount { font-size: 26px; }
             .ai-level-price .num { font-size: 18px; }
+            /* 窄屏：派友股东记录表进一步收窄间距，仍保持 10 条可见 */
+            .apply-tbl thead th { padding: 7px 5px; font-size: 8.2px; }
+            .apply-tbl tbody td { padding: 7px 5px; font-size: 9px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.4px; }
+            .apply-tbl td.col-p, .apply-tbl td.col-t { font-size: 8px; }
+            .apply-tbl { border-spacing: 0 3px; }
+            .type-pill { font-size: 7.4px; padding: 2.5px 5px; }
+            .apply-stat { padding: 9px 10px; gap: 8px; }
+            .as-icon { width: 30px; height: 30px; font-size: 14px; }
+            .as-v .n { font-size: 15px; }
+            .apg-btn { padding: 6px 11px; font-size: 10px; }
+            .apg-ic { width: 24px; height: 24px; }
+            .apg-ball { width: 56px; height: 56px; }
+            .apg-ball-page .apg-cur { font-size: 15px; }
+            .apply-top { padding: 7px 16px 9px; }
+            .apply-stat-row { padding: 5px 16px 7px; }
+            .apply-tbl-wrap { padding: 5px 16px 0; }
+            .apply-pager { padding: 11px 16px 9px; }
+            .apply-foot { padding: 7px 16px 9px; font-size: 8.5px; }
         }
         @media (max-width: 330px) {
             .ai-card-wrapper { width: 252px; height: 158px; }
             .eco-circle { width: 140px; height: 140px; }
             .hs-card-name .s { display: none; }
             .hs-cell-value .n { font-size: 12px; }
+        }
+        /* 矮屏手机：进一步收窄表格 padding，确保 10 条完整显示 */
+        @media (max-height: 740px) {
+            .apply-overlay { height: 94%; }
+            .apply-sheet { height: calc(100% - 10px); }
+            .apply-tbl thead th { padding: 7px 6px; font-size: 8.6px; }
+            .apply-tbl tbody td { padding: 7px 6px; font-size: 9px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.4px; }
+            .apply-tbl { border-spacing: 0 3px; }
+            .apply-stat { padding: 9px 11px; gap: 9px; }
+            .as-icon { width: 30px; height: 30px; font-size: 14px; }
+            .as-v .n { font-size: 15px; }
+            .apg-ball { width: 58px; height: 58px; }
         }
     </style>
 </head>
@@ -3923,6 +4146,14 @@
                             <span class="qp-l" data-i18n="qp_ai_income">实时收益</span>
                             <span class="qp-v pi"><span class="n" id="qpAiDivi">0</span><span class="u">π</span></span>
                         </div>
+                        <div class="qp-card-price">
+                            <div class="qp-price-lbl" data-i18n="qp_ai_price_lbl">全球交易所价格</div>
+                            <div class="qp-price-val qp-price-live">
+                                <span class="qp-price-dot"></span>
+                                <span class="qp-price-num" id="qpAiExPrice">$0.22</span>
+                                <span class="qp-price-sub" data-i18n="qp_ai_price_sub">实时展示</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="qp-card qp-purple">
                         <div class="qp-card-head"><span class="qp-card-ico">💎</span><span class="qp-card-title" data-i18n="qp_sh_title">派友股东卡</span></div>
@@ -3932,6 +4163,13 @@
                         <div class="qp-card-foot">
                             <span class="qp-l" data-i18n="qp_sh_income">累计收益</span>
                             <span class="qp-v pi"><span class="n" id="qpShDivi">0</span><span class="u">π</span></span>
+                        </div>
+                        <div class="qp-card-price">
+                            <div class="qp-price-lbl" data-i18n="qp_sh_price_lbl">GCV 价格</div>
+                            <div class="qp-price-val qp-price-gcv">
+                                <span class="qp-price-num" id="qpShGcvPrice">$314,159</span>
+                                <span class="qp-price-sub" data-i18n="qp_sh_price_sub">美元</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4263,6 +4501,23 @@
                 <li data-i18n="modal_ai_p3">投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000</li>
                 <li data-i18n="modal_ai_p4">小时分红率：0.15 π / 0.3 π / 0.4 π，等级越高收益越大</li>
             </ul>
+            <div class="modal-settle settle-gold">
+                <div class="settle-head"><span class="settle-pin">📌</span><span data-i18n="settle_label">结算方式</span></div>
+                <div class="settle-body">
+                    <div class="settle-desc" data-i18n="modal_ai_settle_desc">派友 AI 卡所产生的派币，可选择以下任一方式结算：</div>
+                    <div class="settle-opt">
+                        <span class="settle-pill pill-pi">
+                            <span class="pill-ico">🪙</span>
+                            <span class="pill-txt" data-i18n="settle_pi">以派币 π 结算</span>
+                        </span>
+                        <span class="settle-or" data-i18n="settle_or">或</span>
+                        <span class="settle-pill pill-ex">
+                            <span class="pill-ico pill-dot live"></span>
+                            <span class="pill-txt" data-i18n="settle_ex">以全球派币交易所价格实时结算</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="modal-block purple">
@@ -4273,6 +4528,23 @@
                 <li data-i18n="modal_sh_p3">投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000</li>
                 <li data-i18n="modal_sh_p4">小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大</li>
             </ul>
+            <div class="modal-settle settle-purple">
+                <div class="settle-head"><span class="settle-pin">📌</span><span data-i18n="settle_label">结算方式</span></div>
+                <div class="settle-body">
+                    <div class="settle-desc" data-i18n="modal_sh_settle_desc">此处派友股东卡所产生的派币分红，可选择以下任一方式结算：</div>
+                    <div class="settle-opt">
+                        <span class="settle-pill pill-pi">
+                            <span class="pill-ico">🪙</span>
+                            <span class="pill-txt" data-i18n="settle_pi">以派币 π 结算</span>
+                        </span>
+                        <span class="settle-or" data-i18n="settle_or">或</span>
+                        <span class="settle-pill pill-gcv">
+                            <span class="pill-ico">💎</span>
+                            <span class="pill-txt" data-i18n="settle_gcv">以 GCV 价格 <b class="gcv-num">$314,159</b> 美元结算</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="modal-note" data-i18n="modal_note">
@@ -4492,13 +4764,17 @@ const I18N = {
         'qp_title':       '先锋档案查询',
         'qp_k_phone':     '手机号',
         'qp_k_name':      '姓名',
-        'qp_loading':     '查询中',
-        'qp_ai_title':    '派友 AI 卡',
-        'qp_sh_title':    '派友股东卡',
-        'qp_ai_income':   '实时收益',
-        'qp_sh_income':   '累计收益',
-        'qp_none':        '查无此人，请确认系统工作人员是否录入',
-        'qp_back':        '返  回',
+        'qp_loading':      '查询中',
+        'qp_ai_title':     '派友 AI 卡',
+        'qp_sh_title':     '派友股东卡',
+        'qp_ai_income':    '实时收益',
+        'qp_sh_income':    '累计收益',
+        'qp_ai_price_lbl': '全球交易所价格',
+        'qp_ai_price_sub': '实时展示',
+        'qp_sh_price_lbl': 'GCV 价格',
+        'qp_sh_price_sub': '美元',
+        'qp_none':         '查无此人，请确认系统工作人员是否录入',
+        'qp_back':         '返  回',
         // 购买确认弹窗
         'bp_title':       '请确认您是否要购买此卡',
         'bp_card':        '此卡',
@@ -4533,6 +4809,14 @@ const I18N = {
         'modal_sh_p3':    '投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000',
         'modal_sh_p4':    '小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大',
         'modal_note':     '💡 两种卡片可叠加持有，AI卡算力与股东卡分红互不冲突，同时生效。',
+        // 结算方式
+        'settle_label':           '结算方式',
+        'settle_or':              '或',
+        'settle_pi':              '以派币 π 结算',
+        'settle_ex':              '以全球派币交易所价格实时结算',
+        'settle_gcv':             '以 GCV 价格 $314,159 美元结算',
+        'modal_ai_settle_desc':   '派友 AI 卡所产生的派币，可选择以下任一方式结算：',
+        'modal_sh_settle_desc':   '此处派友股东卡所产生的派币分红，可选择以下任一方式结算：',
     },
     'en': {
         // Topbar
@@ -4737,13 +5021,17 @@ const I18N = {
         'qp_title':       'Pioneer Profile Query',
         'qp_k_phone':     'Mobile',
         'qp_k_name':      'Name',
-        'qp_loading':     'Querying',
-        'qp_ai_title':    'PiFriends AI Card',
-        'qp_sh_title':    'Shareholder Card',
-        'qp_ai_income':   'Real-Time Income',
-        'qp_sh_income':   'Total Income',
-        'qp_none':        'No record found. Please confirm with system operator.',
-        'qp_back':        'BACK',
+        'qp_loading':      'Querying',
+        'qp_ai_title':     'PiFriends AI Card',
+        'qp_sh_title':     'Shareholder Card',
+        'qp_ai_income':    'Real-Time Income',
+        'qp_sh_income':    'Total Income',
+        'qp_ai_price_lbl': 'Global Exchange Price',
+        'qp_ai_price_sub': 'Live',
+        'qp_sh_price_lbl': 'GCV Price',
+        'qp_sh_price_sub': 'USD',
+        'qp_none':         'No record found. Please confirm with system operator.',
+        'qp_back':         'BACK',
         // Buy confirm popup
         'bp_title':       'Please confirm your purchase',
         'bp_card':        'Card',
@@ -4778,6 +5066,14 @@ const I18N = {
         'modal_sh_p3':    'Investment tiers: 100 / 300 / 500 / 800 / 1000 π (5 levels)',
         'modal_sh_p4':    'Daily dividends at 00:00. Track totals in "Me" page',
         'modal_note':     '💡 You may stack both card types. Power rewards and dividends run independently.',
+        // Settlement
+        'settle_label':           'Settlement',
+        'settle_or':              'or',
+        'settle_pi':              'Settle in Pi (π)',
+        'settle_ex':              'Settle at Global Pi Exchange live price',
+        'settle_gcv':             'Settle at GCV price $314,159 USD',
+        'modal_ai_settle_desc':   'PiFriends AI Card earnings can be settled either way:',
+        'modal_sh_settle_desc':   'Shareholder Card dividends can be settled either way:',
     }
 };
 
@@ -5391,8 +5687,17 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         { id:20, name:'高小华', phone:'13835157493', holdDateMs:ymd(2026,8,16),
           cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:30}] },
         // 21
-        { id:21, name:'侯健红', phone:'16601785571', holdDateMs:ymd(2026,8,16),
-          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:9999}] }
+        { id:21, name:'侯建红', phone:'16601785571', holdDateMs:ymd(2026,8,16),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:9999}] },
+        // 22
+        { id:22, name:'魏国炳', phone:'15536455536', holdDateMs:ymd(2026,8,18),
+          cards:[{type:'ai',    price:1000, qty:3, startMs:ymd(2026,8,18), pledgeDays:9990}] },
+        // 23
+        { id:23, name:'魏国炳', phone:'15536455536', holdDateMs:ymd(2026,8,18),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,18), pledgeDays:9990}] },
+        // 24
+        { id:24, name:'毕尚阳', phone:'15513636709', holdDateMs:ymd(2026,8,18),
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,8,18), pledgeDays:9990}] }
     ];
     // 暴露到 window，供先锋档案查询模块共享（规则1、2、9）
     window.MEMBER_DB = DB;
@@ -6372,9 +6677,24 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     var outPhone, outName;
     var loadingWrap, resultWrap, cardsWrap, noneWrap;
     var aiCardsEl, shCardsEl, aiDiviEl, shDiviEl;
+    var aiExPriceEl, shGcvPriceEl;
     var _tmr = null;
+    var _priceTmr = null;
+    var AI_PRICE_MIN  = 0.09;    // 全球交易所最低价 $0.09
+    var AI_PRICE_MAX  = 0.35;    // 全球交易所最高价 $0.35
+    var SH_GCV_BASE   = 314159;  // $314,159 GCV 固定价
 
     function $(id){ return document.getElementById(id); }
+    function fmtUsd(n, decimals){
+        var v = +n;
+        if (isNaN(v)) v = 0;
+        var dp = (typeof decimals === 'number') ? decimals : (v < 10 ? 2 : 0);
+        var fixed = v.toFixed(dp);
+        // 千分位（整数部分）
+        var parts = fixed.split('.');
+        parts[0] = Number(parts[0]).toLocaleString('en-US');
+        return '$' + parts.join('.');
+    }
     function fmt(n){
         if (n == null || isNaN(+n)) return '0';
         var v = +n;
@@ -6394,6 +6714,29 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     function getUtils(){
         return (window.__memberUtils && typeof window.__memberUtils === 'object') ? window.__memberUtils : null;
     }
+    function stopPriceLive(){
+        if (_priceTmr) { clearInterval(_priceTmr); _priceTmr = null; }
+    }
+    function startPriceLive(){
+        stopPriceLive();
+        // 股东卡 GCV 价格：固定 $314,159（不波动，整数显示）
+        if (shGcvPriceEl) shGcvPriceEl.textContent = fmtUsd(SH_GCV_BASE, 0);
+        // AI卡全球交易所价格：$0.09 ~ $0.35 区间随机游走，模拟实时行情
+        // 算法：当前价 + [-0.015, +0.015] 随机步长，触边界则反弹
+        var min = AI_PRICE_MIN, max = AI_PRICE_MAX;
+        var mid = (min + max) / 2;
+        var cur = mid; // 起点 0.22
+        var tick = function(){
+            var step = (Math.random() - 0.5) * 0.030; // -0.015 ~ +0.015
+            var next = cur + step;
+            if (next < min) { next = min + (min - next) * 0.6; }
+            if (next > max) { next = max - (next - max) * 0.6; }
+            cur = next;
+            if (aiExPriceEl) aiExPriceEl.textContent = fmtUsd(cur, 2);
+        };
+        tick();
+        _priceTmr = setInterval(tick, 1800);
+    }
 
     function open(params){
         params = params || {};
@@ -6408,6 +6751,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (resultWrap)  resultWrap.style.display  = 'none';
         if (cardsWrap)   cardsWrap.style.display   = 'none';
         if (noneWrap)    noneWrap.style.display    = 'none';
+        stopPriceLive();
         // 去掉上次的 err-red 类
         if (noneWrap){
             var txt = noneWrap.querySelector('.qp-none-text');
@@ -6428,6 +6772,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     }
     function close(){
         if (_tmr) { clearTimeout(_tmr); _tmr = null; }
+        stopPriceLive();
         cacheEls();
         if (!overlay) return;
         overlay.classList.remove('active');
@@ -6449,6 +6794,8 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         shCardsEl = $('qpShCards');
         aiDiviEl  = $('qpAiDivi');
         shDiviEl  = $('qpShDivi');
+        aiExPriceEl = $('qpAiExPrice');
+        shGcvPriceEl = $('qpShGcvPrice');
         if (btnX)    btnX.addEventListener('click', close);
         if (btnBack) btnBack.addEventListener('click', close);
         if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
@@ -6480,7 +6827,10 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             if (shDiviEl)  shDiviEl.textContent  = fmt(shDivi);
             if (cardsWrap)  cardsWrap.style.display = '';
             if (noneWrap)   noneWrap.style.display  = 'none';
+            // 命中时启动价格实时展示（AI卡波动，股东卡固定）
+            startPriceLive();
         } else {
+            stopPriceLive();
             // 规则8：红色提示文字
             if (cardsWrap)  cardsWrap.style.display = 'none';
             if (noneWrap)   noneWrap.style.display  = '';
