@@ -2981,14 +2981,14 @@
         .apply-tbl {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 6px;
+            border-spacing: 0 9px;
             flex-shrink: 0;
             table-layout: fixed;
         }
         .apply-tbl thead th {
             position: sticky; top: 0; z-index: 2;
-            padding: 4px 5px;
-            font-size: 7.8px; font-weight: 800; letter-spacing: 0.04em;
+            padding: 5px 6px;
+            font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
             color: #d6bd80;
             background: linear-gradient(180deg, rgba(212,175,55,0.12), rgba(212,175,55,0.03));
             border-top: 1px solid rgba(253,230,138,0.25);
@@ -3047,18 +3047,18 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.20), 0 0 0 1px rgba(253,230,138,0.08);
         }
         .apply-tbl tbody td {
-            padding: 4px 5px;
-            font-size: 8px;
-            line-height: 1.16;
+            padding: 5px 6px;
+            font-size: 9.5px;
+            line-height: 1.22;
             color: var(--text-primary);
             border: none;
             word-break: break-word;
             vertical-align: middle;
         }
-        .apply-tbl td.col-i { text-align: left; padding-left: 6px; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 8.4px; }
-        .apply-tbl td.col-n { text-align: left; font-weight: 900; color: var(--text-primary); line-height: 1.16; padding-left: 4px; font-size: 8.4px; letter-spacing: 0.02em; }
-        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 7.2px; }
-        .apply-tbl td.col-t { text-align: left; color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 7.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .apply-tbl td.col-i { text-align: left; padding-left: 7px; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 10px; }
+        .apply-tbl td.col-n { text-align: left; font-weight: 900; color: var(--text-primary); line-height: 1.22; padding-left: 5px; font-size: 10px; letter-spacing: 0.02em; }
+        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.5px; }
+        .apply-tbl td.col-t { text-align: left; color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .apply-tbl td.col-y { /* type pill 容器 */ }
         .apply-tbl td.col-q { text-align: left; padding-left: 4px; font-weight: 900; letter-spacing: -0.01em; }
         .apply-tbl th.col-q { text-align: left; padding-left: 4px; }
@@ -3069,9 +3069,9 @@
         .type-pill {
             display: inline-flex; align-items: center; justify-content: center;
             gap: 2px;
-            padding: 2px 4px;
+            padding: 2.5px 5px;
             border-radius: 999px;
-            font-size: 6.8px;
+            font-size: 7.6px;
             font-weight: 800;
             letter-spacing: 0.01em;
             line-height: 1;
@@ -3120,7 +3120,7 @@
             animation: qtyJump 2.6s ease-in-out infinite;
             will-change: transform;
         }
-        .qty-card .q-u { font-size: 7.5px; color: #e9d5ff; opacity: .85; margin-left: 2px; font-weight: 700; }
+        .qty-card .q-u { font-size: 8.5px; color: #e9d5ff; opacity: .85; margin-left: 2px; font-weight: 700; }
         @keyframes qtyJump {
             0%, 100% { transform: translateY(0); }
             45%      { transform: translateY(0); }
@@ -3129,7 +3129,7 @@
         }
         /* 分红派币：金色强调 */
         .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 2px; }
-        .divi-pi .d-u { font-size: 7.5px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
+        .divi-pi .d-u { font-size: 8.5px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
 
         /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
         .apply-pager {
@@ -3392,12 +3392,12 @@
             .eco-circle-amount { font-size: 26px; }
             .ai-level-price .num { font-size: 18px; }
             /* 窄屏：派友股东记录表进一步收窄间距，仍保持 10 条可见 */
-            .apply-tbl thead th { padding: 4px 4px; font-size: 7.2px; }
-            .apply-tbl tbody td { padding: 4px 4px; font-size: 7.4px; }
-            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 7.8px; }
-            .apply-tbl td.col-p, .apply-tbl td.col-t { font-size: 6.6px; }
-            .apply-tbl { border-spacing: 0 5px; }
-            .type-pill { font-size: 6.2px; padding: 1.5px 3px; }
+            .apply-tbl thead th { padding: 4px 5px; font-size: 8.5px; }
+            .apply-tbl tbody td { padding: 4px 5px; font-size: 8.8px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.2px; }
+            .apply-tbl td.col-p, .apply-tbl td.col-t { font-size: 7.8px; }
+            .apply-tbl { border-spacing: 0 7px; }
+            .type-pill { font-size: 7px; padding: 2px 3.5px; }
             .apply-stat { padding: 5px 7px; gap: 6px; }
             .as-icon { width: 22px; height: 22px; font-size: 10px; }
             .as-v .n { font-size: 11px; }
@@ -3419,11 +3419,11 @@
         }
         /* 矮屏手机：进一步收窄表格 padding，确保 10 条完整显示 */
         @media (max-height: 740px) {
-            .apply-sheet { height: 88%; }
-            .apply-tbl thead th { padding: 4px 5px; font-size: 7.4px; }
-            .apply-tbl tbody td { padding: 3px 5px; font-size: 7.6px; }
-            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 8px; }
-            .apply-tbl { border-spacing: 0 5px; }
+            .apply-sheet { height: 90%; }
+            .apply-tbl thead th { padding: 4px 5px; font-size: 8.8px; }
+            .apply-tbl tbody td { padding: 4px 5px; font-size: 9px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.4px; }
+            .apply-tbl { border-spacing: 0 7px; }
             .apply-stat { padding: 4px 7px; gap: 6px; }
             .as-icon { width: 20px; height: 20px; font-size: 9px; }
             .as-v .n { font-size: 10px; }
