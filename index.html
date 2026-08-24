@@ -2864,46 +2864,48 @@
             transform: translateY(-0.5px);
         }
 
-        /* ========== 申请详情覆盖层（92% 高 · 更贴近全屏，给 10 条数据充足空间） ========== */
+        /* ========== 申请详情覆盖层（60% 高 · 屏幕正中央悬浮卡片） ========== */
         .apply-overlay {
             position: absolute; left: 0; right: 0;
-            top: 0; height: 92%;
-            z-index: 80;   /* 比 tab-bar(50) 高，比 modal-mask(100) 低；保证底部 tab 看得见 */
-            background: linear-gradient(180deg, rgba(4,8,16,0.0) 0%, rgba(4,8,16,0.56) 10%);
-            pointer-events: none;  /* 关闭时不拦截点击 */
+            top: 0; bottom: 0;
+            z-index: 80;
+            background: rgba(4,8,16,0.55);
+            pointer-events: none;
             opacity: 0;
             transition: opacity .28s ease;
+            display: flex; align-items: center; justify-content: center;
         }
         .apply-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
         .apply-sheet {
-            position: absolute; left: 0; right: 0; bottom: 0;
-            height: calc(100% - 14px);
-            border-radius: 26px 26px 0 0;
+            position: relative;
+            width: 100%;
+            height: 82%;
+            border-radius: 22px;
             background:
                 radial-gradient(560px 260px at 15% 0%, rgba(212,175,55,0.16), transparent 60%),
                 radial-gradient(560px 260px at 85% 0%, rgba(139,92,246,0.16), transparent 60%),
                 linear-gradient(180deg, #131a2e 0%, #0c1223 60%, #0a0f1f 100%);
-            border-top: 1px solid var(--glass-border-strong);
-            box-shadow: 0 -28px 80px rgba(0,0,0,0.62);
-            transform: translateY(18px);
+            border: 1px solid var(--glass-border-strong);
+            box-shadow: 0 24px 70px rgba(0,0,0,0.62);
+            transform: scale(0.94) translateY(12px);
             transition: transform .28s cubic-bezier(.2,.82,.2,1);
             display: flex; flex-direction: column;
             overflow: hidden;
-            padding: 0 0 calc(env(safe-area-inset-bottom) + 4px);
+            padding: 0;
         }
-        .apply-overlay.active .apply-sheet { transform: translateY(0); }
+        .apply-overlay.active .apply-sheet { transform: scale(1) translateY(0); }
         .apply-top {
             position: relative;
-            padding: 8px 20px 10px;
+            padding: 3px 14px 4px;
             flex-shrink: 0;
         }
         .apply-grip {
-            width: 48px; height: 4px; border-radius: 999px;
+            width: 40px; height: 3px; border-radius: 999px;
             background: rgba(148,163,184,0.34);
-            margin: 2px auto 10px;
+            margin: 2px auto 4px;
         }
         .apply-x {
             position: absolute; top: 10px; right: 18px;
@@ -2918,29 +2920,29 @@
         .apply-x:hover { background: rgba(255,255,255,0.12); }
         .apply-x:active { transform: scale(.94); }
         .apply-title {
-            margin: 2px 0 0;
-            font-size: 19px; font-weight: 900; letter-spacing: 0.02em;
+            margin: 1px 0 0;
+            font-size: 14px; font-weight: 900; letter-spacing: 0.02em;
             background: linear-gradient(90deg, #fff4c8 0%, var(--accent-gold-2) 55%, #fff4c8 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             filter: drop-shadow(0 0 5px rgba(253,230,138,0.28));
             line-height: 1.18;
         }
         .apply-sub {
-            margin: 3px 0 0;
-            font-size: 11px; color: var(--text-tertiary);
+            margin: 2px 0 0;
+            font-size: 8.5px; color: var(--text-tertiary);
             font-weight: 600; letter-spacing: 0.10em;
         }
         /* 汇总两小卡 */
         .apply-stat-row {
-            padding: 6px 20px 8px;
+            padding: 3px 14px 4px;
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
         }
         .apply-stat {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 12px;
-            border-radius: 14px;
+            display: flex; align-items: center; gap: 7px;
+            padding: 5px 8px;
+            border-radius: 12px;
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.045);
             position: relative; overflow: hidden;
@@ -2954,23 +2956,23 @@
             border-color: rgba(196,181,253,0.2);
         }
         .as-icon {
-            width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+            width: 22px; height: 22px; border-radius: 8px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 15px;
+            font-size: 10px;
         }
         .apply-stat.gold   .as-icon { background: linear-gradient(135deg, rgba(253,230,138,0.28), rgba(212,175,55,0.08)); color: #fff7d6; }
         .apply-stat.purple .as-icon { background: linear-gradient(135deg, rgba(233,213,255,0.28), rgba(139,92,246,0.08)); color: #f5f3ff; }
         .as-body { flex: 1; min-width: 0; }
-        .as-l { font-size: 10px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
-        .as-v { margin-top: 4px; display: flex; align-items: baseline; gap: 3px; line-height: 1; }
-        .as-v .n { font-size: 16px; font-weight: 900; letter-spacing: -0.01em; }
-        .as-v .u { font-size: 10px; color: var(--text-quaternary); font-weight: 700; }
+        .as-l { font-size: 7.5px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.04em; line-height: 1; }
+        .as-v { margin-top: 2px; display: flex; align-items: baseline; gap: 2px; line-height: 1; }
+        .as-v .n { font-size: 11px; font-weight: 900; letter-spacing: -0.01em; }
+        .as-v .u { font-size: 7.5px; color: var(--text-quaternary); font-weight: 700; }
         .apply-stat.gold   .as-v .n { color: var(--accent-gold-2); }
         .apply-stat.purple .as-v .n { color: #e9d5ff; }
 
         /* ========== 申请详情·6列表格（金边玻璃态）：序号 / 名称 / 时间 / 类型 / 张数 / 分红派币 ========== */
         .apply-tbl-wrap {
-            padding: 6px 20px 0;
+            padding: 3px 14px 0;
             flex: 1;
             min-height: 0;
             overflow: hidden;
@@ -2979,14 +2981,14 @@
         .apply-tbl {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 4px;
+            border-spacing: 0 6px;
             flex-shrink: 0;
             table-layout: fixed;
         }
         .apply-tbl thead th {
             position: sticky; top: 0; z-index: 2;
-            padding: 8px 7px;
-            font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
+            padding: 4px 5px;
+            font-size: 7.8px; font-weight: 800; letter-spacing: 0.04em;
             color: #d6bd80;
             background: linear-gradient(180deg, rgba(212,175,55,0.12), rgba(212,175,55,0.03));
             border-top: 1px solid rgba(253,230,138,0.25);
@@ -2994,12 +2996,12 @@
             text-align: left;
         }
         .apply-tbl thead th:first-child {
-            border-radius: 10px 0 0 10px;
+            border-radius: 8px 0 0 8px;
             border-left: 1px solid rgba(253,230,138,0.25);
             text-align: center;
         }
         .apply-tbl thead th:last-child {
-            border-radius: 0 10px 10px 0;
+            border-radius: 0 8px 8px 0;
             border-right: 1px solid rgba(253,230,138,0.25);
             text-align: right;
         }
@@ -3045,31 +3047,31 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.20), 0 0 0 1px rgba(253,230,138,0.08);
         }
         .apply-tbl tbody td {
-            padding: 8px 7px;
-            font-size: 9.5px;
-            line-height: 1.22;
+            padding: 4px 5px;
+            font-size: 8px;
+            line-height: 1.16;
             color: var(--text-primary);
             border: none;
             word-break: break-word;
             vertical-align: middle;
         }
-        .apply-tbl td.col-i { text-align: center; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 10px; }
-        .apply-tbl td.col-n { font-weight: 900; color: var(--text-primary); line-height: 1.22; padding-left: 8px; font-size: 10px; letter-spacing: 0.02em; }
-        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.6px; }
-        .apply-tbl td.col-t { color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.6px; }
+        .apply-tbl td.col-i { text-align: left; padding-left: 6px; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 8.4px; }
+        .apply-tbl td.col-n { text-align: left; font-weight: 900; color: var(--text-primary); line-height: 1.16; padding-left: 4px; font-size: 8.4px; letter-spacing: 0.02em; }
+        .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 7.2px; }
+        .apply-tbl td.col-t { text-align: left; color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 7.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .apply-tbl td.col-y { /* type pill 容器 */ }
-        .apply-tbl td.col-q { text-align: right; font-weight: 900; letter-spacing: -0.01em; }
-        .apply-tbl th.col-q { text-align: right; }
+        .apply-tbl td.col-q { text-align: left; padding-left: 4px; font-weight: 900; letter-spacing: -0.01em; }
+        .apply-tbl th.col-q { text-align: left; padding-left: 4px; }
         .apply-tbl td.col-d { text-align: right; font-weight: 900; letter-spacing: -0.01em; color: var(--accent-gold-2); }
         .apply-tbl th.col-d { text-align: right; }
 
         /* 类型标签：AI 金卡 / 股东紫卡 · 严格单行不换行，超长截断 */
         .type-pill {
             display: inline-flex; align-items: center; justify-content: center;
-            gap: 3px;
-            padding: 3px 6px;
+            gap: 2px;
+            padding: 2px 4px;
             border-radius: 999px;
-            font-size: 8.2px;
+            font-size: 6.8px;
             font-weight: 800;
             letter-spacing: 0.01em;
             line-height: 1;
@@ -3112,32 +3114,41 @@
         .apply-tbl tbody tr.row-pending td.col-d { color: rgba(148,163,184,0.8); }
         .apply-tbl tbody tr.row-pending td.col-d .divi-pi { color: rgba(148,163,184,0.8); }
         .apply-tbl tbody tr.row-pending td.col-d .divi-pi .d-u { color: rgba(148,163,184,0.65); }
-        /* 持有张数：紫色强调 */
-        .qty-card { color: #e9d5ff; display: inline-flex; align-items: baseline; gap: 2px; }
-        .qty-card .q-u { font-size: 8.6px; color: #e9d5ff; opacity: .85; margin-left: 2px; font-weight: 700; }
+        /* 持有张数：紫色强调 · 轻微跳动提升高级感 */
+        .qty-card {
+            color: #e9d5ff; display: inline-flex; align-items: baseline; gap: 2px;
+            animation: qtyJump 2.6s ease-in-out infinite;
+            will-change: transform;
+        }
+        .qty-card .q-u { font-size: 7.5px; color: #e9d5ff; opacity: .85; margin-left: 2px; font-weight: 700; }
+        @keyframes qtyJump {
+            0%, 100% { transform: translateY(0); }
+            45%      { transform: translateY(0); }
+            55%      { transform: translateY(-1.8px); }
+            65%      { transform: translateY(0); }
+        }
         /* 分红派币：金色强调 */
         .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 2px; }
-        .divi-pi .d-u { font-size: 8.6px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
+        .divi-pi .d-u { font-size: 7.5px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
 
         /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
         .apply-pager {
             flex-shrink: 0;
-            padding: 12px 20px 10px;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+            padding: 5px 14px 4px;
+            display: grid; grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             position: relative;
         }
         /* 左右两按钮 */
         .apg-btn {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 7px 13px;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 9px;
             border-radius: 999px;
             border: 1px solid rgba(255,255,255,0.055);
             background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
             color: var(--text-secondary);
-            font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
             cursor: pointer;
             transition: transform .18s ease, border-color .18s ease, color .18s ease, background .18s ease;
             white-space: nowrap;
@@ -3153,7 +3164,7 @@
 
         /* ====== 圆形图标重做：上一页（蓝色多层光芒） / 下一页（紫色多层光芒） ====== */
         .apg-ic {
-            width: 26px; height: 26px; border-radius: 999px;
+            width: 22px; height: 22px; border-radius: 999px;
             position: relative;
             display: inline-flex; align-items: center; justify-content: center;
             color: #ffffff; /* SVG 箭头强制白色 */
@@ -3265,7 +3276,7 @@
         /* 中：黄色发光悬浮球 */
         .apg-ball {
             position: relative;
-            width: 60px; height: 60px;
+            width: 50px; height: 50px;
             border-radius: 999px;
             justify-self: center;
             display: flex; align-items: center; justify-content: center;
@@ -3307,15 +3318,15 @@
             margin-top: 2px;
         }
         .apg-ball-page .apg-cur {
-            font-size: 16px; font-weight: 900; letter-spacing: -0.02em;
+            font-size: 13px; font-weight: 900; letter-spacing: -0.02em;
             color: #3a2708;
             text-shadow: 0 1px 0 rgba(255,250,210,0.6);
         }
         .apg-ball-page .apg-sep {
-            font-size: 10px; font-weight: 800; color: #5a430d; opacity: .75;
+            font-size: 8.5px; font-weight: 800; color: #5a430d; opacity: .75;
         }
         .apg-ball-page .apg-tot {
-            font-size: 11px; font-weight: 900; color: #5a430d; opacity: .9;
+            font-size: 9.5px; font-weight: 900; color: #5a430d; opacity: .9;
             letter-spacing: 0;
         }
         /* 小字提示「当前页」 */
@@ -3365,8 +3376,8 @@
         /* 脚注 */
         .apply-foot {
             flex-shrink: 0;
-            padding: 8px 20px 10px;
-            font-size: 9px; color: var(--text-quaternary);
+            padding: 4px 14px 5px;
+            font-size: 7.5px; color: var(--text-quaternary);
             text-align: center;
             letter-spacing: 0.06em;
             font-weight: 600;
@@ -3381,24 +3392,24 @@
             .eco-circle-amount { font-size: 26px; }
             .ai-level-price .num { font-size: 18px; }
             /* 窄屏：派友股东记录表进一步收窄间距，仍保持 10 条可见 */
-            .apply-tbl thead th { padding: 7px 5px; font-size: 8.2px; }
-            .apply-tbl tbody td { padding: 7px 5px; font-size: 9px; }
-            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.4px; }
-            .apply-tbl td.col-p, .apply-tbl td.col-t { font-size: 8px; }
-            .apply-tbl { border-spacing: 0 3px; }
-            .type-pill { font-size: 7.4px; padding: 2.5px 5px; }
-            .apply-stat { padding: 9px 10px; gap: 8px; }
-            .as-icon { width: 30px; height: 30px; font-size: 14px; }
-            .as-v .n { font-size: 15px; }
-            .apg-btn { padding: 6px 11px; font-size: 10px; }
-            .apg-ic { width: 24px; height: 24px; }
-            .apg-ball { width: 56px; height: 56px; }
-            .apg-ball-page .apg-cur { font-size: 15px; }
-            .apply-top { padding: 7px 16px 9px; }
-            .apply-stat-row { padding: 5px 16px 7px; }
-            .apply-tbl-wrap { padding: 5px 16px 0; }
-            .apply-pager { padding: 11px 16px 9px; }
-            .apply-foot { padding: 7px 16px 9px; font-size: 8.5px; }
+            .apply-tbl thead th { padding: 4px 4px; font-size: 7.2px; }
+            .apply-tbl tbody td { padding: 4px 4px; font-size: 7.4px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 7.8px; }
+            .apply-tbl td.col-p, .apply-tbl td.col-t { font-size: 6.6px; }
+            .apply-tbl { border-spacing: 0 5px; }
+            .type-pill { font-size: 6.2px; padding: 1.5px 3px; }
+            .apply-stat { padding: 5px 7px; gap: 6px; }
+            .as-icon { width: 22px; height: 22px; font-size: 10px; }
+            .as-v .n { font-size: 11px; }
+            .apg-btn { padding: 4px 8px; font-size: 8.5px; }
+            .apg-ic { width: 19px; height: 19px; }
+            .apg-ball { width: 46px; height: 46px; }
+            .apg-ball-page .apg-cur { font-size: 12px; }
+            .apply-top { padding: 4px 14px 5px; }
+            .apply-stat-row { padding: 3px 14px 4px; }
+            .apply-tbl-wrap { padding: 3px 14px 0; }
+            .apply-pager { padding: 5px 14px 4px; }
+            .apply-foot { padding: 4px 14px 5px; font-size: 7.2px; }
         }
         @media (max-width: 330px) {
             .ai-card-wrapper { width: 252px; height: 158px; }
@@ -3408,16 +3419,15 @@
         }
         /* 矮屏手机：进一步收窄表格 padding，确保 10 条完整显示 */
         @media (max-height: 740px) {
-            .apply-overlay { height: 94%; }
-            .apply-sheet { height: calc(100% - 10px); }
-            .apply-tbl thead th { padding: 7px 6px; font-size: 8.6px; }
-            .apply-tbl tbody td { padding: 7px 6px; font-size: 9px; }
-            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 9.4px; }
-            .apply-tbl { border-spacing: 0 3px; }
-            .apply-stat { padding: 9px 11px; gap: 9px; }
-            .as-icon { width: 30px; height: 30px; font-size: 14px; }
-            .as-v .n { font-size: 15px; }
-            .apg-ball { width: 58px; height: 58px; }
+            .apply-sheet { height: 88%; }
+            .apply-tbl thead th { padding: 4px 5px; font-size: 7.4px; }
+            .apply-tbl tbody td { padding: 3px 5px; font-size: 7.6px; }
+            .apply-tbl td.col-n, .apply-tbl td.col-i { font-size: 8px; }
+            .apply-tbl { border-spacing: 0 5px; }
+            .apply-stat { padding: 4px 7px; gap: 6px; }
+            .as-icon { width: 20px; height: 20px; font-size: 9px; }
+            .as-v .n { font-size: 10px; }
+            .apg-ball { width: 42px; height: 42px; }
         }
     </style>
 </head>
@@ -3922,7 +3932,7 @@
 
             <!-- ============ 右列：股东卡 3级（紫色）对应 规则14/15/16（1000/1500/2000元）============ -->
             <div class="cards-col cards-col-right">
-                <!-- 股东卡 · 1级（规则14：¥1000，0.01π/h → 0.24π/天） -->
+                <!-- 股东卡 · 1级（规则14：¥1000，0.24π/日） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3944,7 +3954,7 @@
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红 · 0.01 π/h</span>
+                            <span data-i18n="mk_sh_badge_1">股东 · LV.1 基础分红 · 0.24 π/日</span>
                         </div>
                     </div>
                     <div class="mc-data">
@@ -3962,7 +3972,7 @@
                     </div>
                 </div>
 
-                <!-- 股东卡 · 2级（规则15：¥1500，0.02π/h → 0.48π/天） -->
+                <!-- 股东卡 · 2级（规则15：¥1500，0.48π/日） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -3984,7 +3994,7 @@
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红 · 0.02 π/h</span>
+                            <span data-i18n="mk_sh_badge_2">股东 · LV.2 进阶分红 · 0.48 π/日</span>
                         </div>
                     </div>
                     <div class="mc-data">
@@ -4002,7 +4012,7 @@
                     </div>
                 </div>
 
-                <!-- 股东卡 · 3级（规则16：¥2000，0.03π/h → 0.72π/天） -->
+                <!-- 股东卡 · 3级（规则16：¥2000，0.7372π/日） -->
                 <div class="ai-level-card sh-purple">
                     <div class="card-border"></div>
                     <div class="mc-top">
@@ -4024,13 +4034,13 @@
                         </div>
                         <div class="mc-sub">
                             <span class="dot-green"></span>
-                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红 · 0.03 π/h</span>
+                            <span data-i18n="mk_sh_badge_3">股东 · LV.3 精英分红 · 0.7372 π/日</span>
                         </div>
                     </div>
                     <div class="mc-data">
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">⚡</span><span data-i18n="mk_data_pi">预计每日分红派币</span></div>
-                            <div class="mc-dv">0.72<span class="du" data-i18n="mk_unit_pi">π</span></div>
+                            <div class="mc-dv">0.7372<span class="du" data-i18n="mk_unit_pi">π</span></div>
                         </div>
                         <div class="mc-data-cell">
                             <div class="mc-dl"><span class="mini-bolt">¥</span><span data-i18n="mk_data_rmb">购买金额</span></div>
@@ -4526,7 +4536,7 @@
                 <li data-i18n="modal_sh_p1">拥有生态分红池股东权益，每日 00:00 自动派息累计</li>
                 <li data-i18n="modal_sh_p2">质押周期：长期永久，若有股东想要退回，可提前 45 天申请</li>
                 <li data-i18n="modal_sh_p3">投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000</li>
-                <li data-i18n="modal_sh_p4">小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大</li>
+                <li data-i18n="modal_sh_p4">每日分红：0.24 π / 0.48 π / 0.7372 π，等级越高分红权重越大</li>
             </ul>
             <div class="modal-settle settle-purple">
                 <div class="settle-head"><span class="settle-pin">📌</span><span data-i18n="settle_label">结算方式</span></div>
@@ -4699,9 +4709,9 @@ const I18N = {
         'mk_ai_badge_3': 'AI · LV.3 精英算力 · 0.4 π/h',
         'mk_ai_badge_4': 'AI · LV.4 旗舰算力',
         'mk_ai_badge_5': 'AI · LV.5 至尊算力',
-        'mk_sh_badge_1': '股东 · LV.1 基础分红 · 0.01 π/h',
-        'mk_sh_badge_2': '股东 · LV.2 进阶分红 · 0.02 π/h',
-        'mk_sh_badge_3': '股东 · LV.3 精英分红 · 0.03 π/h',
+        'mk_sh_badge_1': '股东 · LV.1 基础分红 · 0.24 π/日',
+        'mk_sh_badge_2': '股东 · LV.2 进阶分红 · 0.48 π/日',
+        'mk_sh_badge_3': '股东 · LV.3 精英分红 · 0.7372 π/日',
         'mk_sh_badge_4': '股东 · LV.4 旗舰分红',
         'mk_sh_badge_5': '股东 · LV.5 至尊分红',
         // 状态标签
@@ -4807,7 +4817,7 @@ const I18N = {
         'modal_sh_p1':    '拥有生态分红池股东权益，每日 00:00 自动派息累计',
         'modal_sh_p2':    '质押周期：长期永久，若有股东想要退回，可提前 45 天申请',
         'modal_sh_p3':    '投资金额 · 共 3 级：¥ 1,000 ｜ ¥ 1,500 ｜ ¥ 2,000',
-        'modal_sh_p4':    '小时分红率：0.01 π / 0.02 π / 0.03 π，等级越高分红权重越大',
+        'modal_sh_p4':    '每日分红：0.24 π / 0.48 π / 0.7372 π，等级越高分红权重越大',
         'modal_note':     '💡 两种卡片可叠加持有，AI卡算力与股东卡分红互不冲突，同时生效。',
         // 结算方式
         'settle_label':           '结算方式',
@@ -5616,8 +5626,8 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
      *     卡类型 → 价格 / 小时率（规则 11-16）：
      *       派友AI卡   1级 → ai    / 1000 → 0.15 π/h
      *       派友AI卡   2级 → ai    / 1500 → 0.30 π/h
-     *       派友股东卡 1级 → share / 1000 → 0.01 π/h
-     *       派友股东卡 2级 → share / 1500 → 0.02 π/h
+     *       派友股东卡 1级 → share / 1000 → 0.24 π/日
+     *       派友股东卡 2级 → share / 1500 → 0.48 π/日
      * ============================================================ */
     function ymd(y, mo, d){
         // y/mo/d → 当日 00:00:00 毫秒（mo 从 1 开始，与用户「X 月」对齐）
@@ -5691,13 +5701,40 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
           cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:9999}] },
         // 22
         { id:22, name:'魏国炳', phone:'15536455536', holdDateMs:ymd(2026,8,18),
-          cards:[{type:'ai',    price:1000, qty:3, startMs:ymd(2026,8,18), pledgeDays:9990}] },
-        // 23
-        { id:23, name:'魏国炳', phone:'15536455536', holdDateMs:ymd(2026,8,18),
-          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,18), pledgeDays:9990}] },
+          cards:[
+            {type:'ai',    price:1000, qty:3, startMs:ymd(2026,8,18), pledgeDays:9990},
+            {type:'share', price:1500, qty:1, startMs:ymd(2026,8,18), pledgeDays:9990}
+          ] },
         // 24
         { id:24, name:'毕尚阳', phone:'15513636709', holdDateMs:ymd(2026,8,18),
-          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,8,18), pledgeDays:9990}] }
+          cards:[{type:'share', price:1000, qty:2, startMs:ymd(2026,8,18), pledgeDays:9990}] },
+        // 25
+        { id:25, name:'李高都', phone:'1554542465765', holdDateMs:ymd(2026,8,19),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,19), pledgeDays:999}] },
+        // 26
+        { id:26, name:'张腾', phone:'156345454554', holdDateMs:ymd(2026,8,20),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,20), pledgeDays:988}] },
+        // 27
+        { id:27, name:'李涛', phone:'18024542462', holdDateMs:ymd(2026,8,20),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,20), pledgeDays:9898}] },
+        // 28
+        { id:28, name:'马建峰', phone:'15634546542', holdDateMs:ymd(2026,8,23),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,23), pledgeDays:977}] },
+        // 29
+        { id:29, name:'高登定', phone:'18024245621', holdDateMs:ymd(2026,8,23),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,23), pledgeDays:564}] },
+        // 30
+        { id:30, name:'吴荣任', phone:'15536425425', holdDateMs:ymd(2026,8,24),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,24), pledgeDays:777}] },
+        // 31
+        { id:31, name:'武峰', phone:'17545458596', holdDateMs:ymd(2026,8,24),
+          cards:[{type:'share', price:1500, qty:1, startMs:ymd(2026,8,24), pledgeDays:766}] },
+        // 32
+        { id:32, name:'钱岁段', phone:'18302563248', holdDateMs:ymd(2026,8,24),
+          cards:[{type:'share', price:1000, qty:1, startMs:ymd(2026,8,24), pledgeDays:746}] },
+        // 33
+        { id:33, name:'苏丹丹', phone:'18915253658', holdDateMs:ymd(2026,8,25),
+          cards:[{type:'ai',    price:1000, qty:2, startMs:ymd(2026,8,25), pledgeDays:766}] }
     ];
     // 暴露到 window，供先锋档案查询模块共享（规则1、2、9）
     window.MEMBER_DB = DB;
@@ -5705,11 +5742,11 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
     /* ============================================================
      *  2. 规则11-16：派币分红计算（单卡 / 整会员）
      *     ai 1000:0.15/h  1500:0.3/h   2000:0.4/h
-     *     sh 1000:0.01/h  1500:0.02/h  2000:0.03/h
+     *     sh 1000:0.24/日 1500:0.48/日 2000:0.7372/日
      * ============================================================ */
     const HOURLY_RATE = {
-        ai:    { 1000: 0.15, 1500: 0.3,  2000: 0.4  },
-        share: { 1000: 0.01, 1500: 0.02, 2000: 0.03 }
+        ai:    { 1000: 0.15, 1500: 0.3,  2000: 0.4    },
+        share: { 1000: 0.24, 1500: 0.48, 2000: 0.7372 }
     };
     function computeCardDivi(card, tMs){
         if (!card) return 0;
@@ -5718,7 +5755,13 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         const startMs = card.startMs;                                           // X年X月X日 00:00
         const endMs   = startMs + (card.pledgeDays || 0) * 86400000;            // 到期后停止
         const effMs   = Math.max(0, Math.min(tMs, endMs) - startMs);
-        const hours   = effMs / 3600000;
+        if (card.type === 'share') {
+            // 股东卡：按日分红（每日 0.24 / 0.48 / 0.7372 π）
+            const days = effMs / 86400000;
+            return days * rate * card.qty;
+        }
+        // AI卡：按小时分红（每小时 0.15 / 0.3 / 0.4 π）
+        const hours = effMs / 3600000;
         return hours * rate * card.qty;
     }
     function memberAiDivi(m, tMs){
