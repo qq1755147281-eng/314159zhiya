@@ -1659,6 +1659,17 @@
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .qp-exit-row { display: flex; justify-content: center; margin-top: -2px; }
+        .qp-exit-tag {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 6px;
+            background: rgba(239,68,68,0.10);
+            border: 1px solid rgba(239,68,68,0.45);
+            color: #ef4444;
+            font-size: 11px; font-weight: 800; letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
 
         .qp-loading {
             position: relative; z-index: 1;
@@ -2901,6 +2912,7 @@
             position: relative;
             padding: 3px 14px 4px;
             flex-shrink: 0;
+            z-index: 10;
         }
         .apply-grip {
             width: 40px; height: 3px; border-radius: 999px;
@@ -2908,13 +2920,15 @@
             margin: 2px auto 4px;
         }
         .apply-x {
-            position: absolute; top: 10px; right: 18px;
-            width: 30px; height: 30px; border-radius: 50%;
+            position: absolute; top: 8px; right: 14px;
+            width: 36px; height: 36px; border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--glass-border);
             color: var(--text-secondary);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
+            z-index: 20;
+            pointer-events: auto;
             transition: background .18s ease, transform .18s ease;
         }
         .apply-x:hover { background: rgba(255,255,255,0.12); }
@@ -2981,13 +2995,13 @@
         .apply-tbl {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 9px;
+            border-spacing: 0 5px;
             flex-shrink: 0;
             table-layout: fixed;
         }
         .apply-tbl thead th {
             position: sticky; top: 0; z-index: 2;
-            padding: 5px 6px;
+            padding: 3px 6px;
             font-size: 9px; font-weight: 800; letter-spacing: 0.04em;
             color: #d6bd80;
             background: linear-gradient(180deg, rgba(212,175,55,0.12), rgba(212,175,55,0.03));
@@ -3006,10 +3020,10 @@
             text-align: right;
         }
         /* 6 列宽度分配（左收窄，给派币分红列完整显示） */
-        .apply-tbl.tbl-6col th.col-i { width: 7%; }
-        .apply-tbl.tbl-6col th.col-n { width: 22%; }
-        .apply-tbl.tbl-6col th.col-t { width: 18%; }
-        .apply-tbl.tbl-6col th.col-y { width: 18%; }
+        .apply-tbl.tbl-6col th.col-i { width: 6%; }
+        .apply-tbl.tbl-6col th.col-n { width: 19%; }
+        .apply-tbl.tbl-6col th.col-t { width: 21%; }
+        .apply-tbl.tbl-6col th.col-y { width: 19%; }
         .apply-tbl.tbl-6col th.col-q { width: 7%; }
         .apply-tbl.tbl-6col th.col-d { width: 28%; }
         /* 7 列宽度分配（规则3：序号 / 姓名 / 手机号 / 持有时间 / 类型 / 数量 / 派币分红） */
@@ -3047,19 +3061,19 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.20), 0 0 0 1px rgba(253,230,138,0.08);
         }
         .apply-tbl tbody td {
-            padding: 5px 6px;
+            padding: 3px 2px;
             font-size: 9.5px;
-            line-height: 1.22;
+            line-height: 1.18;
             color: var(--text-primary);
             border: none;
             word-break: break-word;
             vertical-align: middle;
         }
         .apply-tbl td.col-i { text-align: left; padding-left: 7px; font-weight: 900; color: var(--accent-gold-2); letter-spacing: 0.02em; font-size: 10px; }
-        .apply-tbl td.col-n { text-align: left; font-weight: 900; color: var(--text-primary); line-height: 1.22; padding-left: 5px; font-size: 10px; letter-spacing: 0.02em; }
+        .apply-tbl td.col-n { text-align: left; font-weight: 900; color: var(--text-primary); line-height: 1.22; padding-left: 1px; font-size: 10px; letter-spacing: 0.02em; }
         .apply-tbl td.col-p { color: #c7d2fe; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.5px; }
-        .apply-tbl td.col-t { text-align: left; color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .apply-tbl td.col-y { /* type pill 容器 */ }
+        .apply-tbl td.col-t { text-align: left; padding-left: 1px; color: var(--text-tertiary); font-weight: 500; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 8.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .apply-tbl td.col-y { padding-left: 1px; /* type pill 容器 */ }
         .apply-tbl td.col-q { text-align: left; padding-left: 4px; font-weight: 900; letter-spacing: -0.01em; }
         .apply-tbl th.col-q { text-align: left; padding-left: 4px; }
         .apply-tbl td.col-d { text-align: right; font-weight: 900; letter-spacing: -0.01em; color: var(--accent-gold-2); }
@@ -3130,6 +3144,14 @@
         /* 分红派币：金色强调 */
         .divi-pi { color: var(--accent-gold-2); display: inline-flex; align-items: baseline; gap: 2px; }
         .divi-pi .d-u { font-size: 8.5px; color: var(--accent-gold-2); opacity: .85; margin-left: 2px; font-weight: 700; }
+        /* 退出中行：整行红色 */
+        .apply-tbl tbody tr.row-exiting td { color: #ef4444 !important; }
+        .apply-tbl tbody tr.row-exiting td .qty-card,
+        .apply-tbl tbody tr.row-exiting td .qty-card .q-u,
+        .apply-tbl tbody tr.row-exiting td .divi-pi,
+        .apply-tbl tbody tr.row-exiting td .divi-pi .d-u { color: #ef4444 !important; }
+        .apply-tbl tbody tr.row-exiting td .type-pill { border-color: rgba(239,68,68,0.5); color: #ef4444; background: rgba(239,68,68,0.08); }
+        .exit-tag { color: #ef4444; font-size: 9px; font-weight: 700; margin-left: 4px; padding: 1px 4px; border: 1px solid rgba(239,68,68,0.5); border-radius: 4px; white-space: nowrap; }
 
         /* ========== 分页控件：左 上一页 / 中 黄色发光悬浮球 / 右 下一页 ========== */
         .apply-pager {
@@ -4132,6 +4154,9 @@
                 <div class="qp-info-row">
                     <span class="qp-info-k" data-i18n="qp_k_name">姓名</span>
                     <span class="qp-info-v" id="qpOutName">—</span>
+                </div>
+                <div class="qp-exit-row" id="qpExitWrap" style="display:none;">
+                    <span class="qp-exit-tag">正在申请退款退股中</span>
                 </div>
             </div>
 
@@ -5694,7 +5719,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         { id:19, name:'袁语茉', phone:'13459276180', holdDateMs:ymd(2026,8,10),
           cards:[{type:'share', price:1500, qty:3, startMs:ymd(2026,8,14), pledgeDays:120}] },
         // 20
-        { id:20, name:'高小华', phone:'13835157493', holdDateMs:ymd(2026,8,16),
+        { id:20, name:'高小华', phone:'13835157493', holdDateMs:ymd(2026,8,16), exiting:true, fixedDivi:97,
           cards:[{type:'ai',    price:1000, qty:1, startMs:ymd(2026,8,17), pledgeDays:30}] },
         // 21
         { id:21, name:'侯建红', phone:'16601785571', holdDateMs:ymd(2026,8,16),
@@ -5777,6 +5802,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         return s;
     }
     function memberTotalDivi(m, tMs){
+        if (m && m.fixedDivi != null) return m.fixedDivi;
         return memberAiDivi(m, tMs) + memberShDivi(m, tMs);
     }
     function memberAiCount(m){
@@ -6022,13 +6048,18 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
                 const typeLblRaw = memberTypeLabel(m, dict);
                 // type-pill 同时支持 ai / share / both 三态（both 显示带双色描边）
                 const pilCls = 'type-pill ' + (typeCls === 'both' ? 'both' : typeCls);
-                const totalDivi = memberTotalDivi(m, tMs);
+                const totalDivi = (m.fixedDivi != null) ? m.fixedDivi : memberTotalDivi(m, tMs);
                 const diviStr = fmtDivi(totalDivi);
                 const holdDate = memberStartDate(m);
                 const qtyStr = memberCountStr(m);
+                const isExiting = !!m.exiting;
+                if (isExiting) tr.classList.add('row-exiting');
+                const nameHtml = isExiting
+                    ? `${m.name}<span class="exit-tag">退出中</span>`
+                    : m.name;
                 tr.innerHTML = `
                     <td class="col-i">${idStr}</td>
-                    <td class="col-n">${m.name}</td>
+                    <td class="col-n">${nameHtml}</td>
                     <td class="col-t">${holdDate}</td>
                     <td class="col-y"><span class="${pilCls}">${typeLblRaw}</span></td>
                     <td class="col-q"><span class="qty-card"><span class="q-n">${qtyStr}</span><span class="q-u">${uCard}</span></span></td>
@@ -6717,7 +6748,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
 (function initQueryProfileModal(){
     'use strict';
     var overlay, btnX, btnBack;
-    var outPhone, outName;
+    var outPhone, outName, exitWrap;
     var loadingWrap, resultWrap, cardsWrap, noneWrap;
     var aiCardsEl, shCardsEl, aiDiviEl, shDiviEl;
     var aiExPriceEl, shGcvPriceEl;
@@ -6790,6 +6821,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         if (outPhone) outPhone.textContent = phone;
         if (outName)  outName.textContent  = name;
         // 重置 UI
+        if (exitWrap)   exitWrap.style.display   = 'none';
         if (loadingWrap) loadingWrap.style.display = '';
         if (resultWrap)  resultWrap.style.display  = 'none';
         if (cardsWrap)   cardsWrap.style.display   = 'none';
@@ -6829,6 +6861,7 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
         btnBack = $('qpBackBtn');
         outPhone= $('qpOutPhone');
         outName = $('qpOutName');
+        exitWrap = $('qpExitWrap');
         loadingWrap = $('qpLoading');
         resultWrap  = $('qpResult');
         cardsWrap   = $('qpCards');
@@ -6862,20 +6895,22 @@ else document.addEventListener('DOMContentLoaded', fixSafeArea);
             var tMs = nowMs2();
             var aiC = utils.memberAiCount(matched);
             var shC = utils.memberShCount(matched);
-            var aiDivi = utils.memberAiDivi(matched, tMs);
-            var shDivi = utils.memberShDivi(matched, tMs);
+            var aiDivi = (matched.fixedDivi != null) ? matched.fixedDivi : utils.memberAiDivi(matched, tMs);
+            var shDivi = (matched.fixedDivi != null) ? 0 : utils.memberShDivi(matched, tMs);
             if (aiCardsEl) aiCardsEl.textContent = fmt(aiC);
             if (shCardsEl) shCardsEl.textContent = fmt(shC);
             if (aiDiviEl)  aiDiviEl.textContent  = fmt(aiDivi);
             if (shDiviEl)  shDiviEl.textContent  = fmt(shDivi);
             if (cardsWrap)  cardsWrap.style.display = '';
             if (noneWrap)   noneWrap.style.display  = 'none';
+            if (exitWrap)   exitWrap.style.display  = matched.exiting ? '' : 'none';
             // 命中时启动价格实时展示（AI卡波动，股东卡固定）
             startPriceLive();
         } else {
             stopPriceLive();
             // 规则8：红色提示文字
             if (cardsWrap)  cardsWrap.style.display = 'none';
+            if (exitWrap)   exitWrap.style.display  = 'none';
             if (noneWrap)   noneWrap.style.display  = '';
             if (noneWrap) {
                 var txt = noneWrap.querySelector('.qp-none-text');
